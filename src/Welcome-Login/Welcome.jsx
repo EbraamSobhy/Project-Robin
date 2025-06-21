@@ -1,0 +1,85 @@
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import "./tailwind.css";
+import image from '../assets/image.PNG';
+
+function Welcome() {
+    const [isVisible, setIsVisible] = useState(false);
+    const navigate = useNavigate();
+    
+    useEffect(() => {
+        // Set sophisticated gradient background
+        document.body.style.background = '#87CEEB';
+        document.body.style.minHeight = '100vh';
+        
+        // Trigger entrance animation
+        const timer = setTimeout(() => setIsVisible(true), 100);
+        
+        return () => {
+            document.body.style.background = '';
+            document.body.style.minHeight = '';
+            clearTimeout(timer);
+        };
+    }, []);
+
+    const handleLogin = () => {
+        navigate('/login');
+    };
+
+    return (
+        <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden">
+            {/* Main Content */}
+            <div className={`transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
+                {/* Title with Gradient Text */}
+                <div className="text-center mb-12">
+                    <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-black">
+                        Robin Game
+                    </h1>
+                    <p className="text-gray/80 text-lg font-light tracking-wide">
+                        Adventure awaits you
+                    </p>
+                </div>
+
+                {/* Main Card */}
+                <div className="w-full max-w-lg bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden border border-white/20 transform hover:scale-105 transition-all duration-200">
+                    <div className="p-6 text-center">
+                        {/* Logo/Icon Placeholder with Gradient Background */}
+                        <div className="flex justify-center">
+                            <div className="w-96 h-64 bg-white/20 rounded-xl flex items-center justify-center">
+                            {/* Image */}
+                                <img src={image} alt="" />
+                        
+                            </div>
+                        </div>
+
+                        {/* Welcome Text */}
+                        <div className="mb-8">
+                            <h2 className="text-2xl font-semibold text-gray-800 mb-3">
+                                Welcome Back!
+                            </h2>
+                            <p className="text-gray-600 leading-relaxed">
+                                Login in to continue your epic journey and unlock new adventures in the Robin Game.
+                            </p>
+                        </div>
+
+                        {/* Login Button */}
+                        <button
+                            type="button"
+                            onClick={handleLogin}
+                            className="w-96 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4 px-8 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300/50"
+                        >
+                            <span className="flex items-center justify-center">
+                                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                                </svg>
+                                Let's Start
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default Welcome;
