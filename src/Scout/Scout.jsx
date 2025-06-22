@@ -27,8 +27,8 @@ function Scout() {
                 {/* Vertical Navbar */}
                 <div className="fixed top-0 right-0 h-full w-24 bg-white shadow-lg flex flex-col items-center py-8 mt-[63px] space-y-4 z-50 border-l border-blue-200">
                     {/* Home Tab */}
-                    <button className="w-full flex flex-col items-center py-4 px-2 group hover:bg-blue-50 transition relative">
-                        <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
+                    <button className="w-full flex flex-col items-center py-4 px-2 group bg-blue-50 transition relative">
+                        <span className="absolute left-0 top-0 h-full w-1 bg-blue-500 rounded-r transition"></span>
                         <svg className="w-7 h-7 text-blue-500 mb-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6" /></svg>
                         <span className="text-xs text-blue-700 font-semibold">Home</span>
                     </button>
