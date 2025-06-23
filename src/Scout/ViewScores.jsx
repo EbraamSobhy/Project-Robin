@@ -3,26 +3,26 @@ import './tailwind.css';
 import { GrScorecard } from "react-icons/gr";
 
 const patrolData = [
-    { label: "total soldiers", value: 5 },
-    { label: "total houses", value: 3 },
-    { label: "total carts", value: 2 },
-    { label: "total workshops", value: 3 },
-    { label: "total lands", value: 2 },
-    { label: "total horses", value: 4 },
-    { label: "total coins", value: 10 },
-    { label: "rent horses", value: 1 },
-    { label: "rent carts", value: 1 },
-    { label: "wheat seeds", value: 3 },
-    { label: "apple seeds", value: 1 },
-    { label: "watermelon seeds", value: 3 },
-    { label: "watermelon", value: 1 },
-    { label: "apple", value: 1 },
-    { label: "wheat", value: 2 },
-    { label: "total soil", value: 8 },
-    { label: "apple soil", value: 2 },
-    { label: "watermelon soil", value: 3 },
-    { label: "wheat soil", value: 1 },
-    { label: "empty soil", value: 2 },
+    { label: "total 💂", value: 5 },
+    { label: "total 🏘️", value: 3 },
+    { label: "total 🏇🏼", value: 2 },
+    { label: "total 🛠️", value: 3 },
+    { label: "total 🏞️", value: 2 },
+    { label: "total 🐎", value: 4 },
+    { label: "total 💰", value: 10 },
+    { label: "rent 🐎", value: 1 },
+    { label: "rent 🏇🏼", value: 1 },
+    { label: "🌾 🌱", value: 3 },
+    { label: "🍎 🌱", value: 1 },
+    { label: "🍉 🌱", value: 3 },
+    { label: "🍉", value: 1 },
+    { label: "🍎", value: 1 },
+    { label: "🌾", value: 2 },
+    { label: "total 🌱", value: 8 },
+    { label: "🍎 🌱", value: 2 },
+    { label: "🍉 🌱", value: 3 },
+    { label: "🌾 🌱", value: 1 },
+    { label: "empty 🌱", value: 2 },
 ];
 
 function ViewScores() {
@@ -79,7 +79,7 @@ function ViewScores() {
                             <div className="w-full grid grid-cols-3 gap-8 items-center justify-center">
                                 {[...Array(6)].map((_, idx) => (
                                     <div key={idx} className="bg-blue-100 rounded-xl p-8 shadow-inner w-96 h-72 text-left font-mono text-gray-800" style={{background:'#c9d8e3'}}>
-                                        <div className="text-lg font-semibold mb-1">Patrol {idx + 1}</div>
+                                        <div className="text-lg font-semibold mb-2 text-center">Patrol {idx + 1}</div>
                                         <div className="overflow-y-auto h-48 pl-4 border-l-2 border-blue-300">
                                             <div className="font-bold mb-2">patrol Name :</div>
                                             {patrolData.map((item, i) => (
