@@ -75,7 +75,7 @@ function Home() {
                         </div>
                         <span className="text-xs text-blue-700 font-semibold">Plant</span>
                     </button>
-                    {/* Plant Tab */}
+                    {/* Feeding Tab */}
                     <button className="w-full flex flex-col items-center py-4 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
@@ -83,7 +83,7 @@ function Home() {
                         </div>
                         <span className="text-xs text-blue-700 font-semibold">Feeding</span>
                     </button>
-                    {/* Plant Tab */}
+                    {/* Attack Tab */}
                     <button className="w-full flex flex-col items-center py-4 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
@@ -91,7 +91,7 @@ function Home() {
                         </div>
                         <span className="text-xs text-blue-700 font-semibold">Attack</span>
                     </button>
-                    {/* Plant Tab */}
+                    {/* Transport Tab */}
                     <button className="w-full flex flex-col items-center py-4 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">

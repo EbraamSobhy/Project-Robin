@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import Home from "./CP/Home";
+import Home from "./Kadr/Home";
 // import Scout from "./Scout/Scout";
 // import Welcome from "./Welcome-Login/Welcome";
 // import Login from "./Welcome-Login/Login";
@@ -14,6 +14,7 @@ function App() {
       <Route path="/login" element={<Login />} /> */}
       {/* <Route path="/" element={<Scout />} /> */}
       {/* <Route path="/" element={<ViewScores />} /> */}
+      {/* <Route path="/" element={<Home />} /> */}
       <Route path="/" element={<Home />} />
     </Routes>
   );
