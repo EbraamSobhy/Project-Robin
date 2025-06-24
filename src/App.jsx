@@ -8,7 +8,8 @@ import { Routes, Route } from "react-router-dom";
 // import Home from "./CP/Home";
 // import Buy from "./CP/Buy";
 // import Plant from "./CP/Plant";
-import Feeding from "./CP/Feeding";
+// import Feeding from "./CP/Feeding";
+import Attack from "./CP/Attack";
 
 
 function App() {
@@ -21,7 +22,8 @@ function App() {
       {/* <Route path="/" element={<Home />} /> */}
       {/* <Route path="/" element={<Home />} /> */}
       {/* <Route path="/" element={<Buy />} /> */}
-      <Route path="/" element={<Feeding />} />
+      {/* <Route path="/" element={<Feeding />} /> */}
+      <Route path="/" element={<Attack />} />
     </Routes>
   );
 }
