@@ -1,0 +1,179 @@
+import React, { useEffect, useState } from 'react';
+import '../Scout/tailwind.css';
+import { GrScorecard } from "react-icons/gr";
+import { PiPlantBold } from "react-icons/pi";
+import { GiEating } from "react-icons/gi";
+import { LuSwords } from "react-icons/lu";
+import { MdLocalShipping } from 'react-icons/md';
+
+function Buy() {
+    const [isVisible, setIsVisible] = useState(false);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setIsVisible(true), 200);
+        return () => clearTimeout(timer);
+    }, []);
+
+    const username = "CP.Name";
+
+    return (
+        <>
+            {/* Horizontal Navbar */}
+            <div className="fixed top-0 left-0 w-full h-16 bg-white shadow flex items-center justify-between px-8 z-50 border-b border-blue-200">
+                <span className="text-blue-700 font-semibold text-lg">{username}</span>
+                <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold mr-20 px-6 py-2 rounded-xl shadow transition">Logout</button>
+            </div>
+            <div className="min-h-screen bg-gradient-to-br from-sky-200 to-blue-300 flex items-center justify-center p-20">
+                {/* Vertical Navbar */}
+                <div className="fixed top-0 right-0 h-full w-24 bg-white shadow-lg flex flex-col items-center mt-[63px] z-50 border-l border-blue-200">
+                    {/* Home Tab */}
+                    <button className="w-full flex flex-col items-center py-4 px-2 group hover:bg-blue-50 transition relative">
+                        <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
+                        <svg className="w-7 h-7 text-blue-500 mb-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6" /></svg>
+                        <span className="text-xs text-blue-700 font-semibold">Home</span>
+                    </button>
+                    {/* Buy Tab */}
+                    <button className="w-full flex flex-col items-center py-4 px-2 group bg-blue-50 transition relative">
+                        <span className="absolute left-0 top-0 h-full w-1 bg-blue-500 rounded-r transition"></span>
+                        <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
+                            <svg className="w-7 h-7" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                            </svg>
+                        </div>
+                        <span className="text-xs text-blue-700 font-semibold">Buy</span>
+                    </button>
+                     {/* Plant Tab */}
+                    <button className="w-full flex flex-col items-center py-4 px-2 group hover:bg-blue-50 transition relative">
+                        <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
+                        <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
+                            <PiPlantBold size={25} />
+                        </div>
+                        <span className="text-xs text-blue-700 font-semibold">Plant</span>
+                    </button>
+                    {/* Feeding Tab */}
+                    <button className="w-full flex flex-col items-center py-4 px-2 group hover:bg-blue-50 transition relative">
+                        <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
+                        <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
+                            <GiEating size={25} />
+                        </div>
+                        <span className="text-xs text-blue-700 font-semibold">Feeding</span>
+                    </button>
+                    {/* Attack Tab */}
+                    <button className="w-full flex flex-col items-center py-4 px-2 group hover:bg-blue-50 transition relative">
+                        <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
+                        <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
+                            <LuSwords size={25} />
+                        </div>
+                        <span className="text-xs text-blue-700 font-semibold">Attack</span>
+                    </button>
+                    {/* Transport Tab */}
+                    <button className="w-full flex flex-col items-center py-4 px-2 group hover:bg-blue-50 transition relative">
+                        <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
+                        <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
+                            <MdLocalShipping size={25} />
+                        </div>
+                        <span className="text-xs text-blue-700 font-semibold">Transport</span>
+                    </button>
+                    {/* View Scores Tab */}
+                    <button className="w-full flex flex-col items-center py-4 px-2 group hover:bg-blue-50 transition relative">
+                        <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
+                        <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
+                            <GrScorecard size={25} />
+                        </div>
+                        <span className="text-xs text-blue-700 font-semibold">View Scores</span>
+                    </button>
+                </div>
+                {/* Decorative background elements */}
+                <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                    <div className="absolute top-20 left-10 w-32 h-32 bg-white/10 rounded-full blur-xl"></div>
+                    <div className="absolute bottom-20 right-10 w-40 h-40 bg-white/10 rounded-full blur-xl"></div>
+                    <div className="absolute top-1/2 left-1/4 w-24 h-24 bg-white/5 rounded-full blur-lg"></div>
+                </div>
+
+                <div className={`transform transition-all duration-1000 ease-out ${
+                    isVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-12 opacity-0 scale-95'
+                }`}>
+                    <div className="bg-white/90 backdrop-blur-md rounded-3xl shadow-2xl p-8 border border-white/30 relative mt-10">
+                        {/* Subtle inner glow */}
+                        <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent rounded-3xl pointer-events-none"></div>
+                        <div className="relative z-10 flex flex-col items-center w-full">
+                            <form className="w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 gap-12">
+                                {/* Left Column */}
+                                <div className="flex flex-col gap-6">
+                                {/* Quantity */}
+                                <div>
+                                    <label htmlFor="buy-quantity-input" className="block text-white bg-gray-700 font-bold text-2xl mb-2 rounded-lg px-2 py-1 w-32">Quantity</label>
+                                    <input
+                                    id="buy-quantity-input"
+                                    type="number"
+                                    min="1"
+                                    className="w-full px-8 py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-xl"
+                                    placeholder="3"
+                                    />
+                                </div>
+                                {/* Cost */}
+                                <div>
+                                    <label htmlFor="buy-cost-label" className="block text-white bg-gray-700 font-bold text-2xl mb-2 rounded-lg px-2 py-1 w-20">Cost</label>
+                                    <input
+                                    id="buy-cost-label"
+                                    type="text"
+                                    className="w-full px-8 py-4 rounded-xl border border-gray-300 bg-gray-100 cursor-not-allowed text-xl"
+                                    value="Auto-calculated"
+                                    disabled
+                                    />
+                                </div>
+                                {/* Your Coins */}
+                                <div>
+                                    <label htmlFor="buy-coins-label" className="block text-white bg-gray-700 font-bold text-2xl mb-2 rounded-lg px-2 py-1 w-36">Your Coins</label>
+                                    <input
+                                    id="buy-coins-label"
+                                    type="text"
+                                    className="w-full px-8 py-4 rounded-xl border border-gray-300 bg-gray-100 cursor-not-allowed text-xl"
+                                    value="Auto-calculated"
+                                    disabled
+                                    />
+                                </div>
+                                {/* Land Number */}
+                                <div>
+                                    <label htmlFor="buy-land-label" className="block text-white bg-gray-700 font-bold text-2xl mb-2 rounded-lg px-2 py-1 w-44">Land Number</label>
+                                    <input
+                                    id="buy-land-label"
+                                    type="text"
+                                    className="w-full px-8 py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-xl"
+                                    placeholder="must be from 1 - 33"
+                                    />
+                                </div>
+                                </div>
+                                {/* Right Column */}
+                                <div className="flex flex-col gap-6 justify-center">
+                                {/* Type */}
+                                <div className="mb-[400px]">
+                                    <label htmlFor="buy-type-select" className="block text-white bg-gray-700 font-bold text-2xl mb-2 rounded-lg px-2 py-1 w-20">Type</label>
+                                    <select
+                                    id="buy-type-select"
+                                    className="w-full px-8 py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-xl"
+                                    >
+                                    <option value="horse">Horse</option>
+                                    <option value="cart">Cart</option>
+                                    <option value="rent-carts">Rent carts</option>
+                                    <option value="rent-horses">rent horses</option>
+                                    <option value="apple-crop">Apple crop</option>
+                                    <option value="wheat-crop">Wheat Crop</option>
+                                    <option value="watermelon-crop">Watermelon Crop</option>
+                                    <option value="apple-seeds">Apple seeds</option>
+                                    <option value="wheat-seeds">Wheat seeds</option>
+                                    <option value="watermelon-seeds">Watermelon seeds</option>
+                                    <option value="soldiers">Soldiers</option>
+                                    </select>
+                                </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </>
+    );
+}
+
+export default Buy
