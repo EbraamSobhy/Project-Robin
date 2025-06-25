@@ -12,6 +12,11 @@ import Feeding from "./CP/Feeding";
 import Attack from "./CP/Attack";
 import Transport from "./CP/Transport";
 import CPViewScores from "./CP/ViewScores";
+import KadrViewScores from "./Kadr/ViewScores";
+import AttackConditions from "./Kadr/AttackConditions";
+import Take from "./Kadr/Take";
+import Give from "./Kadr/Give";
+import GDP from "./Kadr/GDP";
 
 function App() {
   return (
@@ -22,6 +27,11 @@ function App() {
 
       {/* Kadr Routes */}
       <Route path="/kadr" element={<Home />} />
+      <Route path="/kadr/scores" element={<KadrViewScores />} />
+      <Route path="/kadr/AttackConditions" element={<AttackConditions />} />
+      <Route path="/kadr/Take" element={<Take />} />
+      <Route path="/kadr/Give" element={<Give />} />
+      <Route path="/kadr/GDP" element={<GDP />} />
 
       {/* Scout Routes */}
       <Route path="/scout" element={<Scout />} />
