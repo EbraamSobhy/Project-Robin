@@ -3,6 +3,7 @@ import "./tailwind.css";
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
     const [isVisible, setIsVisible] = useState(false);
@@ -11,6 +12,7 @@ function Login() {
         password: ''
     });
     const [showPassword, setShowPassword] = useState(false);
+    const navigate = useNavigate();
 
     useEffect(() => {
         // Set sophisticated gradient background
@@ -56,19 +58,48 @@ function Login() {
             3 => Kadr
      */
             if (response.data.success) {
-                toast.success(`Welcome, ${response.data.user.username}`, {
-                    position: toast.POSITION.TOP_CENTER,
+                const username = response.data.user.username;
+                const rank = response.data.user.rank;
+            
+                let rankTitle = '';
+                let redirectPath = '/';
+                switch (rank) {
+                    case 1:
+                        rankTitle = 'Scout';
+                        redirectPath = '/scout';
+                        break;
+                    case 2:
+                        rankTitle = 'CP';
+                        redirectPath = '/cp';
+                        break;
+                    case 3:
+                        rankTitle = 'Kadr';
+                        redirectPath = '/kadr';
+                        break;
+                    default:
+                        rankTitle = 'Unknown';
+                        redirectPath = '/';
+                }
+            
+                toast.success(`Welcome, ${username} (${rankTitle})`, {
+                    position: 'top-center',
                 });
-                // You can redirect or store token if needed
+                setTimeout(() => {
+                    navigate(redirectPath);
+                }, 1000); // Give user time to see the toast
+            
+                // Optionally, you can redirect or store data
+                // localStorage.setItem("user", JSON.stringify(response.data.user));
+                // navigate("/dashboard");
+            
             } else {
                 toast.error(response.data.msg, {
-                    position: toast.POSITION.TOP_CENTER,
+                    position: 'top-center',
                 });
             }
-        } catch (error) {
-            console.error(error);
-            toast.error("Login failed. Please try again.", {
-                position: toast.POSITION.TOP_CENTER,
+        } catch {
+            toast.error('Login failed. Please try again.', {
+                position: 'top-center',
             });
         }
     };
