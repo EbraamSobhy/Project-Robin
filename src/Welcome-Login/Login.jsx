@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import "./tailwind.css";
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Login() {
     const [isVisible, setIsVisible] = useState(false);
@@ -31,10 +34,43 @@ function Login() {
         });
     };
 
-    const handleSubmit = (e) => {
+    // Handle login logic here
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Handle login logic here
-        console.log('Login attempt:', formData);
+    
+        try {
+            const response = await axios.post(
+                'http://localhost:3000/authen/login',
+                {
+                    name: formData.username,
+                    password: formData.password
+                },
+                {
+                    withCredentials: true, // cookies are sent with the request
+                }
+            );
+    /**
+            if condition (rank)
+            1 => Scout
+            2 => CP
+            3 => Kadr
+     */
+            if (response.data.success) {
+                toast.success(`Welcome, ${response.data.user.username}`, {
+                    position: toast.POSITION.TOP_CENTER,
+                });
+                // You can redirect or store token if needed
+            } else {
+                toast.error(response.data.msg, {
+                    position: toast.POSITION.TOP_CENTER,
+                });
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("Login failed. Please try again.", {
+                position: toast.POSITION.TOP_CENTER,
+            });
+        }
     };
 
     return (
