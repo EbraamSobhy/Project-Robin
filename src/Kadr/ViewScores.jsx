@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import '../Scout/tailwind.css';
 import { GrScorecard } from "react-icons/gr";
 import { PiSword } from "react-icons/pi";
-import { GiTrade, GiHand } from "react-icons/gi";
+import { GiTrade, GiHand, GiCorn } from "react-icons/gi";
 import { FaHandHoldingHeart, FaChartLine } from "react-icons/fa";
-import { GiCorn } from "react-icons/gi";
 
 const patrolData = [
     { label: "total 💂", value: 5 },
@@ -128,16 +127,18 @@ function ViewScores() {
                             {/* Title */}
                             <h2 className="text-3xl font-bold text-blue-700 mb-4">Scores Overview</h2>
                             {/* Scores List */}
-                            <div className="w-full flex items-center justify-center">
-                                <div className="bg-blue-100 rounded-xl p-8 shadow-inner w-96 text-left font-mono text-gray-800" style={{background:'#c9d8e3'}}>
-                                    <div className="text-lg font-semibold mb-2 text-center">Patrol</div>
-                                    <div className="pl-4 border-l-2 border-blue-300">
-                                        <div className="font-bold mb-2">patrol Name :</div>
-                                        {patrolData.map((item, i) => (
-                                            <div key={i} className="py-0.5">{item.label}: {item.value}</div>
-                                        ))}
+                            <div className="w-full grid grid-cols-3 gap-8 items-center justify-center">
+                                {[...Array(6)].map((_, idx) => (
+                                    <div key={idx} className="bg-blue-100 rounded-xl p-8 shadow-inner w-96 h-72 text-left font-mono text-gray-800" style={{background:'#c9d8e3'}}>
+                                        <div className="text-lg font-semibold mb-2 text-center">Patrol {idx + 1}</div>
+                                        <div className="overflow-y-auto h-48 pl-4 border-l-2 border-blue-300">
+                                            <div className="font-bold mb-2">patrol Name :</div>
+                                            {patrolData.map((item, i) => (
+                                                <div key={i} className="py-0.5">{item.label}: {item.value}</div>
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
+                                ))}
                             </div>
                         </div>
                     </div>
