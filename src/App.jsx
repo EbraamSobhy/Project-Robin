@@ -17,6 +17,7 @@ import AttackConditions from "./Kadr/AttackConditions";
 import Take from "./Kadr/Take";
 import Give from "./Kadr/Give";
 import GDP from "./Kadr/GDP";
+import Harvest from "./Kadr/Harvest";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
       <Route path="/kadr/Take" element={<Take />} />
       <Route path="/kadr/Give" element={<Give />} />
       <Route path="/kadr/GDP" element={<GDP />} />
+      <Route path="/kadr/Harvest" element={<Harvest />} />
 
       {/* Scout Routes */}
       <Route path="/scout" element={<Scout />} />
