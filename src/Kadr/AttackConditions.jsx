@@ -22,6 +22,10 @@ function AttackConditions() {
         return () => clearTimeout(timer);
     }, []);
 
+    useEffect(() => {
+        document.title = "Attack Conditions";
+    }, []);
+
     return (
         <>
             {/* Horizontal Navbar */}

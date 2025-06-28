@@ -22,6 +22,10 @@ function Give() {
         return () => clearTimeout(timer);
     }, []);
 
+    useEffect(() => {
+        document.title = "Give";
+    }, []);
+
     return (
         <>
             {/* Horizontal Navbar */}

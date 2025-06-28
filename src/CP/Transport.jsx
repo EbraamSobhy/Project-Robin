@@ -23,6 +23,10 @@ function Transport() {
         return () => clearTimeout(timer);
     }, []);
 
+    useEffect(() => {
+        document.title = "Transport";
+    }, []);
+
     return (
         <>
             {/* Horizontal Navbar */}

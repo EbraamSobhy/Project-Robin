@@ -22,6 +22,10 @@ function Take() {
         return () => clearTimeout(timer);
     }, []);
 
+    useEffect(() => {
+        document.title = "Take";
+    }, []);
+
     return (
         <>
             {/* Horizontal Navbar */}

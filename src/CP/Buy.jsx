@@ -22,6 +22,10 @@ function Buy() {
         return () => clearTimeout(timer);
     }, []);
 
+    useEffect(() => {
+        document.title = "Buy";
+    }, []);
+
     return (
         <>
             {/* Horizontal Navbar */}

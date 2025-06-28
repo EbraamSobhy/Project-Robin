@@ -23,6 +23,10 @@ function Feeding() {
         return () => clearTimeout(timer);
     }, []);
 
+    useEffect(() => {
+        document.title = "Feeding";
+    }, []);
+
     return (
         <>
             {/* Horizontal Navbar */}

@@ -19,6 +19,10 @@ function Scout() {
         return () => clearTimeout(timer);
     }, []);
 
+    useEffect(() => {
+        document.title = "Home";
+    }, []);
+
 
     return (
         <>

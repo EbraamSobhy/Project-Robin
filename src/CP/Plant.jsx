@@ -23,6 +23,10 @@ function Plant() {
         return () => clearTimeout(timer);
     }, []);
 
+    useEffect(() => {
+        document.title = "Plant";
+    }, []);
+
     return (
         <>
             {/* Horizontal Navbar */}

@@ -23,6 +23,10 @@ function Attack() {
         return () => clearTimeout(timer);
     }, []);
 
+    useEffect(() => {
+        document.title = "Attack";
+    }, []);
+
     return (
         <>
             {/* Horizontal Navbar */}

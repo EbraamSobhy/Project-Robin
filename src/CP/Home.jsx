@@ -23,6 +23,10 @@ function Home() {
         return () => clearTimeout(timer);
     }, []);
 
+    useEffect(() => {
+        document.title = "Home";
+    }, []);
+
     const patrolData = [
         "Patrol Name:",
         "total soldiers: 5",

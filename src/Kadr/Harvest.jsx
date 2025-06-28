@@ -23,6 +23,18 @@ function Harvest() {
         return () => clearTimeout(timer);
     }, []);
 
+    useEffect(() => {
+        document.title = "Harvest";
+    }, []);
+
+    useEffect(() => {
+        const favicon = document.querySelector("link[rel='icon']") || document.createElement('link');
+        favicon.rel = 'icon';
+        favicon.type = 'image/x-icon';
+        favicon.href = '/images/favicon.ico';
+        document.head.appendChild(favicon);
+    }, []);
+
     return (
         <>
             {/* Horizontal Navbar */}
@@ -63,8 +75,8 @@ function Harvest() {
                         </div>
                         <span className="text-xs text-blue-700 font-semibold">Trade</span>
                     </button>
-                    {/* Take Tab - Active */}
-                    <button className="w-full flex flex-col items-center py-2 px-2 group bg-blue-50 transition relative">
+                    {/* Take Tab */}
+                    <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <GiHand size={25} />
@@ -79,7 +91,7 @@ function Harvest() {
                         </div>
                         <span className="text-xs text-blue-700 font-semibold">Give</span>
                     </button>
-                    {/* View Scores Tab */}
+                    {/* GDP Tab */}
                     <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
@@ -87,7 +99,7 @@ function Harvest() {
                         </div>
                         <span className="text-xs text-blue-700 font-semibold">GDP</span>
                     </button>
-                    {/* View Scores Tab */}
+                    {/* Harvest  - Active */}
                     <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
@@ -171,11 +183,11 @@ function Harvest() {
                             </form>
                             {/* Submit Button */}
                             <div className="flex justify-center pt-4">
-                                            <button 
+                                            <button
                                                 type="submit"
                                                 className="bg-blue-500 hover:bg-blue-600 text-white font-bold text-lg px-8 py-3 rounded-xl shadow-lg transition duration-300 transform hover:scale-105"
                                             >
-                                                Submit
+                                                Harvest
                                             </button>
                                         </div>
                             {/* Centered image */}

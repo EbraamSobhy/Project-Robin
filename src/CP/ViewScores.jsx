@@ -45,6 +45,10 @@ function ViewScores() {
         return () => clearTimeout(timer);
     }, []);
 
+    useEffect(() => {
+        document.title = "Scores";
+    }, []);
+
     return (
         <>
             {/* Horizontal Navbar */}
