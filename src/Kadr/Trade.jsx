@@ -6,7 +6,7 @@ import { GiTrade, GiHand } from "react-icons/gi";
 import { FaHandHoldingHeart, FaChartLine } from "react-icons/fa";
 import { GiCorn } from "react-icons/gi";
 
-function Take() {
+function Trade() {
     const [isVisible, setIsVisible] = useState(false);
     const [username, setUsername] = useState(" ");
 
@@ -23,14 +23,14 @@ function Take() {
             const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
             link.type = 'image/x-icon';
             link.rel = 'shortcut icon';
-            link.href = '/public/Take.jpg';
+            link.href = '/public/Trade.jpg';
             document.getElementsByTagName('head')[0].appendChild(link);
 
         return () => clearTimeout(timer);
     }, []);
 
     useEffect(() => {
-        document.title = "Take";
+        document.title = "Trade";
     }, []);
 
     return (
@@ -65,17 +65,17 @@ function Take() {
                         </div>
                         <span className="text-xs text-blue-700 font-semibold">Attack Conditions</span>
                     </button>
-                    {/* Trade Tab */}
-                    <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
-                        <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
+                    {/* Trade Tab - Active */}
+                    <button className="w-full flex flex-col items-center py-2 px-2 group bg-blue-50 transition relative">
+                        <span className="absolute left-0 top-0 h-full w-1 bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <GiTrade size={25} />
                         </div>
                         <span className="text-xs text-blue-700 font-semibold">Trade</span>
                     </button>
-                    {/* Take Tab - Active */}
-                    <button className="w-full flex flex-col items-center py-2 px-2 group bg-blue-50 transition relative">
-                        <span className="absolute left-0 top-0 h-full w-1 bg-blue-500 rounded-r transition"></span>
+                    {/* Take Tab */}
+                    <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
+                        <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <GiHand size={25} />
                         </div>
@@ -156,29 +156,78 @@ function Take() {
                                         <div className="flex flex-col gap-4">
                                             {/* Quantity */}
                                             <div className="flex flex-col gap-2 justify-center items-center">
-                                                <label htmlFor="take-soldiers-label" className="text-white bg-gray-700 font-bold text-lg rounded-lg px-3 py-2 w-full text-center">Quantity</label>
+                                                <label htmlFor="trade-soldiers-label" className="text-white bg-gray-700 font-bold text-lg rounded-lg px-3 py-2 w-full text-center">Quantity</label>
                                                 <input
-                                                id="take-soldiers-label"
-                                                type="number"
-                                                className="px-4 py-3 rounded-xl border border-gray-300 bg-gray-100 cursor-not-allowed text-lg"
-                                                value="3"
-                                                disabled
-                                                />
-                                            </div>
-                                            {/* Land Number */}
-                                            <div className="flex flex-col gap-2 justify-center items-center">
-                                                <label htmlFor="take-soldiers-send" className="text-white bg-gray-700 font-bold text-lg rounded-lg px-3 py-2 w-full text-center">Land Number</label>
-                                                <input
-                                                id="take-soldiers-send"
+                                                id="trade-soldiers-label"
                                                 type="number"
                                                 className="px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg"
-                                                placeholder="must be from 1 - 33"
+                                                placeholder="3"
+                                                />
+                                            </div>
+                                            {/* Quantity */}
+                                            <div className="flex flex-col gap-2 justify-center items-center">
+                                                <label htmlFor="trade-soldiers-send" className="text-white bg-gray-700 font-bold text-lg rounded-lg px-3 py-2 w-full text-center">Quantity</label>
+                                                <input
+                                                id="trade-soldiers-send"
+                                                type="number"
+                                                className="px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg"
+                                                placeholder="3"
                                                 />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </form>
+                            {/* Bottom Section - 4 Labels and Inputs in 2x2 Layout */}
+                            <div className="w-full max-w-6xl mt-8">
+                                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/30">
+                                    <div className="grid grid-cols-2 gap-8">
+                                        {/* Left Column - 2 Labels and Inputs */}
+                                        <div className="flex flex-col gap-4">
+                                            <div className="flex flex-col gap-2">
+                                                <label htmlFor="bottom-input-1" className="text-white bg-gray-700 font-bold text-lg rounded-lg px-3 py-2 text-center">Source Land Number</label>
+                                                <input
+                                                    id="bottom-input-1"
+                                                    type="text"
+                                                    className="px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg"
+                                                    placeholder="must be form 1 - 33"
+                                                />
+                                            </div>
+                                            <div className="flex flex-col gap-2">
+                                                <label htmlFor="bottom-input-2" className="text-white bg-gray-700 font-bold text-lg rounded-lg px-3 py-2 text-center">Destination Land Number</label>
+                                                <input
+                                                    id="bottom-input-2"
+                                                    type="text"
+                                                    className="px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg"
+                                                    placeholder="must be form 1 - 33"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        {/* Right Column - 2 Labels and Inputs */}
+                                        <div className="flex flex-col gap-4">
+                                            <div className="flex flex-col gap-2">
+                                                <label htmlFor="bottom-input-3" className="text-white bg-gray-700 font-bold text-lg rounded-lg px-3 py-2 text-center">Source Land Number</label>
+                                                <input
+                                                    id="bottom-input-3"
+                                                    type="text"
+                                                    className="px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg"
+                                                    placeholder="must be form 1 - 33"
+                                                />
+                                            </div>
+                                            <div className="flex flex-col gap-2">
+                                                <label htmlFor="bottom-input-4" className="text-white bg-gray-700 font-bold text-lg rounded-lg px-3 py-2 text-center">Destination Land Number</label>
+                                                <input
+                                                    id="bottom-input-4"
+                                                    type="text"
+                                                    className="px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg"
+                                                    placeholder="must be form 1 - 33"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -187,4 +236,4 @@ function Take() {
     );
 }
 
-export default Take
+export default Trade

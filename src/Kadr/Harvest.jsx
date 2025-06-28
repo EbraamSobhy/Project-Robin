@@ -19,7 +19,7 @@ function Harvest() {
         if (storedUsername) {
             setUsername(storedUsername);
         }
-        
+
         // favicon
         const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
         link.type = 'image/x-icon';
@@ -56,7 +56,7 @@ function Harvest() {
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <GrScorecard size={25} />
                         </div>
-                        <span className="text-xs text-blue-700 font-semibold">View Scores</span>
+                        <span className="text-xs text-blue-700 font-semibold">Update Scores</span>
                     </button>
                      {/* Attack Tab */}
                     <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
@@ -66,7 +66,7 @@ function Harvest() {
                         </div>
                         <span className="text-xs text-blue-700 font-semibold">Attack Conditions</span>
                     </button>
-                    {/* Feeding Tab */}
+                    {/* Trade Tab */}
                     <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
@@ -123,62 +123,50 @@ function Harvest() {
                         <div className="relative z-10 flex flex-col items-center w-full">
                             <form className="w-full max-w-6xl flex gap-8">
                                 {/* Left Column - Dropdown */}
-                                <div className="flex-1">
+                                <div className="flex-1 ml-14">
                                     <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/30">
-                                        <h3 className="text-xl font-bold text-gray-800 mb-4">Patrol</h3>
-                                        <select className="w-full px-6 py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-xl mb-4">
-                                            <option value="Panther">Panther</option>
-                                            <option value="Lion">Lion</option>
-                                            <option value="Cobra">Cobra</option>
-                                            <option value="Tiger">Tiger</option>
-                                            <option value="Fox">Fox</option>
-                                            <option value="Wolf">Wolf</option>
-                                        </select>
+                                        <h3 className="text-xl font-bold text-gray-800 mb-4">Tiger</h3>
+                                        {/* ${ } */}
+                                            <h4 className="w-full px-6 text-xl">apple: 3</h4>
+                                            <h4 className="w-full px-6 text-xl">Wheat: 4</h4>
+                                            <h4 className="w-full px-6 text-xl mb-6">Watermelom: 1</h4>
 
-                                        <h3 className="text-xl font-bold text-gray-800 mb-4">Type</h3>
-                                        <select className="w-full px-6 py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-xl">
-                                            <option value="Horse">Horse</option>
-                                            <option value="Cart">Cart</option>
-                                            <option value="Apple Crop">Apple Crop</option>
-                                            <option value="Wheat Crop">Wheat Crop</option>
-                                            <option value="Watermelom Crop">Watermelom Crop</option>
-                                            <option value="Apple Seeds">Apple Seeds</option>
-                                            <option value="Wheat Seeds">Wheat Seeds</option>
-                                            <option value="Watermelon Seeds">Watermelon Seeds</option>
-                                            <option value="Coins">Coins</option>
-                                            <option value="Soldiers">Soldiers</option>
-                                        </select>
+                                            <h3 className="text-xl font-bold text-gray-800 mb-4">Panther</h3>
+                                        {/* ${ } */}
+                                            <h4 className="w-full px-6 text-xl">apple: 3</h4>
+                                            <h4 className="w-full px-6 text-xl">Wheat: 4</h4>
+                                            <h4 className="w-full px-6 text-xl mb-6">Watermelom: 1</h4>
+
+                                            <h3 className="text-xl font-bold text-gray-800 mb-4">Lion</h3>
+                                        {/* ${ } */}
+                                            <h4 className="w-full px-6 text-xl">apple: 3</h4>
+                                            <h4 className="w-full px-6 text-xl">Wheat: 4</h4>
+                                            <h4 className="w-full px-6 text-xl mb-6">Watermelom: 1</h4>
                                     </div>
                                 </div>
 
                                 {/* Right Column - Labels and Inputs */}
                                 <div className="flex-1">
                                     <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/30">
-                                        <div className="flex flex-col gap-4">
-                                            {/* Quantity */}
-                                            <div className="flex flex-col gap-2 justify-center items-center">
-                                                <label htmlFor="take-soldiers-label" className="text-white bg-gray-700 font-bold text-lg rounded-lg px-3 py-2 w-full text-center">Quantity</label>
-                                                <input
-                                                id="take-soldiers-label"
-                                                type="number"
-                                                className="px-4 py-3 rounded-xl border border-gray-300 bg-gray-100 cursor-not-allowed text-lg"
-                                                value="3"
-                                                disabled
-                                                />
-                                            </div>
-                                            {/* Land Number */}
-                                            <div className="flex flex-col gap-2 justify-center items-center">
-                                                <label htmlFor="take-soldiers-send" className="text-white bg-gray-700 font-bold text-lg rounded-lg px-3 py-2 w-full text-center">Land Number</label>
-                                                <input
-                                                id="take-soldiers-send"
-                                                type="number"
-                                                className="px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg"
-                                                placeholder="must be from 1 - 33"
-                                                />
-                                            </div>
+                                        <h3 className="text-xl font-bold text-gray-800 mb-4">Wolf</h3>
+                                        {/* ${ } */}
+                                            <h4 className="w-full px-6 text-xl">apple: 3</h4>
+                                            <h4 className="w-full px-6 text-xl">Wheat: 4</h4>
+                                            <h4 className="w-full px-6 text-xl mb-6">Watermelom: 1</h4>
+
+                                            <h3 className="text-xl font-bold text-gray-800 mb-4">Fox</h3>
+                                        {/* ${ } */}
+                                            <h4 className="w-full px-6 text-xl">apple: 3</h4>
+                                            <h4 className="w-full px-6 text-xl">Wheat: 4</h4>
+                                            <h4 className="w-full px-6 text-xl mb-6">Watermelom: 1</h4>
+
+                                            <h3 className="text-xl font-bold text-gray-800 mb-4">Cobra</h3>
+                                        {/* ${ } */}
+                                            <h4 className="w-full px-6 text-xl">apple: 3</h4>
+                                            <h4 className="w-full px-6 text-xl">Wheat: 4</h4>
+                                            <h4 className="w-full px-6 text-xl mb-6">Watermelom: 1</h4>
                                         </div>
                                     </div>
-                                </div>
                             </form>
                             {/* Submit Button */}
                             <div className="flex justify-center pt-4">

@@ -55,7 +55,7 @@ function Give() {
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <GrScorecard size={25} />
                         </div>
-                        <span className="text-xs text-blue-700 font-semibold">View Scores</span>
+                        <span className="text-xs text-blue-700 font-semibold">Update Scores</span>
                     </button>
                      {/* Attack Tab */}
                     <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
@@ -65,7 +65,7 @@ function Give() {
                         </div>
                         <span className="text-xs text-blue-700 font-semibold">Attack Conditions</span>
                     </button>
-                    {/* Feeding Tab */}
+                    {/* Trade Tab */}
                     <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
@@ -81,7 +81,7 @@ function Give() {
                         </div>
                         <span className="text-xs text-blue-700 font-semibold">Take</span>
                     </button>
-                    {/* Transport Tab - Active */}
+                    {/* Give Tab - Active */}
                     <button className="w-full flex flex-col items-center py-2 px-2 group bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
@@ -89,7 +89,7 @@ function Give() {
                         </div>
                         <span className="text-xs text-blue-700 font-semibold">Give</span>
                     </button>
-                    {/* View Scores Tab */}
+                    {/* GDP Tab */}
                     <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
@@ -97,7 +97,7 @@ function Give() {
                         </div>
                         <span className="text-xs text-blue-700 font-semibold">GDP</span>
                     </button>
-                    {/* View Scores Tab */}
+                    {/* Harvest Tab */}
                     <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
