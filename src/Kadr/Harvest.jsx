@@ -19,20 +19,19 @@ function Harvest() {
         if (storedUsername) {
             setUsername(storedUsername);
         }
+        
+        // favicon
+        const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+        link.type = 'image/x-icon';
+        link.rel = 'shortcut icon';
+        link.href = '/public/Take.jpg';
+        document.getElementsByTagName('head')[0].appendChild(link);
 
         return () => clearTimeout(timer);
     }, []);
 
     useEffect(() => {
         document.title = "Harvest";
-    }, []);
-
-    useEffect(() => {
-        const favicon = document.querySelector("link[rel='icon']") || document.createElement('link');
-        favicon.rel = 'icon';
-        favicon.type = 'image/x-icon';
-        favicon.href = '/images/favicon.ico';
-        document.head.appendChild(favicon);
     }, []);
 
     return (
