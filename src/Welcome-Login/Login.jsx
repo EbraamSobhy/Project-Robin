@@ -48,7 +48,7 @@ function Login() {
                     password: formData.password
                 },
                 {
-                    withCredentials: true, // cookies are sent with the request
+                    withCredentials: true,
                 }
             );
     /**
@@ -80,18 +80,19 @@ function Login() {
                         rankTitle = 'Unknown';
                         redirectPath = '/';
                 }
-            
+
+            // Store user data in localStorage
+            localStorage.setItem("user", JSON.stringify(response.data.user));
+            localStorage.setItem("username", username);
+            localStorage.setItem("rank", rank);
+
                 toast.success(`Welcome, ${username} (${rankTitle})`, {
                     position: 'top-center',
                 });
                 setTimeout(() => {
                     navigate(redirectPath);
                 }, 1000); // Give user time to see the toast
-            
-                // Optionally, you can redirect or store data
-                // localStorage.setItem("user", JSON.stringify(response.data.user));
-                // navigate("/dashboard");
-            
+
             } else {
                 toast.error(response.data.msg, {
                     position: 'top-center',

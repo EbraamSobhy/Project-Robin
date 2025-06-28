@@ -5,14 +5,20 @@ import { GrScorecard } from "react-icons/gr";
 
 function Scout() {
     const [isVisible, setIsVisible] = useState(false);
+    const [username, setUsername] = useState(" ");
 
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(true), 200);
+
+        // Retrieve username from localStorage
+        const storedUsername = localStorage.getItem("username");
+        if (storedUsername) {
+            setUsername(storedUsername);
+        }
+
         return () => clearTimeout(timer);
     }, []);
 
-    // Example username, replace with actual username from props or context when available
-    const username = "Username";
 
     return (
         <>

@@ -9,15 +9,21 @@ import image from '../assets/image.PNG';
 
 function Attack() {
     const [isVisible, setIsVisible] = useState(false);
+    const [username, setUsername] = useState(" ");
 
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(true), 200);
+
+        // Retrieve username from localStorage
+        const storedUsername = localStorage.getItem("username");
+        if (storedUsername) {
+            setUsername(storedUsername);
+        }
+
         return () => clearTimeout(timer);
     }, []);
 
-    const username = "CP.Name";
-
-  return (
+    return (
         <>
             {/* Horizontal Navbar */}
             <div className="fixed top-0 left-0 w-full h-16 bg-white shadow flex items-center justify-between px-8 z-50 border-b border-blue-200">

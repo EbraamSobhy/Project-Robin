@@ -27,10 +27,17 @@ const patrolData = [
 
 function ViewScores() {
     const [isVisible, setIsVisible] = useState(false);
-    const username = "Username";
+    const [username, setUsername] = useState(" ");
 
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(true), 200);
+
+        // Retrieve username from localStorage
+        const storedUsername = localStorage.getItem("username");
+        if (storedUsername) {
+            setUsername(storedUsername);
+        }
+
         return () => clearTimeout(timer);
     }, []);
 
