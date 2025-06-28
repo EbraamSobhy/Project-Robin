@@ -6,7 +6,16 @@ import image from '../assets/image.PNG';
 function Welcome() {
     const [isVisible, setIsVisible] = useState(false);
     const navigate = useNavigate();
-    
+
+    // Set favicon
+    const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+    link.type = 'image/x-icon';
+    link.rel = 'shortcut icon';
+    link.href = '/Home.png';
+    document.getElementsByTagName('head')[0].appendChild(link);
+    // Set page title
+    document.title = "Robin Game";
+
     useEffect(() => {
         // Set sophisticated gradient background
         document.body.style.background = '#87CEEB';

@@ -23,7 +23,7 @@ function Take() {
             const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
             link.type = 'image/x-icon';
             link.rel = 'shortcut icon';
-            link.href = '/public/Take.jpg';
+            link.href = '/Take.png';
             document.getElementsByTagName('head')[0].appendChild(link);
 
         return () => clearTimeout(timer);
