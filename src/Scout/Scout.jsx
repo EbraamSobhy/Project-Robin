@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css';
 function Scout() {
     const [isVisible, setIsVisible] = useState(false);
     const [username, setUsername] = useState(" ");
-        const navigate = useNavigate();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(true), 200);
@@ -34,15 +34,32 @@ function Scout() {
         document.title = "Home";
     }, []);
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         if (window.confirm("Are you sure you want to logout?")) {
+            try {
+                // Call backend logout endpoint
+                await fetch('http://localhost:3000/authen/signout', {
+                    method: 'POST',
+                    credentials: 'include', // if using cookies/session
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+            } catch {
+                toast.error("Logout failed on server.", { position: "top-center" });
+            }
             localStorage.removeItem("username");
             toast.info("Logged out successfully!", { position: "top-center" });
             setTimeout(() => {
                 navigate('/');
             }, 1500);
         }
-    };
+    }
+
+    function ScoresNavigate() {
+        navigate('/scout/scores');
+    }
+
 
     return (
         <>
@@ -63,7 +80,7 @@ function Scout() {
                         <span className="text-xs text-blue-700 font-semibold">Home</span>
                     </button>
                     {/* View Scores Tab */}
-                    <button className="w-full flex flex-col items-center py-4 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={ScoresNavigate} className="w-full flex flex-col items-center py-4 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <GrScorecard size={25} />

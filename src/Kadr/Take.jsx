@@ -37,15 +37,27 @@ function Take() {
         document.title = "Take";
     }, []);
 
-    const handleLogout = () => {
-        if (window.confirm("Are you sure you want to logout?")) {
-            localStorage.removeItem("username");
-            toast.info("Logged out successfully!", { position: "top-center" });
-            setTimeout(() => {
-                navigate('/');
-            }, 1200);
+    const handleLogout = async () => {
+            if (window.confirm("Are you sure you want to logout?")) {
+                try {
+                    // Call backend logout endpoint
+                    await fetch('http://localhost:3000/authen/signout', {
+                        method: 'POST',
+                        credentials: 'include', // if using cookies/session
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    });
+                } catch {
+                    toast.error("Logout failed on server.", { position: "top-center" });
+                }
+                localStorage.removeItem("username");
+                toast.info("Logged out successfully!", { position: "top-center" });
+                setTimeout(() => {
+                    navigate('/');
+                }, 1500);
+            }
         }
-    };
 
     return (
         <>
