@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import "./tailwind.css";
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -100,7 +100,7 @@ function Login() {
                 });
                 setTimeout(() => {
                     navigate(redirectPath);
-                }, 1000); // Give user time to see the toast
+                }, 1500); // Give user time to see the toast
 
             } else {
                 toast.error(response.data.msg, {
@@ -209,6 +209,7 @@ function Login() {
                     </div>
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 }

@@ -2,10 +2,14 @@ import React, { useEffect, useState } from 'react';
 import './tailwind.css'
 import image from '../assets/image.PNG';
 import { GrScorecard } from "react-icons/gr";
+import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Scout() {
     const [isVisible, setIsVisible] = useState(false);
     const [username, setUsername] = useState(" ");
+        const navigate = useNavigate();
 
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(true), 200);
@@ -30,6 +34,15 @@ function Scout() {
         document.title = "Home";
     }, []);
 
+    const handleLogout = () => {
+        if (window.confirm("Are you sure you want to logout?")) {
+            localStorage.removeItem("username");
+            toast.info("Logged out successfully!", { position: "top-center" });
+            setTimeout(() => {
+                navigate('/');
+            }, 1500);
+        }
+    };
 
     return (
         <>
@@ -38,7 +51,7 @@ function Scout() {
                 {/* Username on the left */}
                 <span className="text-blue-700 font-semibold text-lg">{username}</span>
                 {/* Logout button on the right */}
-                <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold mr-20 px-6 py-2 rounded-xl shadow transition">Logout</button>
+                <button onClick={handleLogout} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold mr-20 px-6 py-2 rounded-xl shadow transition">Logout</button>
             </div>
             <div className="min-h-screen bg-gradient-to-br from-sky-200 to-blue-300 flex items-center justify-center p-20">
                 {/* Vertical Navbar */}
@@ -105,6 +118,7 @@ function Scout() {
                         </div>
                     </div>
                 </div>
+                <ToastContainer />
             </div>
         </>
     );

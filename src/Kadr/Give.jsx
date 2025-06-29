@@ -5,10 +5,14 @@ import { PiSword } from "react-icons/pi";
 import { GiTrade, GiHand } from "react-icons/gi";
 import { FaHandHoldingHeart, FaChartLine } from "react-icons/fa";
 import { GiCorn } from "react-icons/gi";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 function Give() {
     const [isVisible, setIsVisible] = useState(false);
     const [username, setUsername] = useState(" ");
+    const navigate = useNavigate();
 
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(true), 200);
@@ -33,12 +37,22 @@ function Give() {
         document.title = "Give";
     }, []);
 
+    const handleLogout = () => {
+        if (window.confirm("Are you sure you want to logout?")) {
+            localStorage.removeItem("username");
+            toast.info("Logged out successfully!", { position: "top-center" });
+            setTimeout(() => {
+                navigate('/');
+            }, 1200);
+        }
+    };
+
     return (
         <>
             {/* Horizontal Navbar */}
             <div className="fixed top-0 left-0 w-full h-16 bg-white shadow flex items-center justify-between px-8 z-50 border-b border-blue-200">
                 <span className="text-blue-700 font-semibold text-lg">{username}</span>
-                <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold mr-20 px-6 py-2 rounded-xl shadow transition">Logout</button>
+                <button onClick={handleLogout} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold mr-20 px-6 py-2 rounded-xl shadow transition">Logout</button>
             </div>
             <div className="min-h-screen bg-gradient-to-br from-sky-200 to-blue-300 flex items-center justify-center p-20">
                 {/* Vertical Navbar */}
@@ -181,6 +195,7 @@ function Give() {
                         </div>
                     </div>
                 </div>
+                <ToastContainer />
             </div>
         </>
     );
