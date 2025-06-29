@@ -51,7 +51,7 @@ function AttackConditions() {
         <>
             {/* Horizontal Navbar */}
             <div className="fixed top-0 left-0 w-full h-16 bg-white shadow flex items-center justify-between px-8 z-50 border-b border-blue-200">
-                <span className="text-blue-700 font-semibold text-lg">{username}</span>
+            <span className="text-blue-700 font-bold text-lg capitalize"><span className='text-green-600 font-bold text-lg'>Ch.</span>{username}</span>
                 <button onClick={handleLogout} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold mr-20 px-6 py-2 rounded-xl shadow transition">Logout</button>
             </div>
             <div className="min-h-screen bg-gradient-to-br from-sky-200 to-blue-300 flex items-center justify-center p-20">
