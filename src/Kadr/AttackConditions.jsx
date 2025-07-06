@@ -292,7 +292,7 @@ function AttackConditions() {
                                     />
                                 </div>
                                 <button type="submit" className="mt-6 bg-blue-500 text-white px-6 py-3 rounded-xl font-bold shadow hover:bg-blue-600 transition w-[100px] mx-auto block text-center"
-                                >Submit</button>
+                                >Set</button>
                             </form>
                         </div>
                     </div>

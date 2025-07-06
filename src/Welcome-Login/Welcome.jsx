@@ -36,37 +36,36 @@ function Welcome() {
     };
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden">
+        <div className="min-h-screen flex flex-col items-center justify-center p-2 sm:p-4 relative overflow-hidden">
             {/* Main Content */}
             <div className={`transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-8 opacity-0'}`}>
                 {/* Title with Gradient Text */}
-                <div className="text-center mb-12">
-                    <h1 className="text-5xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-black">
+                <div className="text-center mb-8 sm:mb-12">
+                    <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-bold mb-2 sm:mb-4 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-black">
                         Robin Game
                     </h1>
-                    <p className="text-gray/80 text-lg font-light tracking-wide">
+                    <p className="text-gray/80 text-base xs:text-lg font-light tracking-wide">
                         Adventure awaits you
                     </p>
                 </div>
 
                 {/* Main Card */}
-                <div className="w-full max-w-lg bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden border border-white/20 transform hover:scale-105 transition-all duration-200">
-                    <div className="p-6 text-center">
+                <div className="w-full max-w-xs xs:max-w-sm sm:max-w-lg bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden border border-white/20 transform hover:scale-105 transition-all duration-200">
+                    <div className="p-4 sm:p-6 text-center">
                         {/* Logo/Icon Placeholder with Gradient Background */}
                         <div className="flex justify-center">
-                            <div className="w-96 h-64 bg-white/20 rounded-xl flex items-center justify-center">
+                            <div className="w-80 xs:w-96 sm:w-[900px] h-40 xs:h-44 sm:h-64 bg-white/20 rounded-xl flex items-center justify-center mb-4 sm:mb-6">
                             {/* Image */}
-                                <img src={image} alt="" />
-                        
+                                <img src={image} alt="" className="max-h-full max-w-full object-contain" />
                             </div>
                         </div>
 
                         {/* Welcome Text */}
-                        <div className="mb-8">
-                            <h2 className="text-2xl font-semibold text-gray-800 mb-3">
+                        <div className="mb-6 sm:mb-8">
+                            <h2 className="text-lg xs:text-xl sm:text-2xl font-semibold text-gray-800 mb-2 sm:mb-3">
                                 Welcome Back!
                             </h2>
-                            <p className="text-gray-600 leading-relaxed">
+                            <p className="text-gray-600 leading-relaxed text-sm xs:text-base">
                                 Login in to continue your epic journey and unlock new adventures in the Robin Game.
                             </p>
                         </div>
@@ -75,7 +74,7 @@ function Welcome() {
                         <button
                             type="button"
                             onClick={handleLogin}
-                            className="w-96 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-4 px-8 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300/50"
+                            className="w-full sm:w-96 bg-gradient-to-r from-blue-500 to-blue-600 text-white py-3 sm:py-4 px-4 sm:px-8 rounded-xl font-semibold text-base sm:text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-300/50"
                         >
                             <span className="flex items-center justify-center">
                                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
