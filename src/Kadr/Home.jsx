@@ -14,6 +14,36 @@ function Home() {
     const [username, setUsername] = useState(" ");
     const navigate = useNavigate();
 
+    // Navigate
+    const UpdateScores = () => {
+        navigate('/kadr/scores');
+    };
+
+    const AttackConditions = () => {
+        navigate('/kadr/AttackConditions');
+    };
+
+    const Trade = () => {
+        navigate('/kadr/Trade');
+    };
+
+    const Take = () => {
+        navigate('/kadr/Take');
+    };
+
+    const Give = () => {
+        navigate('/kadr/Give');
+    };
+
+    const GDP = () => {
+        navigate('/kadr/GDP');
+    };
+
+    const Harvest = () => {
+        navigate('/kadr/Harvest');
+    };
+
+    // Animation effect
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(true), 200);
 
@@ -37,13 +67,12 @@ function Home() {
         document.title = "Home";
     }, []);
 
-const handleLogout = async () => {
+const handleLogout = async () => { 
         if (window.confirm("Are you sure you want to logout?")) {
             try {
-                // Call backend logout endpoint
                 await fetch('http://localhost:3000/authen/signout', {
                     method: 'POST',
-                    credentials: 'include', // if using cookies/session
+                    credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -64,7 +93,7 @@ const handleLogout = async () => {
             {/* Horizontal Navbar */}
             <div className="fixed top-0 left-0 w-full h-16 bg-white shadow flex items-center justify-between px-8 z-50 border-b border-blue-200">
                 <span className="text-blue-700 font-bold text-lg capitalize"><span className='text-green-600 font-bold text-lg'>Ch.</span>{username}</span>
-                <button  onClick={handleLogout} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold mr-20 px-6 py-2 rounded-xl shadow transition">Logout</button>
+                <button onClick={handleLogout} className="bg-blue-500 hover:bg-blue-600 text-white font-semibold mr-20 px-6 py-2 rounded-xl shadow transition">Logout</button>
             </div>
             <div className="min-h-screen bg-gradient-to-br from-sky-200 to-blue-300 flex items-center justify-center p-20">
                 {/* Vertical Navbar */}
@@ -76,7 +105,7 @@ const handleLogout = async () => {
                         <span className="text-xs text-blue-700 font-semibold">Home</span>
                     </button>
                     {/* View Scores Tab */}
-                    <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={UpdateScores} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <GrScorecard size={25} />
@@ -84,7 +113,7 @@ const handleLogout = async () => {
                         <span className="text-xs text-blue-700 font-semibold">Update Scores</span>
                     </button>
                      {/* Attack Tab */}
-                    <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={AttackConditions} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <PiSword size={25} />
@@ -92,7 +121,7 @@ const handleLogout = async () => {
                         <span className="text-xs text-blue-700 font-semibold">Attack Conditions</span>
                     </button>
                     {/* Trade Tab */}
-                    <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={Trade} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <GiTrade size={25} />
@@ -100,7 +129,7 @@ const handleLogout = async () => {
                         <span className="text-xs text-blue-700 font-semibold">Trade</span>
                     </button>
                     {/* Take Tab */}
-                    <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={Take} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <GiHand size={25} />
@@ -108,7 +137,7 @@ const handleLogout = async () => {
                         <span className="text-xs text-blue-700 font-semibold">Take</span>
                     </button>
                     {/* Give Tab */}
-                    <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={Give} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <FaHandHoldingHeart size={25} />
@@ -116,7 +145,7 @@ const handleLogout = async () => {
                         <span className="text-xs text-blue-700 font-semibold">Give</span>
                     </button>
                     {/* GDP Tab */}
-                    <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={GDP} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <FaChartLine size={25} />
@@ -124,7 +153,7 @@ const handleLogout = async () => {
                         <span className="text-xs text-blue-700 font-semibold">GDP</span>
                     </button>
                     {/* Harvest Tab */}
-                    <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={Harvest} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <GiCorn size={25} />

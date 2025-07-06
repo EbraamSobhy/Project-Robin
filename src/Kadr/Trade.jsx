@@ -12,7 +12,27 @@ import { useNavigate } from 'react-router-dom';
 function Trade() {
     const [isVisible, setIsVisible] = useState(false);
     const [username, setUsername] = useState(" ");
+    const [form, setForm] = useState({
+        patrol1: "",
+        patorl2: "",
+        type1: "",
+        type2: "",
+        quantity1: 0,
+        quantity2: 0,
+        SLand1: "",
+        SLand2: "",
+        DLand1: "",
+        DLand2: ""
+    });
     const navigate = useNavigate();
+
+    const handleChange = (e) => {
+        const { name, value, type } = e.target;
+        setForm((prev) => ({
+            ...prev,
+            [name]: type === "number" ? Number(value) : value
+        }));
+    };
 
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(true), 200);
@@ -59,6 +79,54 @@ function Trade() {
             }
         }
 
+        const handleSubmit = async (e) => {
+            e.preventDefault();
+            try {
+                const res = await fetch('http://localhost:3000/Chef/trade/process', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(form),
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    toast.success(data.message || "Trade successful!", { position: "top-center" });
+                } else {
+                    toast.error(data.message || "Trade failed!", { position: "top-center" });
+                }
+            } catch {
+                toast.error("Network error", { position: "top-center" });
+            }
+        };
+
+    // Navigate
+    const Home = () => {
+        navigate('/kadr');
+    };
+
+    const UpdateScores = () => {
+        navigate('/kadr/scores');
+    };
+
+    const AttackConditions = () => {
+        navigate('/kadr/AttackConditions');
+    };
+
+    const Take = () => {
+        navigate('/kadr/Take');
+    };
+
+    const Give = () => {
+        navigate('/kadr/Give');
+    };
+
+    const GDP = () => {
+        navigate('/kadr/GDP');
+    };
+
+    const Harvest = () => {
+        navigate('/kadr/Harvest');
+    };
+
     return (
         <>
             {/* Horizontal Navbar */}
@@ -70,13 +138,13 @@ function Trade() {
                 {/* Vertical Navbar */}
                 <div className="fixed top-0 right-0 h-full w-24 bg-white shadow-lg flex flex-col items-center mt-[63px] z-50 border-l border-blue-200">
                     {/* Home Tab */}
-                    <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={Home} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <svg className="w-7 h-7 text-blue-500 mb-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6" /></svg>
                         <span className="text-xs text-blue-700 font-semibold">Home</span>
                     </button>
                     {/* View Scores Tab */}
-                    <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={UpdateScores} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <GrScorecard size={25} />
@@ -84,7 +152,7 @@ function Trade() {
                         <span className="text-xs text-blue-700 font-semibold">Update Scores</span>
                     </button>
                      {/* Attack Tab */}
-                    <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={AttackConditions} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <PiSword size={25} />
@@ -100,7 +168,7 @@ function Trade() {
                         <span className="text-xs text-blue-700 font-semibold">Trade</span>
                     </button>
                     {/* Take Tab */}
-                    <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={Take} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <GiHand size={25} />
@@ -108,7 +176,7 @@ function Trade() {
                         <span className="text-xs text-blue-700 font-semibold">Take</span>
                     </button>
                     {/* Give Tab */}
-                    <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={Give} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <FaHandHoldingHeart size={25} />
@@ -116,7 +184,7 @@ function Trade() {
                         <span className="text-xs text-blue-700 font-semibold">Give</span>
                     </button>
                     {/* GDP Tab */}
-                    <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={GDP} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <FaChartLine size={25} />
@@ -124,7 +192,7 @@ function Trade() {
                         <span className="text-xs text-blue-700 font-semibold">GDP</span>
                     </button>
                     {/* Harvest Tab */}
-                    <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={Harvest} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <GiCorn size={25} />
@@ -146,12 +214,17 @@ function Trade() {
                         {/* Subtle inner glow */}
                         <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent rounded-3xl pointer-events-none"></div>
                         <div className="relative z-10 flex flex-col items-center w-full">
-                            <form className="w-full max-w-6xl flex gap-8">
+                            <form className="w-full max-w-6xl flex gap-8" onSubmit={handleSubmit}>
                                 {/* Left Column - Dropdown */}
                                 <div className="flex-1">
                                     <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/30">
                                         <h3 className="text-xl font-bold text-gray-800 mb-4">Patrol</h3>
-                                        <select className="w-full px-6 py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-xl mb-4">
+                                        <select
+                                        name="patrol1"
+                                        value={form.patrol1}
+                                        onChange={handleChange}
+                                        className="w-full px-6 py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-xl mb-4"
+                                        >
                                             <option value="Panther">Panther</option>
                                             <option value="Lion">Lion</option>
                                             <option value="Cobra">Cobra</option>
@@ -161,7 +234,9 @@ function Trade() {
                                         </select>
 
                                         <h3 className="text-xl font-bold text-gray-800 mb-4">Type</h3>
-                                        <select className="w-full px-6 py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-xl">
+                                        <select
+                                        
+                                        className="w-full px-6 py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-xl">
                                             <option value="Horse">Horse</option>
                                             <option value="Cart">Cart</option>
                                             <option value="Apple Crop">Apple Crop</option>

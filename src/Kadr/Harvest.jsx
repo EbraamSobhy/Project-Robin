@@ -60,6 +60,35 @@ function Harvest() {
             }
         }
 
+    // Navigate
+    const Home = () => {
+        navigate('/kadr');
+    };
+
+    const UpdateScores = () => {
+        navigate('/kadr/scores');
+    };
+
+    const Trade = () => {
+        navigate('/kadr/Trade');
+    };
+
+    const AttackConditions = () => {
+        navigate('/kadr/AttackConditions');
+    };
+
+    const Give = () => {
+        navigate('/kadr/Give');
+    };
+
+    const GDP = () => {
+        navigate('/kadr/GDP');
+    };
+
+    const Take = () => {
+        navigate('/kadr/Take');
+    };
+
     return (
         <>
             {/* Horizontal Navbar */}
@@ -71,13 +100,13 @@ function Harvest() {
                 {/* Vertical Navbar */}
                 <div className="fixed top-0 right-0 h-full w-24 bg-white shadow-lg flex flex-col items-center mt-[63px] z-50 border-l border-blue-200">
                     {/* Home Tab */}
-                    <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={Home} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <svg className="w-7 h-7 text-blue-500 mb-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6" /></svg>
                         <span className="text-xs text-blue-700 font-semibold">Home</span>
                     </button>
                     {/* View Scores Tab */}
-                    <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={UpdateScores} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <GrScorecard size={25} />
@@ -85,7 +114,7 @@ function Harvest() {
                         <span className="text-xs text-blue-700 font-semibold">Update Scores</span>
                     </button>
                      {/* Attack Tab */}
-                    <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={AttackConditions} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <PiSword size={25} />
@@ -93,7 +122,7 @@ function Harvest() {
                         <span className="text-xs text-blue-700 font-semibold">Attack Conditions</span>
                     </button>
                     {/* Trade Tab */}
-                    <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={Trade} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <GiTrade size={25} />
@@ -101,15 +130,15 @@ function Harvest() {
                         <span className="text-xs text-blue-700 font-semibold">Trade</span>
                     </button>
                     {/* Take Tab */}
-                    <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={Take} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <GiHand size={25} />
                         </div>
                         <span className="text-xs text-blue-700 font-semibold">Take</span>
                     </button>
-                    {/* Transport Tab */}
-                    <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
+                    {/* Give Tab */}
+                    <button onClick={Give} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <FaHandHoldingHeart size={25} />
@@ -117,14 +146,14 @@ function Harvest() {
                         <span className="text-xs text-blue-700 font-semibold">Give</span>
                     </button>
                     {/* GDP Tab */}
-                    <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={GDP} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <FaChartLine size={25} />
                         </div>
                         <span className="text-xs text-blue-700 font-semibold">GDP</span>
                     </button>
-                    {/* Harvest  - Active */}
+                    {/* Harvest - Active */}
                     <button className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">

@@ -12,7 +12,7 @@ function ViewScores() {
     const [lands, setLands] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    
+
     const navigate = useNavigate();
 
     // Patrol names based on the dropdown options found in other components
@@ -103,7 +103,7 @@ function ViewScores() {
                                 });
                             }
                         }
-                    } 
+                    }
                     // Check if data is an array of patrols
                     else if (Array.isArray(data)) {
                         patrolsArray = data.map((patrol, index) => ({
