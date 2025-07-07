@@ -92,8 +92,7 @@ function Scout() {
                 <div className="fixed top-16 left-0 w-full bg-white shadow-lg z-40 lg:hidden border-b border-blue-200">
                     <div className="flex flex-col py-4 justify-center items-center">
                         <button 
-                            onClick={toggleMobileMenu}
-                            className="flex items-center px-6 py-3 text-blue-700 hover:bg-blue-50 transition"
+                            className="flex items-center px-6 py-3 text-blue-700 bg-blue-50 transition"
                         >
                             <svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6" />
