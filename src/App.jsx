@@ -20,6 +20,12 @@ import GDP from "./Kadr/GDP";
 import Harvest from "./Kadr/Harvest";
 import Trade from "./Kadr/Trade";
 
+// process routes
+import PlantProcess from "./Process/PlantProcess";
+import FeedingProcess from "./Process/FeedingProcess";
+import AttackProcess from "./Process/AttackProcess";
+import TransportProcess from "./Process/TransportProcess";
+
 function App() {
   return (
     <Routes>
@@ -49,6 +55,12 @@ function App() {
       <Route path="/cp/attack" element={<Attack />} />
       <Route path="/cp/transport" element={<Transport />} />
       <Route path="/cp/scores" element={<CPViewScores />} />
+
+      {/* Process Routes */}
+      <Route path="/cp/PlantProcess" element={<PlantProcess />} />
+      <Route path="/cp/FeedingProcess" element={<FeedingProcess />} />
+      <Route path="/cp/AttackProcess" element={<AttackProcess />} />
+      <Route path="/cp/TransportProcess" element={<TransportProcess />} />
     </Routes>
   );
 }
