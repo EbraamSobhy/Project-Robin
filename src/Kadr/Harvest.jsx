@@ -14,24 +14,51 @@ function Harvest() {
     const [isVisible, setIsVisible] = useState(false);
     const [username, setUsername] = useState(" ");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [patrols, setPatrols] = useState({
+        "panther": 0,
+        "tiger": 0,
+        "lion": 0,
+        "fox": 0,
+        "wolf": 0,
+        "cobra": 0
+    });
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+
+    // Fetch patrols' harvest data (GDP style)
+    const fetchPatrols = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch('http://localhost:3000/Chef/harvest', {
+                method: 'GET',
+                credentials: 'include',
+            });
+            const data = await response.json();
+            if (data.patrols) {
+                setPatrols(data.patrols);
+            } else {
+                toast.error(data.message || "Failed to fetch harvest data.", { position: "top-center" });
+            }
+        } catch {
+            toast.error("Server error while fetching harvest data.", { position: "top-center" });
+        }
+        setLoading(false);
+    };
 
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(true), 200);
-
         // Retrieve username from localStorage
         const storedUsername = localStorage.getItem("username");
         if (storedUsername) {
             setUsername(storedUsername);
         }
-
         // favicon
         const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
         link.type = 'image/x-icon';
         link.rel = 'shortcut icon';
         link.href = '/public/Harvest.png';
         document.getElementsByTagName('head')[0].appendChild(link);
-
+        fetchPatrols();
         return () => clearTimeout(timer);
     }, []);
 
@@ -101,8 +128,30 @@ function Harvest() {
         setIsMobileMenuOpen(false);
     };
 
-    const HarvestTab = () => {
-        setIsMobileMenuOpen(false);
+    // Harvest process handler
+    const handleHarvest = async (e) => {
+        e.preventDefault();
+        try {
+            setLoading(true);
+            const res = await fetch('http://localhost:3000/Chef/harvest/process', {
+                method: 'PATCH',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const data = await res.json();
+            if (res.ok) {
+                toast.success(data.message || "Harvest done successfully!", { position: "top-center" });
+                fetchPatrols(); // Refresh data
+            } else {
+                throw new Error(data.message || "Harvest failed");
+            }
+        } catch (err) {
+            toast.error(err.message || "Harvest failed", { position: "top-center" });
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -174,45 +223,75 @@ function Harvest() {
                         {/* Subtle inner glow */}
                         <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent rounded-2xl sm:rounded-3xl pointer-events-none"></div>
                         <div className="relative z-10 flex flex-col items-center w-full">
-                            <form className="w-full flex flex-col md:flex-row gap-4 sm:gap-8">
-                                {/* Left Column - Dropdown */}
+                            <form className="w-full flex flex-col md:flex-row gap-4 sm:gap-8" onSubmit={handleHarvest}>
+                                {/* Left Column - Patrols 1-3 */}
                                 <div className="flex-1 ml-0 md:ml-14 w-full">
                                     <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-3 sm:p-6 border border-white/30">
-                                        <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2 sm:mb-4">Tiger</h3>
-                                        <h4 className="w-full px-2 sm:px-6 text-base sm:text-xl">apple: 3</h4>
-                                        <h4 className="w-full px-2 sm:px-6 text-base sm:text-xl">Wheat: 4</h4>
-                                        <h4 className="w-full px-2 sm:px-6 text-base sm:text-xl mb-4 sm:mb-6">Watermelom: 1</h4>
-                                        <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2 sm:mb-4">Panther</h3>
-                                        <h4 className="w-full px-2 sm:px-6 text-base sm:text-xl">apple: 3</h4>
-                                        <h4 className="w-full px-2 sm:px-6 text-base sm:text-xl">Wheat: 4</h4>
-                                        <h4 className="w-full px-2 sm:px-6 text-base sm:text-xl mb-4 sm:mb-6">Watermelom: 1</h4>
-                                        <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2 sm:mb-4">Lion</h3>
-                                        <h4 className="w-full px-2 sm:px-6 text-base sm:text-xl">apple: 3</h4>
-                                        <h4 className="w-full px-2 sm:px-6 text-base sm:text-xl">Wheat: 4</h4>
-                                        <h4 className="w-full px-2 sm:px-6 text-base sm:text-xl mb-4 sm:mb-6">Watermelom: 1</h4>
+                                        {loading ? (
+                                            <div className="text-center text-blue-500">Loading...</div>
+                                        ) : (
+                                            Object.entries(patrols).slice(0, 3).map(([name, crops]) => (
+                                                <div key={name} className="mb-4 sm:mb-6">
+                                                    <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2 sm:mb-4 text-center">{name}</h3>
+                                                    <div className="flex flex-col gap-3">
+                                                        <div className="flex items-center bg-red-100 rounded-xl shadow p-3 mb-1">
+                                                            <span className="text-2xl mr-3">🍎</span>
+                                                            <span className="font-semibold text-gray-700 flex-1">Apple</span>
+                                                            <span className="font-bold text-lg text-red-600">{crops.apple}</span>
+                                                        </div>
+                                                        <div className="flex items-center bg-yellow-100 rounded-xl shadow p-3 mb-1">
+                                                            <span className="text-2xl mr-3">🌾</span>
+                                                            <span className="font-semibold text-gray-700 flex-1">Wheat</span>
+                                                            <span className="font-bold text-lg text-yellow-700">{crops.wheat}</span>
+                                                        </div>
+                                                        <div className="flex items-center bg-green-100 rounded-xl shadow p-3">
+                                                            <span className="text-2xl mr-3">🍉</span>
+                                                            <span className="font-semibold text-gray-700 flex-1">Watermelon</span>
+                                                            <span className="font-bold text-lg text-green-700">{crops.watermelon}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        )}
                                     </div>
                                 </div>
-                                {/* Right Column - Labels and Inputs */}
+                                {/* Right Column - Patrols 4-6 */}
                                 <div className="flex-1 w-full">
                                     <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-3 sm:p-6 border border-white/30">
-                                        <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2 sm:mb-4">Wolf</h3>
-                                        <h4 className="w-full px-2 sm:px-6 text-base sm:text-xl">apple: 3</h4>
-                                        <h4 className="w-full px-2 sm:px-6 text-base sm:text-xl">Wheat: 4</h4>
-                                        <h4 className="w-full px-2 sm:px-6 text-base sm:text-xl mb-4 sm:mb-6">Watermelom: 1</h4>
-                                        <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2 sm:mb-4">Fox</h3>
-                                        <h4 className="w-full px-2 sm:px-6 text-base sm:text-xl">apple: 3</h4>
-                                        <h4 className="w-full px-2 sm:px-6 text-base sm:text-xl">Wheat: 4</h4>
-                                        <h4 className="w-full px-2 sm:px-6 text-base sm:text-xl mb-4 sm:mb-6">Watermelom: 1</h4>
-                                        <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2 sm:mb-4">Cobra</h3>
-                                        <h4 className="w-full px-2 sm:px-6 text-base sm:text-xl">apple: 3</h4>
-                                        <h4 className="w-full px-2 sm:px-6 text-base sm:text-xl">Wheat: 4</h4>
-                                        <h4 className="w-full px-2 sm:px-6 text-base sm:text-xl mb-4 sm:mb-6">Watermelom: 1</h4>
+                                        {loading ? (
+                                            <div className="text-center text-blue-500">Loading...</div>
+                                        ) : (
+                                            Object.entries(patrols).slice(3, 6).map(([name, crops]) => (
+                                                <div key={name} className="mb-4 sm:mb-6">
+                                                    <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2 sm:mb-4 text-center">{name}</h3>
+                                                    <div className="flex flex-col gap-3">
+                                                        <div className="flex items-center bg-red-100 rounded-xl shadow p-3 mb-1">
+                                                            <span className="text-2xl mr-3">🍎</span>
+                                                            <span className="font-semibold text-gray-700 flex-1">Apple</span>
+                                                            <span className="font-bold text-lg text-red-600">{crops.apple}</span>
+                                                        </div>
+                                                        <div className="flex items-center bg-yellow-100 rounded-xl shadow p-3 mb-1">
+                                                            <span className="text-2xl mr-3">🌾</span>
+                                                            <span className="font-semibold text-gray-700 flex-1">Wheat</span>
+                                                            <span className="font-bold text-lg text-yellow-700">{crops.wheat}</span>
+                                                        </div>
+                                                        <div className="flex items-center bg-green-100 rounded-xl shadow p-3">
+                                                            <span className="text-2xl mr-3">🍉</span>
+                                                            <span className="font-semibold text-gray-700 flex-1">Watermelon</span>
+                                                            <span className="font-bold text-lg text-green-700">{crops.watermelon}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))
+                                        )}
                                     </div>
                                 </div>
                             </form>
                             {/* Submit Button */}
                             <div className="flex justify-center pt-4">
-                                <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white font-bold text-base sm:text-lg px-6 sm:px-8 py-2 sm:py-3 rounded-xl shadow-lg transition duration-300 transform hover:scale-105 w-full max-w-xs">Harvest</button>
+                                <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white font-bold text-base sm:text-lg px-6 sm:px-8 py-2 sm:py-3 rounded-xl shadow-lg transition duration-300 transform hover:scale-105 w-full max-w-xs" disabled={loading}>
+                                    {loading ? 'Processing...' : 'Harvest'}
+                                </button>
                             </div>
                         </div>
                     </div>

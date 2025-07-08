@@ -104,6 +104,44 @@ function Give() {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
 
+    const [patrol, setPatrol] = useState("Panther");
+    const [type, setType] = useState("Horse");
+    const [quantity, setQuantity] = useState("");
+    const [landNumber, setLandNumber] = useState("");
+
+    const handleGive = async () => {
+        if (!patrol || !type || !quantity || (type !== "Coins" && !landNumber)) {
+            toast.error("Please fill all fields.", { position: "top-center" });
+            return;
+        }
+        try {
+            const response = await fetch('http://localhost:3000/Chef/give', {
+                method: 'PATCH',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    patrol,
+                    type,
+                    quantity: Number(quantity),
+                    landNumber: landNumber ? Number(landNumber) : 0,
+                }),
+            });
+            const data = await response.json();
+            if (data.success) {
+                toast.success("Asset given successfully!", { position: "top-center" });
+                // Optionally reset form fields
+                setQuantity("");
+                setLandNumber("");
+            } else {
+                toast.error(data.message || "Failed to give asset.", { position: "top-center" });
+            }
+        } catch {
+            toast.error("Server error.", { position: "top-center" });
+        }
+    };
+
     return (
         <>
             {/* Horizontal Navbar */}
@@ -233,27 +271,33 @@ function Give() {
                                     {/* Left Column - Dropdown */}
                                     <div className="flex flex-col gap-4">
                                         <h3 className="text-xl font-bold text-gray-800 mb-2">Patrol</h3>
-                                        <select className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg mb-2">
-                                            <option value="Panther">Panther</option>
-                                            <option value="Lion">Lion</option>
-                                            <option value="Cobra">Cobra</option>
-                                            <option value="Tiger">Tiger</option>
-                                            <option value="Fox">Fox</option>
-                                            <option value="Wolf">Wolf</option>
+                                        <select className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg mb-2"
+                                            value={patrol}
+                                            onChange={e => setPatrol(e.target.value)}
+                                        >
+                                            <option value="panther">Panther</option>
+                                            <option value="lion">Lion</option>
+                                            <option value="cobra">Cobra</option>
+                                            <option value="tiger">Tiger</option>
+                                            <option value="fox">Fox</option>
+                                            <option value="wolf">Wolf</option>
                                         </select>
 
                                         <h3 className="text-xl font-bold text-gray-800 mb-2">Type</h3>
-                                        <select className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg">
-                                            <option value="Horse">Horse</option>
-                                            <option value="Cart">Cart</option>
-                                            <option value="Apple Crop">Apple Crop</option>
-                                            <option value="Wheat Crop">Wheat Crop</option>
-                                            <option value="Watermelom Crop">Watermelom Crop</option>
-                                            <option value="Apple Seeds">Apple Seeds</option>
-                                            <option value="Wheat Seeds">Wheat Seeds</option>
-                                            <option value="Watermelon Seeds">Watermelon Seeds</option>
-                                            <option value="Coins">Coins</option>
-                                            <option value="Soldiers">Soldiers</option>
+                                        <select className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg"
+                                            value={type}
+                                            onChange={e => setType(e.target.value)}
+                                        >
+                                            <option value="tot_horses">Horse</option>
+                                            <option value="tot_carts">Cart</option>
+                                            <option value="apple">Apple Crop</option>
+                                            <option value="wheat">Wheat Crop</option>
+                                            <option value="watermelom">Watermelom Crop</option>
+                                            <option value="appleSeeds">Apple Seeds</option>
+                                            <option value="wheatSeeds">Wheat Seeds</option>
+                                            <option value="watermelonSeeds">Watermelon Seeds</option>
+                                            <option value="coins">Coins</option>
+                                            <option value="tot_sol">Soldiers</option>
                                         </select>
                                     </div>
 
@@ -263,25 +307,36 @@ function Give() {
                                         <div className="flex flex-col gap-2 justify-center items-center">
                                             <label htmlFor="give-quantity-label" className="text-white bg-gray-700 font-bold text-lg rounded-lg px-3 py-2 w-full text-center">Quantity</label>
                                             <input
-                                            id="give-quantity-label"
-                                            type="number"
-                                            className="px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg"
-                                            placeholder="Enter quantity"
+                                                id="give-quantity-label"
+                                                type="number"
+                                                className="px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg"
+                                                placeholder="Enter quantity"
+                                                value={quantity}
+                                                onChange={e => setQuantity(e.target.value)}
                                             />
                                         </div>
                                         {/* Land Number */}
                                         <div className="flex flex-col gap-2 justify-center items-center">
                                             <label htmlFor="give-land-number" className="text-white bg-gray-700 font-bold text-lg rounded-lg px-3 py-2 w-full text-center">Land Number</label>
                                             <input
-                                            id="give-land-number"
-                                            type="number"
-                                            className="px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg"
-                                            placeholder="must be from 1 - 33"
+                                                id="give-land-number"
+                                                type="number"
+                                                className="px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg"
+                                                placeholder="must be from 1 - 33"
+                                                value={landNumber}
+                                                onChange={e => setLandNumber(e.target.value)}
                                             />
                                         </div>
                                     </div>
                                 </div>
                             </form>
+                            <button
+                                type="button"
+                                onClick={handleGive}
+                                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-2 rounded-xl shadow transition mt-4"
+                            >
+                                Give
+                            </button>
                         </div>
                     </div>
                 </div>

@@ -14,25 +14,73 @@ function GDP() {
     const [isVisible, setIsVisible] = useState(false);
     const [username, setUsername] = useState(" ");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [patrols, setPatrols] = useState({
+        "panther": 0,
+        "tiger": 0,
+        "lion": 0,
+        "fox": 0,
+        "wolf": 0,
+        "cobra": 0
+    });
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(true), 200);
-
         // Retrieve username from localStorage
         const storedUsername = localStorage.getItem("username");
         if (storedUsername) {
             setUsername(storedUsername);
         }
-            // favicon
-            const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
-            link.type = 'image/x-icon';
-            link.rel = 'shortcut icon';
-            link.href = '/GDP.png';
-            document.getElementsByTagName('head')[0].appendChild(link);
-
+        // favicon
+        const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+        link.type = 'image/x-icon';
+        link.rel = 'shortcut icon';
+        link.href = '/GDP.png';
+        document.getElementsByTagName('head')[0].appendChild(link);
+        fetchGDP();
         return () => clearTimeout(timer);
     }, []);
+
+    const fetchGDP = async () => {
+        setLoading(true);
+        try {
+            const response = await fetch('http://localhost:3000/Chef/gdp', {
+                method: 'GET',
+                credentials: 'include',
+            });
+            const data = await response.json();
+            if (data.patrols) {
+                setPatrols(data.patrols);
+            } else {
+                toast.error(data.message || "Failed to fetch GDP data.", { position: "top-center" });
+            }
+        } catch {
+            toast.error("Server error while fetching GDP.", { position: "top-center" });
+        }
+        setLoading(false);
+    };
+
+    const handleGiveGDP = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        try {
+            const response = await fetch('http://localhost:3000/Chef/gdp', {
+                method: 'PATCH',
+                credentials: 'include',
+            });
+            const data = await response.json();
+            if (response.ok) {
+                toast.success("GDP distributed successfully!", { position: "top-center" });
+                fetchGDP();
+            } else {
+                toast.error(data.message || "Failed to distribute GDP.", { position: "top-center" });
+            }
+        } catch {
+            toast.error("Server error while distributing GDP.", { position: "top-center" });
+        }
+        setLoading(false);
+    };
 
     useEffect(() => {
         document.title = "GDP";
@@ -258,61 +306,67 @@ function GDP() {
                         {/* Subtle inner glow */}
                         <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent rounded-2xl sm:rounded-3xl pointer-events-none"></div>
                         <div className="relative z-10 flex flex-col items-center w-full">
-                            <form className="w-full max-w-lg flex flex-col gap-2 sm:gap-5">
+                            <form className="w-full max-w-lg flex flex-col gap-2 sm:gap-5" onSubmit={handleGiveGDP}>
                                 <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-white/30">
                                     <div className="flex flex-col gap-4 sm:gap-6">
                                         {/* Panther */}
                                         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                                             <label className="block text-white bg-gray-700 font-bold text-lg sm:text-2xl rounded-lg px-2 py-1 w-full sm:w-44 flex-shrink-0 text-center sm:text-left">Panther</label>
                                             <input
-                                                type="number"
                                                 className="flex-1 px-4 sm:px-8 py-3 sm:py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
-                                                placeholder="300"
+                                                value={patrols.panther}
+                                                onChange={setPatrols.panther}
+                                                readOnly
                                             />
                                         </div>
                                         {/* Tiger */}
                                         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                                             <label className="block text-white bg-gray-700 font-bold text-lg sm:text-2xl rounded-lg px-2 py-1 w-full sm:w-44 flex-shrink-0 text-center sm:text-left">Tiger</label>
                                             <input
-                                                type="number"
                                                 className="flex-1 px-4 sm:px-8 py-3 sm:py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
-                                                placeholder="300"
+                                                value={patrols.tiger}
+                                                onChange={setPatrols.tiger}
+                                                readOnly
                                             />
                                         </div>
                                         {/* Lion */}
                                         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                                             <label className="block text-white bg-gray-700 font-bold text-lg sm:text-2xl rounded-lg px-2 py-1 w-full sm:w-44 flex-shrink-0 text-center sm:text-left">Lion</label>
                                             <input
-                                                type="number"
                                                 className="flex-1 px-4 sm:px-8 py-3 sm:py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
-                                                placeholder="300"
+                                                value={patrols.lion}
+                                                onChange={setPatrols.lion}
+                                                readOnly
                                             />
                                         </div>
                                         {/* Fox */}
                                         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                                             <label className="block text-white bg-gray-700 font-bold text-lg sm:text-2xl rounded-lg px-2 py-1 w-full sm:w-44 flex-shrink-0 text-center sm:text-left">Fox</label>
                                             <input
-                                                type="number"
                                                 className="flex-1 px-4 sm:px-8 py-3 sm:py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
-                                                placeholder="300"
+                                                value={patrols.fox}
+                                                onChange={setPatrols.fox}
+                                                readOnly
                                             />
                                         </div>
                                         {/* Wolf */}
                                         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                                             <label className="block text-white bg-gray-700 font-bold text-lg sm:text-2xl rounded-lg px-2 py-1 w-full sm:w-44 flex-shrink-0 text-center sm:text-left">Wolf</label>
                                             <input
-                                                type="number"
                                                 className="flex-1 px-4 sm:px-8 py-3 sm:py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
-                                                placeholder="300"
+                                                value={patrols.wolf}
+                                                onChange={setPatrols.wolf}
+                                                readOnly
                                             />
                                         </div>
                                         {/* Cobra */}
                                         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                                             <label className="block text-white bg-gray-700 font-bold text-lg sm:text-2xl rounded-lg px-2 py-1 w-full sm:w-44 flex-shrink-0 text-center sm:text-left">Cobra</label>
                                             <input
-                                                type="number"
                                                 className="flex-1 px-4 sm:px-8 py-3 sm:py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
-                                                placeholder="300"
+                                                value={patrols.cobra}
+                                                onChange={setPatrols.cobra}
+                                                readOnly
                                             />
                                         </div>
                                         {/* Submit Button */}
@@ -320,8 +374,9 @@ function GDP() {
                                             <button 
                                                 type="submit"
                                                 className="bg-blue-500 hover:bg-blue-600 text-white font-bold text-lg px-8 py-3 rounded-xl shadow-lg transition duration-300 transform hover:scale-105 w-full sm:w-[150px]"
+                                                disabled={loading}
                                             >
-                                                Give GDP
+                                                {loading ? "Processing..." : "Give GDP"}
                                             </button>
                                         </div>
                                     </div>
