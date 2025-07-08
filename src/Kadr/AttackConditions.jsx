@@ -42,12 +42,12 @@ function AttackConditions() {
             });
             const data = await res.json();
             if (res.ok) {
-                toast.success(data.message);
+                toast.success("Attack Conditions Successfully", { position: "top-center" });
             } else {
-                toast.error(data.message);
+                toast.error(data.message, { position: "top-center" });
             }
         } catch {
-            toast.error("Network error");
+            toast.error("Network error", { position: "top-center" });
         }
     };
 
@@ -82,7 +82,7 @@ function AttackConditions() {
                     // Call backend logout endpoint
                     await fetch('http://localhost:3000/authen/signout', {
                         method: 'POST',
-                        credentials: 'include', // if using cookies/session
+                        credentials: 'include',
                         headers: {
                             'Content-Type': 'application/json',
                         },

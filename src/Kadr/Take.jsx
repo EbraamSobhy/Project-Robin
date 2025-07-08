@@ -14,6 +14,10 @@ function Take() {
     const [isVisible, setIsVisible] = useState(false);
     const [username, setUsername] = useState(" ");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [patrol, setPatrol] = useState("Panther");
+    const [type, setType] = useState("Horse");
+    const [quantity, setQuantity] = useState(1);
+    const [landNumber, setLandNumber] = useState(1);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -75,6 +79,31 @@ function Take() {
     const Give = () => { navigate('/kadr/Give'); setIsMobileMenuOpen(false); };
     const GDP = () => { navigate('/kadr/GDP'); setIsMobileMenuOpen(false); };
     const Harvest = () => { navigate('/kadr/Harvest'); setIsMobileMenuOpen(false); };
+
+    // Add this function inside the Take component
+    const handleTake = async () => {
+        try {
+            const response = await fetch('http://localhost:3000/Chef/take', {
+                method: 'PATCH',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    patrol,
+                    type,
+                    quantity: Number(quantity),
+                    landNumber: landNumber ? Number(landNumber) : 0
+                })
+            });
+            const data = await response.json();
+            if (data.success) {
+                toast.success("Take successful!", { position: "top-center" });
+            } else {
+                toast.error(data.message || "Take failed.", { position: "top-center" });
+            }
+        } catch {
+            toast.error("Server error.", { position: "top-center" });
+        }
+    };
 
     return (
         <>
@@ -230,33 +259,39 @@ function Take() {
                         {/* Subtle inner glow */}
                         <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent rounded-2xl sm:rounded-3xl pointer-events-none"></div>
                         <div className="relative z-10 flex flex-col items-center w-full">
-                            <form className="w-full max-w-2xl flex flex-col gap-4">
+                            <form className="w-full max-w-2xl flex flex-col gap-4" onSubmit={e => { e.preventDefault(); handleTake(); }}>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {/* Left Column - Dropdown */}
                                     <div className="flex-1">
                                         <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 border border-white/30">
                                             <h3 className="text-xl font-bold text-gray-800 mb-4">Patrol</h3>
-                                            <select className="w-full px-6 py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-xl mb-4">
-                                                <option value="Panther">Panther</option>
-                                                <option value="Lion">Lion</option>
-                                                <option value="Cobra">Cobra</option>
-                                                <option value="Tiger">Tiger</option>
-                                                <option value="Fox">Fox</option>
-                                                <option value="Wolf">Wolf</option>
+                                            <select className="w-full px-6 py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-xl mb-4"
+                                                value={patrol}
+                                                onChange={e => setPatrol(e.target.value)}
+                                            >
+                                                <option value="panther">Panther</option>
+                                                <option value="lion">Lion</option>
+                                                <option value="cobra">Cobra</option>
+                                                <option value="tiger">Tiger</option>
+                                                <option value="fox">Fox</option>
+                                                <option value="wolf">Wolf</option>
                                             </select>
 
                                             <h3 className="text-xl font-bold text-gray-800 mb-4">Type</h3>
-                                            <select className="w-full px-6 py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-xl">
-                                                <option value="Horse">Horse</option>
-                                                <option value="Cart">Cart</option>
-                                                <option value="Apple Crop">Apple Crop</option>
-                                                <option value="Wheat Crop">Wheat Crop</option>
-                                                <option value="Watermelom Crop">Watermelom Crop</option>
-                                                <option value="Apple Seeds">Apple Seeds</option>
-                                                <option value="Wheat Seeds">Wheat Seeds</option>
-                                                <option value="Watermelon Seeds">Watermelon Seeds</option>
-                                                <option value="Coins">Coins</option>
-                                                <option value="Soldiers">Soldiers</option>
+                                            <select className="w-full px-6 py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-xl"
+                                                value={type}
+                                                onChange={e => setType(e.target.value)}
+                                            >
+                                                <option value="tot_horses">Horse</option>
+                                            <option value="tot_carts">Cart</option>
+                                            <option value="apple">Apple Crop</option>
+                                            <option value="wheat">Wheat Crop</option>
+                                            <option value="watermelom">Watermelom Crop</option>
+                                            <option value="appleSeeds">Apple Seeds</option>
+                                            <option value="wheatSeeds">Wheat Seeds</option>
+                                            <option value="watermelonSeeds">Watermelon Seeds</option>
+                                            <option value="coins">Coins</option>
+                                            <option value="tot_sol">Soldiers</option>
                                             </select>
                                         </div>
                                     </div>
@@ -271,9 +306,10 @@ function Take() {
                                                     <input
                                                     id="take-soldiers-label"
                                                     type="number"
-                                                    className="px-4 py-3 rounded-xl border border-gray-300 bg-gray-100 cursor-not-allowed text-lg"
-                                                    value="3"
-                                                    disabled
+                                                    className="px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg"
+                                                    placeholder="Enter quantity"
+                                                    value={quantity}
+                                                    onChange={e => setQuantity(Number(e.target.value))}
                                                     />
                                                 </div>
                                                 {/* Land Number */}
@@ -282,14 +318,22 @@ function Take() {
                                                     <input
                                                     id="take-soldiers-send"
                                                     type="number"
-                                                    className="px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg"
+                                                    className="px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg w-64"
                                                     placeholder="must be from 1 - 33"
+                                                    value={landNumber}
+                                                    onChange={e => setLandNumber(e.target.value)}
                                                     />
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <button
+                                    type="submit"
+                                    className="bg-blue-600 text-white px-6 py-3 rounded-xl mt-4 hover:bg-blue-700 transition self-center"
+                                >
+                                    Take
+                                </button>
                             </form>
                         </div>
                     </div>

@@ -69,6 +69,51 @@ function UpdateScores() {
     const Harvest = () => { navigate('/kadr/Harvest'); setIsMobileMenuOpen(false); };
     const GDP = () => { navigate('/kadr/GDP'); setIsMobileMenuOpen(false); };
 
+    // Add state for each patrol score
+    const [scores, setScores] = useState({
+        panther: 0,
+        tiger: 0,
+        lion: 0,
+        fox: 0,
+        wolf: 0,
+        cobra: 0
+    });
+
+    // Handle input change
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setScores(prev => ({ ...prev, [name]: value }));
+    };
+
+    // Handle form submit
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        // Prepare payload: only include numbers, skip empty
+        const payload = {};
+        Object.entries(scores).forEach(([key, val]) => {
+            if (val !== '') payload[key] = Number(val);
+        });
+        try {
+            const response = await fetch('http://localhost:3000/Chef/update-scores', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify(payload),
+            });
+            if (response.ok) {
+                toast.success('Scores updated successfully!', { position: 'top-center' });
+                setScores({ panther: '', tiger: '', lion: '', fox: '', wolf: '', cobra: '' });
+            } else {
+                const data = await response.json();
+                toast.error(data.message || 'Failed to update scores.', { position: 'top-center' });
+            }
+        } catch {
+            toast.error('Network error. Please try again.', { position: 'top-center' });
+        }
+    };
+
     return (
         <>
             {/* Horizontal Navbar */}
@@ -132,33 +177,33 @@ function UpdateScores() {
                     <div className="bg-white/90 backdrop-blur-md rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 lg:p-8 border border-white/30 relative w-full mt-10">
                         <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent rounded-2xl sm:rounded-3xl pointer-events-none"></div>
                         <div className="relative z-10 flex flex-col items-center w-full">
-                            <form className="w-full max-w-lg flex flex-col gap-2 sm:gap-5">
+                            <form className="w-full max-w-lg flex flex-col gap-2 sm:gap-5" onSubmit={handleSubmit}>
                                 <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 border border-white/30">
                                     <div className="flex flex-col gap-4 sm:gap-6">
                                         {/* Example Score Fields */}
                                         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                                             <label className="block text-white bg-gray-700 font-bold text-lg sm:text-2xl rounded-lg px-2 py-1 w-full sm:w-44 flex-shrink-0 text-center sm:text-left">Panther Score</label>
-                                            <input type="number" className="flex-1 px-4 sm:px-8 py-3 sm:py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl" placeholder="300" />
+                                            <input type="number" name="panther" value={scores.panther} onChange={handleInputChange} className="flex-1 px-4 sm:px-8 py-3 sm:py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl" placeholder="300" />
                                         </div>
                                         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                                             <label className="block text-white bg-gray-700 font-bold text-lg sm:text-2xl rounded-lg px-2 py-1 w-full sm:w-44 flex-shrink-0 text-center sm:text-left">Tiger Score</label>
-                                            <input type="number" className="flex-1 px-4 sm:px-8 py-3 sm:py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl" placeholder="300" />
+                                            <input type="number" name="tiger" value={scores.tiger} onChange={handleInputChange} className="flex-1 px-4 sm:px-8 py-3 sm:py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl" placeholder="300" />
                                         </div>
                                         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                                             <label className="block text-white bg-gray-700 font-bold text-lg sm:text-2xl rounded-lg px-2 py-1 w-full sm:w-44 flex-shrink-0 text-center sm:text-left">Lion Score</label>
-                                            <input type="number" className="flex-1 px-4 sm:px-8 py-3 sm:py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl" placeholder="300" />
+                                            <input type="number" name="lion" value={scores.lion} onChange={handleInputChange} className="flex-1 px-4 sm:px-8 py-3 sm:py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl" placeholder="300" />
                                         </div>
                                         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                                             <label className="block text-white bg-gray-700 font-bold text-lg sm:text-2xl rounded-lg px-2 py-1 w-full sm:w-44 flex-shrink-0 text-center sm:text-left">Fox Score</label>
-                                            <input type="number" className="flex-1 px-4 sm:px-8 py-3 sm:py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl" placeholder="300" />
+                                            <input type="number" name="fox" value={scores.fox} onChange={handleInputChange} className="flex-1 px-4 sm:px-8 py-3 sm:py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl" placeholder="300" />
                                         </div>
                                         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                                             <label className="block text-white bg-gray-700 font-bold text-lg sm:text-2xl rounded-lg px-2 py-1 w-full sm:w-44 flex-shrink-0 text-center sm:text-left">Wolf Score</label>
-                                            <input type="number" className="flex-1 px-4 sm:px-8 py-3 sm:py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl" placeholder="300" />
+                                            <input type="number" name="wolf" value={scores.wolf} onChange={handleInputChange} className="flex-1 px-4 sm:px-8 py-3 sm:py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl" placeholder="300" />
                                         </div>
                                         <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
                                             <label className="block text-white bg-gray-700 font-bold text-lg sm:text-2xl rounded-lg px-2 py-1 w-full sm:w-44 flex-shrink-0 text-center sm:text-left">Cobra Score</label>
-                                            <input type="number" className="flex-1 px-4 sm:px-8 py-3 sm:py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl" placeholder="300" />
+                                            <input type="number" name="cobra" value={scores.cobra} onChange={handleInputChange} className="flex-1 px-4 sm:px-8 py-3 sm:py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl" placeholder="300" />
                                         </div>
                                         <div className="flex justify-center pt-4">
                                             <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white font-bold text-lg px-8 py-3 rounded-xl shadow-lg transition duration-300 transform hover:scale-105 w-full sm:w-[150px]">Submit</button>

@@ -15,16 +15,16 @@ function Trade() {
     const [username, setUsername] = useState(" ");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [form, setForm] = useState({
-        patrol1: "Panther",
-        patrol2: "Panther",
-        type1: "Horse",
-        type2: "Horse",
+        patrol1: " ",
+        patrol2: " ",
+        type1: " ",
+        type2: " ",
         quantity1: 0,
         quantity2: 0,
-        SLand1: "",
-        SLand2: "",
-        DLand1: "",
-        DLand2: ""
+        SLand1: 0,
+        SLand2: 0,
+        DLand1: 0,
+        DLand2: 0
     });
     const navigate = useNavigate();
 
@@ -79,13 +79,14 @@ function Trade() {
             const res = await fetch('http://localhost:3000/Chef/trade/process', {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify(form),
             });
-            const data = await res.json();
+
             if (res.ok) {
-                toast.success(data.message || "Trade successful!", { position: "top-center" });
+                toast.success("Trade successful!", { position: "top-center" });
             } else {
-                toast.error(data.message || "Trade failed!", { position: "top-center" });
+                toast.error("Trade failed!", { position: "top-center" });
             }
         } catch {
             toast.error("Network error", { position: "top-center" });
@@ -240,12 +241,12 @@ function Trade() {
                                             onChange={handleChange}
                                             className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg mb-2"
                                         >
-                                            <option value="Panther">Panther</option>
-                                            <option value="Lion">Lion</option>
-                                            <option value="Cobra">Cobra</option>
-                                            <option value="Tiger">Tiger</option>
-                                            <option value="Fox">Fox</option>
-                                            <option value="Wolf">Wolf</option>
+                                            <option value="panther">Panther</option>
+                                            <option value="lion">Lion</option>
+                                            <option value="cobra">Cobra</option>
+                                            <option value="tiger">Tiger</option>
+                                            <option value="fox">Fox</option>
+                                            <option value="wolf">Wolf</option>
                                         </select>
                                         <label className="text-xl font-bold text-gray-800">Type 1</label>
                                         <select
@@ -254,16 +255,16 @@ function Trade() {
                                             onChange={handleChange}
                                             className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg mb-2"
                                         >
-                                            <option value="Horse">Horse</option>
-                                            <option value="Cart">Cart</option>
-                                            <option value="Apple Crop">Apple Crop</option>
-                                            <option value="Wheat Crop">Wheat Crop</option>
-                                            <option value="Watermelom Crop">Watermelom Crop</option>
-                                            <option value="Apple Seeds">Apple Seeds</option>
-                                            <option value="Wheat Seeds">Wheat Seeds</option>
-                                            <option value="Watermelon Seeds">Watermelon Seeds</option>
-                                            <option value="Coins">Coins</option>
-                                            <option value="Soldiers">Soldiers</option>
+                                            <option value="tot_horses">Horse</option>
+                                            <option value="tot_carts">Cart</option>
+                                            <option value="apple">Apple Crop</option>
+                                            <option value="wheat">Wheat Crop</option>
+                                            <option value="watermelom">Watermelom Crop</option>
+                                            <option value="appleSeeds">Apple Seeds</option>
+                                            <option value="wheatSeeds">Wheat Seeds</option>
+                                            <option value="watermelonSeeds">Watermelon Seeds</option>
+                                            <option value="coins">Coins</option>
+                                            <option value="tot_sol">Soldiers</option>
                                         </select>
                                         <label className="text-xl font-bold text-gray-800">Quantity 1</label>
                                         <input
@@ -302,12 +303,12 @@ function Trade() {
                                             onChange={handleChange}
                                             className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg mb-2"
                                         >
-                                            <option value="Panther">Panther</option>
-                                            <option value="Lion">Lion</option>
-                                            <option value="Cobra">Cobra</option>
-                                            <option value="Tiger">Tiger</option>
-                                            <option value="Fox">Fox</option>
-                                            <option value="Wolf">Wolf</option>
+                                            <option value="panther">Panther</option>
+                                            <option value="lion">Lion</option>
+                                            <option value="cobra">Cobra</option>
+                                            <option value="tiger">Tiger</option>
+                                            <option value="fox">Fox</option>
+                                            <option value="wolf">Wolf</option>
                                         </select>
                                         <label className="text-xl font-bold text-gray-800">Type 2</label>
                                         <select
@@ -316,16 +317,16 @@ function Trade() {
                                             onChange={handleChange}
                                             className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg mb-2"
                                         >
-                                            <option value="Horse">Horse</option>
-                                            <option value="Cart">Cart</option>
-                                            <option value="Apple Crop">Apple Crop</option>
-                                            <option value="Wheat Crop">Wheat Crop</option>
-                                            <option value="Watermelom Crop">Watermelom Crop</option>
-                                            <option value="Apple Seeds">Apple Seeds</option>
-                                            <option value="Wheat Seeds">Wheat Seeds</option>
-                                            <option value="Watermelon Seeds">Watermelon Seeds</option>
-                                            <option value="Coins">Coins</option>
-                                            <option value="Soldiers">Soldiers</option>
+                                            <option value="tot_horses">Horse</option>
+                                            <option value="tot_carts">Cart</option>
+                                            <option value="apple">Apple Crop</option>
+                                            <option value="wheat">Wheat Crop</option>
+                                            <option value="watermelom">Watermelom Crop</option>
+                                            <option value="appleSeeds">Apple Seeds</option>
+                                            <option value="wheatSeeds">Wheat Seeds</option>
+                                            <option value="watermelonSeeds">Watermelon Seeds</option>
+                                            <option value="coins">Coins</option>
+                                            <option value="tot_sol">Soldiers</option>
                                         </select>
                                         <label className="text-xl font-bold text-gray-800">Quantity 2</label>
                                         <input
