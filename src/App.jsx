@@ -12,13 +12,14 @@ import Feeding from "./CP/Feeding";
 import Attack from "./CP/Attack";
 import Transport from "./CP/Transport";
 import CPViewScores from "./CP/ViewScores";
-import KadrViewScores from "./Kadr/UpdateScores";
+import KadrViewScores from "./Kadr/ViewScores";
 import AttackConditions from "./Kadr/AttackConditions";
 import Take from "./Kadr/Take";
 import Give from "./Kadr/Give";
 import GDP from "./Kadr/GDP";
 import Harvest from "./Kadr/Harvest";
 import Trade from "./Kadr/Trade";
+import UpdateScores from "./Kadr/UpdateScores";
 
 // process routes
 import PlantProcess from "./Process/PlantProcess";
@@ -42,6 +43,7 @@ function App() {
       <Route path="/kadr/GDP" element={<GDP />} />
       <Route path="/kadr/Harvest" element={<Harvest />} />
       <Route path="/kadr/Trade" element={<Trade />} />
+      <Route path="/kadr/UpdateScores" element={<UpdateScores />} />
 
       {/* Scout Routes */}
       <Route path="/scout" element={<Scout />} />

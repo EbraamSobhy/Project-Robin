@@ -8,6 +8,7 @@ import { GiCorn } from "react-icons/gi";
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
+import { RiCoinsFill } from "react-icons/ri";
 
 function Trade() {
     const [isVisible, setIsVisible] = useState(false);
@@ -127,7 +128,8 @@ function Trade() {
                 <div className="fixed top-16 left-0 w-full bg-white shadow-lg z-40 lg:hidden border-b border-blue-200">
                     <div className="flex flex-col py-4 justify-center items-center">
                         <button onClick={Home} className="flex items-center px-6 py-3 text-blue-700 hover:bg-blue-50 transition"><svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6" /></svg><span className="font-semibold">Home</span></button>
-                        <button onClick={UpdateScores} className="flex items-center px-6 py-3 text-blue-700 hover:bg-blue-50 transition"><GrScorecard className="w-5 h-5 mr-3" /><span className="font-semibold">Update Scores</span></button>
+                        <button onClick={UpdateScores} className="flex items-center px-6 py-3 text-blue-700 hover:bg-blue-50 transition"><RiCoinsFill className="w-5 h-5 mr-3" /><span className="font-semibold">Update Scores</span></button>
+                        <button onClick={UpdateScores} className="flex items-center px-6 py-3 text-blue-700 hover:bg-blue-50 transition"><GrScorecard className="w-5 h-5 mr-3" /><span className="font-semibold">View Scores</span></button>
                         <button onClick={AttackConditions} className="flex items-center px-6 py-3 text-blue-700 hover:bg-blue-50 transition"><PiSword className="w-5 h-5 mr-3" /><span className="font-semibold">Attack Conditions</span></button>
                         <button className="flex items-center px-6 py-3 text-blue-700 bg-blue-50 transition"><GiTrade className="w-5 h-5 mr-3" /><span className="font-semibold">Trade</span></button>
                         <button onClick={Take} className="flex items-center px-6 py-3 text-blue-700 hover:bg-blue-50 transition"><GiHand className="w-5 h-5 mr-3" /><span className="font-semibold">Take</span></button>
@@ -143,21 +145,75 @@ function Trade() {
                 {/* Vertical Navbar - hidden on mobile */}
                 <div className="hidden lg:flex fixed top-0 right-0 h-full w-24 bg-white shadow-lg flex-col items-center mt-[63px] z-50 border-l border-blue-200">
                     {/* Home Tab */}
-                    <button onClick={Home} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative"><span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span><svg className="w-7 h-7 text-blue-500 mb-1" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6" /></svg><span className="text-xs text-blue-700 font-semibold">Home</span></button>
+                    <button onClick={Home} className="w-full flex flex-col items-center py-1 px-2 group hover:bg-blue-50 transition relative">
+                        <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
+                        <svg className="w-7 h-7 text-blue-500 mb-0.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6" /></svg>
+                        <span className="text-xs text-blue-700 font-semibold">Home</span>
+                    </button>
+                    {/* Update Scores Tab */}
+                    <button onClick={UpdateScores} className="w-full flex flex-col items-center py-1 px-2 group hover:bg-blue-50 transition relative">
+                        <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
+                        <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-0.5">
+                            <RiCoinsFill size={25} />
+                        </div>
+                        <span className="text-xs text-blue-700 font-semibold">Update Scores</span>
+                    </button>
                     {/* View Scores Tab */}
-                    <button onClick={UpdateScores} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative"><span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span><div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1"><GrScorecard size={25} /></div><span className="text-xs text-blue-700 font-semibold">Update Scores</span></button>
+                    <button onClick={UpdateScores} className="w-full flex flex-col items-center py-1 px-2 group hover:bg-blue-50 transition relative">
+                        <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
+                        <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-0.5">
+                            <GrScorecard size={25} />
+                        </div>
+                        <span className="text-xs text-blue-700 font-semibold">View Scores</span>
+                    </button>
                     {/* Attack Tab */}
-                    <button onClick={AttackConditions} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative"><span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span><div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1"><PiSword size={25} /></div><span className="text-xs text-blue-700 font-semibold">Attack Conditions</span></button>
+                    <button onClick={AttackConditions} className="w-full flex flex-col items-center py-1 px-2 group hover:bg-blue-50 transition relative">
+                        <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
+                        <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-0.5">
+                            <PiSword size={25} />
+                        </div>
+                        <span className="text-xs text-blue-700 font-semibold">Attack Conditions</span>
+                    </button>
                     {/* Trade Tab - Active */}
-                    <button className="w-full flex flex-col items-center py-2 px-2 group bg-blue-50 transition relative"><span className="absolute left-0 top-0 h-full w-1 bg-blue-500 rounded-r transition"></span><div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1"><GiTrade size={25} /></div><span className="text-xs text-blue-700 font-semibold">Trade</span></button>
+                    <button className="w-full flex flex-col items-center py-1 px-2 group bg-blue-50 transition relative">
+                        <span className="absolute left-0 top-0 h-full w-1 bg-blue-500 rounded-r transition"></span>
+                        <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-0.5">
+                            <GiTrade size={25} />
+                        </div>
+                        <span className="text-xs text-blue-700 font-semibold">Trade</span>
+                    </button>
                     {/* Take Tab */}
-                    <button onClick={Take} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative"><span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span><div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1"><GiHand size={25} /></div><span className="text-xs text-blue-700 font-semibold">Take</span></button>
+                    <button onClick={Take} className="w-full flex flex-col items-center py-1 px-2 group hover:bg-blue-50 transition relative">
+                        <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
+                        <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-0.5">
+                            <GiHand size={25} />
+                        </div>
+                        <span className="text-xs text-blue-700 font-semibold">Take</span>
+                    </button>
                     {/* Give Tab */}
-                    <button onClick={Give} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative"><span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span><div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1"><FaHandHoldingHeart size={25} /></div><span className="text-xs text-blue-700 font-semibold">Give</span></button>
+                    <button onClick={Give} className="w-full flex flex-col items-center py-1 px-2 group hover:bg-blue-50 transition relative">
+                        <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
+                        <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-0.5">
+                            <FaHandHoldingHeart size={25} />
+                        </div>
+                        <span className="text-xs text-blue-700 font-semibold">Give</span>
+                    </button>
                     {/* GDP Tab */}
-                    <button onClick={GDP} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative"><span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span><div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1"><FaChartLine size={25} /></div><span className="text-xs text-blue-700 font-semibold">GDP</span></button>
+                    <button onClick={GDP} className="w-full flex flex-col items-center py-1 px-2 group hover:bg-blue-50 transition relative">
+                        <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
+                        <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-0.5">
+                            <FaChartLine size={25} />
+                        </div>
+                        <span className="text-xs text-blue-700 font-semibold">GDP</span>
+                    </button>
                     {/* Harvest Tab */}
-                    <button onClick={Harvest} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative"><span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span><div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1"><GiCorn size={25} /></div><span className="text-xs text-blue-700 font-semibold">Harvest</span></button>
+                    <button onClick={Harvest} className="w-full flex flex-col items-center py-1 px-2 group hover:bg-blue-50 transition relative">
+                        <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
+                        <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-0.5">
+                            <GiCorn size={25} />
+                        </div>
+                        <span className="text-xs text-blue-700 font-semibold">Harvest</span>
+                    </button>
                 </div>
                 {/* Decorative background elements */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
