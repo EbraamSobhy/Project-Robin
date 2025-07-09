@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../Scout/tailwind.css';
-import image from '../assets/image.PNG';
+import imageDefault from '../assets/image.PNG';
+import { getSharedImage } from '../utils/sharedImage';
 import { GrScorecard } from "react-icons/gr";
 import { PiPlantBold } from "react-icons/pi";
 import { GiEating } from "react-icons/gi";
@@ -14,6 +15,7 @@ function Home() {
     const [isVisible, setIsVisible] = useState(false);
     const [username, setUsername] = useState(" ");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [image, setImage] = useState(() => getSharedImage(imageDefault));
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -37,6 +39,15 @@ function Home() {
 
     useEffect(() => {
         document.title = "Home";
+    }, []);
+
+    useEffect(() => {
+        // Listen for storage changes (sync image across tabs/pages)
+        const onStorage = () => setImage(getSharedImage(imageDefault));
+        window.addEventListener('storage', onStorage);
+        return () => {
+            window.removeEventListener('storage', onStorage);
+        };
     }, []);
 
     // Navigate

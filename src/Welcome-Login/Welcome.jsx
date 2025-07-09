@@ -60,7 +60,7 @@ function Welcome() {
                             </div>
                         </div>
 
-                        {/* Welcome Text */}
+                        {/* Welcome Text */}    
                         <div className="mb-6 sm:mb-8">
                             <h2 className="text-lg xs:text-xl sm:text-2xl font-semibold text-gray-800 mb-2 sm:mb-3">
                                 Welcome Back!

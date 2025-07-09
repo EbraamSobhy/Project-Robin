@@ -5,7 +5,8 @@ import { PiPlantBold } from "react-icons/pi";
 import { GiEating } from "react-icons/gi";
 import { LuSwords } from "react-icons/lu";
 import { MdLocalShipping } from 'react-icons/md';
-import image from '../assets/image.PNG';
+import imageDefault from '../assets/image.PNG';
+import { getSharedImage } from '../utils/sharedImage';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
@@ -15,6 +16,9 @@ function Plant() {
     const [username, setUsername] = useState(" ");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const navigate = useNavigate();
+    const [image, setImage] = useState(() => getSharedImage(imageDefault));
+    const [landNo, setLandNo] = useState("");
+    const [error, setError] = useState('');
 
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(true), 200);
@@ -39,6 +43,15 @@ function Plant() {
         document.title = "Plant";
     }, []);
 
+    useEffect(() => {
+        // Listen for storage changes (sync image across tabs/pages)
+        const onStorage = () => setImage(getSharedImage(imageDefault));
+        window.addEventListener('storage', onStorage);
+        return () => {
+            window.removeEventListener('storage', onStorage);
+        };
+    }, []);
+
     const handleLogout = async () => {
             if (window.confirm("Are you sure you want to logout?")) {
                 try {
@@ -60,6 +73,35 @@ function Plant() {
                 }, 1500);
             }
         }
+
+        // Planting function
+    const handlePlant = async (e) => {
+        e.preventDefault();
+        const num = Number(landNo);
+        if (!num || num < 1 || num > 33) {
+            setError('Land number must be between 1 and 33');
+            return;
+        }
+        setError('');
+        try {
+            const response = await fetch('http://localhost:3000/CP/plant', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ landNo: num }),
+                credentials: 'include'
+            });
+            if (!response.ok) throw new Error('Failed to plant');
+            const data = await response.json();
+            localStorage.setItem('plantProcessData', JSON.stringify(data));
+            setLandNo('');
+            toast.success('Planting successful!', { position: 'top-center' });
+            setTimeout(() => {
+                navigate('/cp/PlantProcess');
+            }, 1000);
+        } catch {
+            toast.error('Planting failed.', { position: 'top-center' });
+        }
+    }
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -182,14 +224,16 @@ function Plant() {
                         {/* Subtle inner glow */}
                         <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent rounded-2xl sm:rounded-3xl pointer-events-none"></div>
                         <div className="relative z-10 flex flex-col items-center w-full">
-                            <form className="w-full max-w-xl flex flex-col gap-4">
+                            <form className="w-full max-w-xl flex flex-col gap-4" onSubmit={handlePlant}>
                                 {/* Land Number */}
                                 <div className="flex flex-col items-center gap-4 w-full">
                                     <label htmlFor="plant-land-label" className="block bg-gray-700 font-bold text-lg sm:text-2xl mb-2 whitespace-nowrap text-white px-1 py-2 rounded-lg shadow-sm text-center">Land Number</label>
                                     <div className="flex flex-col sm:flex-row gap-2 w-full max-w-md">
                                         <input
                                             id="plant-land-label"
-                                            type="text"
+                                            type="number"
+                                            value={landNo}
+                                            onChange={e => setLandNo(e.target.value)}
                                             className="px-4 sm:px-8 py-3 sm:py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg flex-1"
                                             placeholder="must be from 1 - 33"
                                         />
@@ -200,6 +244,7 @@ function Plant() {
                                             Submit
                                         </button>
                                     </div>
+                                    {error && <div className="text-red-500 text-sm">{error}</div>}
                                 </div>
                             </form>
                         </div>

@@ -5,7 +5,8 @@ import { PiPlantBold } from "react-icons/pi";
 import { GiEating } from "react-icons/gi";
 import { LuSwords } from "react-icons/lu";
 import { MdLocalShipping } from 'react-icons/md';
-import image from '../assets/image.PNG';
+import imageDefault from '../assets/image.PNG';
+import { getSharedImage } from '../utils/sharedImage';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
@@ -15,6 +16,7 @@ function Attack() {
     const [username, setUsername] = useState(" ");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const navigate = useNavigate();
+    const [image, setImage] = useState(() => getSharedImage(imageDefault));
 
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(true), 200);
@@ -37,6 +39,15 @@ function Attack() {
 
     useEffect(() => {
         document.title = "Attack";
+    }, []);
+
+    useEffect(() => {
+        // Listen for storage changes (sync image across tabs/pages)
+        const onStorage = () => setImage(getSharedImage(imageDefault));
+        window.addEventListener('storage', onStorage);
+        return () => {
+            window.removeEventListener('storage', onStorage);
+        };
     }, []);
 
     const handleLogout = async () => {

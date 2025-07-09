@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../Scout/tailwind.css';
-import image from '../assets/image.PNG';
+import imageDefault from '../assets/image.PNG';
+import { getSharedImage, setSharedImage } from '../utils/sharedImage';
 import { GrScorecard } from "react-icons/gr";
 import { PiSword } from "react-icons/pi";
 import { GiTrade, GiHand, GiCorn } from "react-icons/gi";
@@ -14,6 +15,7 @@ function Home() {
     const [isVisible, setIsVisible] = useState(false);
     const [username, setUsername] = useState(" ");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [image, setImage] = useState(() => getSharedImage(imageDefault));
     const navigate = useNavigate();
 
     // Navigate
@@ -79,6 +81,15 @@ function Home() {
 
     useEffect(() => {
         document.title = "Home";
+    }, []);
+
+    useEffect(() => {
+        // Listen for storage changes (sync image across tabs/pages)
+        const onStorage = () => setImage(getSharedImage(imageDefault));
+        window.addEventListener('storage', onStorage);
+        return () => {
+            window.removeEventListener('storage', onStorage);
+        };
     }, []);
 
 const handleLogout = async () => { 
@@ -322,6 +333,28 @@ const handleLogout = async () => {
                                         alt="Home Visual"
                                         className="w-full h-auto object-cover rounded-lg sm:rounded-xl shadow-lg transform transition duration-300"
                                     />
+                                    {/* File Upload Button */}
+                                    <div className="flex justify-center mt-2">
+                                        <label className="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                                            Change Image
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={e => {
+                                                    const file = e.target.files[0];
+                                                    if (file) {
+                                                        const reader = new FileReader();
+                                                        reader.onload = ev => {
+                                                            setSharedImage(ev.target.result);
+                                                            setImage(ev.target.result);
+                                                        };
+                                                        reader.readAsDataURL(file);
+                                                    }
+                                                }}
+                                                className="hidden"
+                                            />
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>

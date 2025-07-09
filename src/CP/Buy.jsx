@@ -13,6 +13,13 @@ function Buy() {
     const [isVisible, setIsVisible] = useState(false);
     const [username, setUsername] = useState(" ");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [quantity, setQuantity] = useState(0);
+    const [type, setType] = useState('horse');
+    const [cost, setCost] = useState(' ');
+    const [coins, setCoins] = useState(' ');
+    const [landNo, setLandNo] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [selectedOption, setSelectedOption] = useState('horse');
     const navigate = useNavigate();
 
     // Navigation functions (close mobile menu on nav)
@@ -46,6 +53,38 @@ function Buy() {
         return () => clearTimeout(timer);
     }, []);
 
+    useEffect(() => {
+        const fetchCostAndCoins = async () => {
+            if (!quantity || !type) return;
+            setLoading(true);
+            try {
+                const res = await fetch(`http://localhost:3000/CP/buy`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ quantity, type }),
+                });
+    
+                if (res.ok) {
+                    const data = await res.json();
+                    setCost(data.cost);
+                    setCoins(data.coins);
+                } else {
+                    setCost('empty');
+                    setCoins('empty');
+                }
+            } catch {
+                setCost('empty');
+                setCoins('empty');
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchCostAndCoins();
+    }, [quantity, type]);
+    
     useEffect(() => {
         document.title = "Buy";
     }, []);
@@ -81,7 +120,7 @@ function Buy() {
                     // Call backend logout endpoint
                     await fetch('http://localhost:3000/authen/signout', {
                         method: 'POST',
-                        credentials: 'include', // if using cookies/session
+                        credentials: 'include',
                         headers: {
                             'Content-Type': 'application/json',
                         },
@@ -96,6 +135,50 @@ function Buy() {
                 }, 1500);
             }
         }
+
+    // Handle form submit
+    const handleBuy = async (e) => {
+        e.preventDefault();
+        if (!quantity || !type || !landNo || Number(landNo) < 0 || Number(landNo) > 33) {
+            toast.error("Please enter a valid Land Number (1 - 33).", { position: "top-center" });
+            return;
+        }
+        setLoading(true);
+        try {
+            const res = await fetch('http://localhost:3000/CP/buy', {
+                method: 'PATCH',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    quantity: Number(quantity),
+                    type,
+                    landNo: Number(landNo),
+                }),
+            });
+    
+            const data = await res.json();
+            if (res.ok) {
+                toast.success(data.message || "Purchase successful!", { position: "top-center" });
+                setQuantity(0);
+                setType(' ');
+                setLandNo(0);
+            } else {
+                toast.error(data.message || "Purchase failed.", { position: "top-center" });
+            }
+        } catch {
+            toast.error("Network error.", { position: "top-center" });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleChange = (e) => {
+        const selected = e.target.value;
+        setSelectedOption(selected);
+        setType(selected);
+    };
 
     return (
         <>
@@ -206,7 +289,7 @@ function Buy() {
                         {/* Subtle inner glow */}
                         <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent rounded-2xl sm:rounded-3xl pointer-events-none"></div>
                         <div className="relative z-10 flex flex-col items-center w-full">
-                            <form className="w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <form className="w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-4" onSubmit={handleBuy}>
                                 {/* Left Column */}
                                 <div className="flex flex-col gap-4">
                                 {/* Quantity */}
@@ -215,9 +298,12 @@ function Buy() {
                                     <input
                                     id="buy-quantity-input"
                                     type="number"
-                                    min="1"
+                                    min={1}
                                     className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
-                                    placeholder="3"
+                                    placeholder="0"
+                                    value={quantity}
+                                    onChange={e => setQuantity(e.target.value)}
+                                    disabled={loading}
                                     />
                                 </div>
                                 {/* Cost */}
@@ -227,7 +313,7 @@ function Buy() {
                                     id="buy-cost-label"
                                     type="text"
                                     className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-gray-100 cursor-not-allowed text-lg sm:text-xl"
-                                    value="Auto-calculated"
+                                    value={loading ? 'Loading...' : cost}
                                     disabled
                                     />
                                 </div>
@@ -238,8 +324,8 @@ function Buy() {
                                     id="buy-coins-label"
                                     type="text"
                                     className="w-full px-4 py-3 rounded-xl border border-gray-300 bg-gray-100 cursor-not-allowed text-lg sm:text-xl"
-                                    value="Auto-calculated"
-                                    disabled
+                                    value={loading ? 'Loading...' : coins}
+                                    disabled={loading}
                                     />
                                 </div>
                                 {/* Land Number */}
@@ -247,9 +333,14 @@ function Buy() {
                                     <label htmlFor="buy-land-label" className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-44">Land Number</label>
                                     <input
                                     id="buy-land-label"
-                                    type="text"
+                                    type="number"
+                                    min={0}
+                                    max={33}
                                     className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
                                     placeholder="must be from 1 - 33"
+                                    value={landNo}
+                                    onChange={e => setLandNo(e.target.value)}
+                                    disabled={loading}
                                     />
                                 </div>
                                 </div>
@@ -259,26 +350,32 @@ function Buy() {
                                 <div >
                                     <label htmlFor="buy-type-select" className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-20">Type</label>
                                     <select
-                                    id="buy-type-select"
-                                    className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
-                                    >
-                                    <option value="horse">Horse</option>
-                                    <option value="cart">Cart</option>
-                                    <option value="rent-carts">Rent carts</option>
-                                    <option value="rent-horses">rent horses</option>
-                                    <option value="apple-crop">Apple crop</option>
-                                    <option value="wheat-crop">Wheat Crop</option>
-                                    <option value="watermelon-crop">Watermelon Crop</option>
-                                    <option value="apple-seeds">Apple seeds</option>
-                                    <option value="wheat-seeds">Wheat seeds</option>
-                                    <option value="watermelon-seeds">Watermelon seeds</option>
-                                    <option value="soldiers">Soldiers</option>
-                                    </select>
+                                        id="buy-type-select"
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
+                                        value={selectedOption}  // or value={type} – both are in sync
+                                        onChange={handleChange}
+                                        disabled={loading}
+                                        >
+                                        <option value="horse">Horse</option>
+                                        <option value="cart">Cart</option>
+                                        <option value="apple">Apple Crop</option>
+                                        <option value="wheat">Wheat Crop</option>
+                                        <option value="watermelon">Watermelon Crop</option>
+                                        <option value="appleSeeds">Apple Seeds</option>
+                                        <option value="wheatSeeds">Wheat Seeds</option>
+                                        <option value="watermelonSeeds">Watermelon Seeds</option>
+                                        <option value="soldier">Soldiers</option>
+                                        <option value="rentCart">Rent Cart</option>
+                                        <option value="rentHorse">Rent Horse</option>
+                                        <option value="workshop">Workshop</option>
+                                        <option value="house">House</option>
+                                        <option value="soil">Soil</option>
+                                        </select>
                                 </div>
                                 </div>
                                 {/* Responsive Submit Button */}
                                 <div className="col-span-1 md:col-span-2 flex justify-center mt-4">
-                                    <button type="submit" className="bg-blue-500 text-white px-6 py-3 rounded-xl font-bold shadow hover:bg-blue-600 transition w-full sm:w-[150px] text-center">Buy</button>
+                                    <button type="submit" className="bg-blue-500 text-white px-6 py-3 rounded-xl font-bold shadow hover:bg-blue-600 transition w-full sm:w-[150px] text-center" disabled={loading}>{loading ? 'Processing...' : 'Buy'}</button>
                                 </div>
                             </form>
                         </div>

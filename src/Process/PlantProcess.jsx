@@ -13,6 +13,9 @@ function PlantProcess() {
     const [isVisible, setIsVisible] = useState(false);
     const [username, setUsername] = useState(" ");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [landSoil, setLandSoil] = useState(null);
+    const [seeds, setSeeds] = useState(null);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -31,6 +34,19 @@ function PlantProcess() {
         link.href = '/Plant.png';
         document.getElementsByTagName('head')[0].appendChild(link);
 
+        // Load plant process data
+        const plantData = localStorage.getItem('plantProcessData');
+        if (plantData) {
+            try {
+                const parsed = JSON.parse(plantData);
+                setLandSoil(parsed.landSoil);
+                setSeeds(parsed.seeds);
+            } catch {
+                // Optionally log error
+            }
+        }
+        setLoading(false);
+
         return () => clearTimeout(timer);
     }, []);
 
@@ -44,7 +60,7 @@ function PlantProcess() {
                     // Call backend logout endpoint
                     await fetch('http://localhost:3000/authen/signout', {
                         method: 'POST',
-                        credentials: 'include', // if using cookies/session
+                        credentials: 'include',
                         headers: {
                             'Content-Type': 'application/json',
                         },
@@ -182,49 +198,47 @@ function PlantProcess() {
                         <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent rounded-2xl sm:rounded-3xl pointer-events-none"></div>
                         <div className="relative z-10 flex flex-col items-center w-full">
                             {/* Custom Planting UI */}
+                            {loading ? (
+                                <div className="text-lg text-gray-600">Loading...</div>
+                            ) : (
                             <div className="w-full flex flex-col gap-8 items-center justify-center">
                                 <div className="flex flex-col sm:flex-row gap-12 w-full justify-center">
-                                    {/* Left side: Land selection and soils */}
+                                    {/* Left side: Land soils */}
                                     <div className="flex flex-col gap-6 min-w-[220px]">
-                                        <label className="text-lg font-medium text-gray-700">the land you will plant in :</label>
-                                        <select className="rounded-lg border border-gray-300 px-4 py-2 text-lg bg-white shadow focus:outline-none focus:ring-2 focus:ring-blue-300">
-                                            <option>empty</option>
-                                            <option>apple</option>
-                                            <option>watermelon</option>
-                                            <option>wheat</option>
-                                        </select>
+                                        <label className="text-lg font-medium text-gray-700">Land Soils:</label>
                                         <div className="mt-4 text-gray-700 text-base font-semibold">
-                                            the Land Soils:
-                                            <div className="ml-4 mt-1 font-normal">
-                                                empty : 2<br />
-                                                apple : 1<br />
-                                                wheat : 1<br />
-                                                watermelon : 1
-                                            </div>
+                                            {landSoil ? (
+                                                <div className="ml-4 mt-1 font-normal">
+                                                    empty : {landSoil.empty}<br />
+                                                    apple : {landSoil.apple}<br />
+                                                    wheat : {landSoil.wheat}<br />
+                                                    watermelon : {landSoil.watermelon}
+                                                </div>
+                                            ) : (
+                                                <div>No land soil data.</div>
+                                            )}
                                         </div>
                                     </div>
-                                    {/* Right side: Plant selection and seeds */}
+                                    {/* Right side: Seeds */}
                                     <div className="flex flex-col gap-6 min-w-[220px]">
-                                        <label className="text-lg font-medium text-gray-700">what will you plant :</label>
-                                        <select className="rounded-lg border border-gray-300 px-4 py-2 text-lg bg-white shadow focus:outline-none focus:ring-2 focus:ring-blue-300">
-                                            <option>empty</option>
-                                            <option>apple</option>
-                                            <option>watermelon</option>
-                                            <option>wheat</option>
-                                        </select>
+                                        <label className="text-lg font-medium text-gray-700">Your Seeds:</label>
                                         <div className="mt-4 text-gray-700 text-base font-semibold">
-                                            your seeds
-                                            <div className="ml-4 mt-1 font-normal">
-                                                apple : 1<br />
-                                                watermelon : 2<br />
-                                                wheat : 1
-                                            </div>
+                                            {seeds ? (
+                                                <div className="ml-4 mt-1 font-normal">
+                                                    apple : {seeds.apple}<br />
+                                                    watermelon : {seeds.watermelon}<br />
+                                                    wheat : {seeds.wheat}
+                                                </div>
+                                            ) : (
+                                                <div>No seeds data.</div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
                                 {/* Plant button */}
                                 <button className="mt-4 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold px-8 py-3 rounded-lg shadow text-lg transition">Plant</button>
                             </div>
+                            )}
                         </div>
                     </div>
                 </div>
