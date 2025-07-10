@@ -42,12 +42,13 @@ function Welcome() {
                 {/* Title with Gradient Text */}
                 <div className="text-center mb-8 sm:mb-12">
                     <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-bold mb-2 sm:mb-4 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-black">
+<<<<<<< HEAD
                         Clash Of Patrols <br></br>
                         XI
+=======
+                        Clash of Patrols <br /> XI
+>>>>>>> d337c09c792dd127980d23e1f60ede233a1da4a8
                     </h1>
-                    <p className="text-gray/80 text-base xs:text-lg font-light tracking-wide">
-                        Adventure awaits you
-                    </p>
                 </div>
 
                 {/* Main Card */}
@@ -67,7 +68,11 @@ function Welcome() {
                                 Welcome Back!
                             </h2>
                             <p className="text-gray-600 leading-relaxed text-sm xs:text-base">
+<<<<<<< HEAD
                                 Login in to continue your epic journey and unlock new adventures in the <b>CLASH OF PATROLS</b>
+=======
+                                Login in to continue your epic journey and unlock new adventures in the Clash of Patrols XI
+>>>>>>> d337c09c792dd127980d23e1f60ede233a1da4a8
                             </p>
                         </div>
 
