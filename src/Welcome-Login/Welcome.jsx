@@ -42,7 +42,8 @@ function Welcome() {
                 {/* Title with Gradient Text */}
                 <div className="text-center mb-8 sm:mb-12">
                     <h1 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl font-bold mb-2 sm:mb-4 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-black">
-                        Robin Game
+                        Clash Of Patrols <br></br>
+                        XI
                     </h1>
                     <p className="text-gray/80 text-base xs:text-lg font-light tracking-wide">
                         Adventure awaits you
@@ -66,7 +67,7 @@ function Welcome() {
                                 Welcome Back!
                             </h2>
                             <p className="text-gray-600 leading-relaxed text-sm xs:text-base">
-                                Login in to continue your epic journey and unlock new adventures in the Robin Game.
+                                Login in to continue your epic journey and unlock new adventures in the <b>CLASH OF PATROLS</b>
                             </p>
                         </div>
 
