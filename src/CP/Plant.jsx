@@ -15,10 +15,10 @@ function Plant() {
     const [isVisible, setIsVisible] = useState(false);
     const [username, setUsername] = useState(" ");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const navigate = useNavigate();
     const [image, setImage] = useState(() => getSharedImage(imageDefault));
     const [landNo, setLandNo] = useState("");
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(true), 200);
@@ -110,7 +110,6 @@ function Plant() {
     // Navigation functions (close mobile menu on nav)
     const Home = () => { navigate('/cp'); setIsMobileMenuOpen(false); };
     const Buy = () => { navigate('/cp/buy'); setIsMobileMenuOpen(false); };
-    const Plant = () => { navigate('/cp/plant'); setIsMobileMenuOpen(false); };
     const Feeding = () => { navigate('/cp/feeding'); setIsMobileMenuOpen(false); };
     const Attack = () => { navigate('/cp/attack'); setIsMobileMenuOpen(false); };
     const Transport = () => { navigate('/cp/transport'); setIsMobileMenuOpen(false); };

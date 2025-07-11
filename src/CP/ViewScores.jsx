@@ -220,7 +220,7 @@ function ViewScores() {
 
     // Navigation functions
     const Home = () => {
-        navigate('/cp/home');
+        navigate('/cp');
     }
 
     const Buy = () => {

@@ -139,7 +139,7 @@ function Buy() {
     // Handle form submit
     const handleBuy = async (e) => {
         e.preventDefault();
-        if (!quantity || !type || !landNo || Number(landNo) < 0 || Number(landNo) > 33) {
+        if (!quantity || !type || Number(landNo) < 0 || Number(landNo) > 33) {
             toast.error("Please enter a valid Land Number (1 - 33).", { position: "top-center" });
             return;
         }
