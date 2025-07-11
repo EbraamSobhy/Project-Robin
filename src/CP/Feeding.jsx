@@ -15,8 +15,10 @@ function Feeding() {
     const [isVisible, setIsVisible] = useState(false);
     const [username, setUsername] = useState(" ");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const navigate = useNavigate();
     const [image, setImage] = useState(() => getSharedImage(imageDefault));
+    const [landNo, setLandNo] = useState("");
+    const [error, setError] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(true), 200);
@@ -84,6 +86,46 @@ function Feeding() {
     const Attack = () => { navigate('/cp/attack'); setIsMobileMenuOpen(false); };
     const Transport = () => { navigate('/cp/transport'); setIsMobileMenuOpen(false); };
     const ViewScores = () => { navigate('/cp/scores'); setIsMobileMenuOpen(false); };
+
+    // Handle planting
+    const handleFeeding = async (e) => {
+        e.preventDefault();
+    
+        const num = Number(landNo);
+        if (!num || num < 1 || num > 33) {
+        setError('Land number must be between 1 and 33');
+        return;
+        }
+        setError('');
+    
+        try {
+        const response = await fetch('http://localhost:3000/CP/feeding', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ landNo: num }),
+            credentials: 'include',
+        });
+    
+        const data = await response.json();
+    
+        if (!response.ok) {
+            toast.error(data.message || 'Something went wrong', { position: 'top-center' });
+            return;
+        }
+    
+        localStorage.setItem('plantProcessData', JSON.stringify(data));
+        setLandNo('');
+        toast.success('Planting successful!', { position: 'top-center' });
+    
+        setTimeout(() => {
+            navigate('/cp/PlantProcess', { state: { landNo: num } });
+        }, 1000);
+        
+        } catch (err) {
+        toast.error('Server error. Please try again.', { position: 'top-center' });
+        console.error('Planting error:', err);
+        }
+    };
 
     return (
         <>
@@ -193,14 +235,16 @@ function Feeding() {
                         {/* Subtle inner glow */}
                         <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent rounded-2xl sm:rounded-3xl pointer-events-none"></div>
                         <div className="relative z-10 flex flex-col items-center w-full">
-                            <form className="w-full max-w-xl flex flex-col gap-4">
+                            <form className="w-full max-w-xl flex flex-col gap-4" onSubmit={handleFeeding}>
                                 {/* Feeding Land Number */}
                                 <div className="flex flex-col items-center gap-4 w-full">
                                     <label htmlFor="feeding-land-label" className="block bg-gray-700 font-bold text-lg sm:text-2xl mb-2 whitespace-nowrap text-white px-1 py-2 rounded-lg shadow-sm text-center">Land Number</label>
                                     <div className="flex flex-col sm:flex-row gap-2 w-full max-w-md">
                                         <input
                                             id="feeding-land-label"
-                                            type="text"
+                                            type="number"
+                                            value={landNo}
+                                            onChange={e => setLandNo(e.target.value)}
                                             className="px-4 sm:px-8 py-3 sm:py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg flex-1"
                                             placeholder="must be from 1 - 33"
                                         />
@@ -211,6 +255,7 @@ function Feeding() {
                                             Submit
                                         </button>
                                     </div>
+                                    {error && <div className="text-red-500 text-sm">{error}</div>}
                                 </div>
                             </form>
                         </div>
