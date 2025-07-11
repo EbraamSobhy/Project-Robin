@@ -43,7 +43,7 @@ function Welcome() {
                 <div className="text-center mb-8 sm:mb-12">
                     <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold mb-2 sm:mb-4 bg-gradient-to-r from-white to-blue-100 bg-clip-text text-black">
                         Clash of Patrols <br /> XI
->>>>>>> d337c09c792dd127980d23e1f60ede233a1da4a8
+
                     </h1>
                 </div>
 
@@ -65,7 +65,7 @@ function Welcome() {
                             </h2>
                             <p className="text-gray-600 leading-relaxed text-xs xs:text-sm">
                                 Login in to continue your epic journey and unlock new adventures in the Clash of Patrols XI
->>>>>>> d337c09c792dd127980d23e1f60ede233a1da4a8
+
                             </p>
                         </div>
 

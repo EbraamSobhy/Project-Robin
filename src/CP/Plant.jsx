@@ -74,34 +74,44 @@ function Plant() {
             }
         }
 
-        // Planting function
+    // Handle planting
     const handlePlant = async (e) => {
         e.preventDefault();
+    
         const num = Number(landNo);
         if (!num || num < 1 || num > 33) {
-            setError('Land number must be between 1 and 33');
-            return;
+        setError('Land number must be between 1 and 33');
+        return;
         }
         setError('');
+    
         try {
-            const response = await fetch('http://localhost:3000/CP/plant', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ landNo: num }),
-                credentials: 'include'
-            });
-            if (!response.ok) throw new Error('Failed to plant');
-            const data = await response.json();
-            localStorage.setItem('plantProcessData', JSON.stringify(data));
-            setLandNo('');
-            toast.success('Planting successful!', { position: 'top-center' });
-            setTimeout(() => {
-                navigate('/cp/PlantProcess');
-            }, 1000);
-        } catch {
-            toast.error('Planting failed.', { position: 'top-center' });
+        const response = await fetch('http://localhost:3000/CP/plant', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ landNo: num }),
+            credentials: 'include',
+        });
+    
+        const data = await response.json();
+    
+        if (!response.ok) {
+            toast.error(data.message || 'Something went wrong', { position: 'top-center' });
+            return;
         }
-    }
+    
+        localStorage.setItem('plantProcessData', JSON.stringify(data));
+        setLandNo('');
+        toast.success('Planting successful!', { position: 'top-center' });
+    
+        setTimeout(() => {
+            navigate('/cp/PlantProcess');
+        }, 1000);
+        } catch (err) {
+        toast.error('Server error. Please try again.', { position: 'top-center' });
+        console.error('Planting error:', err);
+        }
+    };
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -215,7 +225,6 @@ function Plant() {
                     <div className="absolute bottom-20 right-10 w-20 h-20 sm:w-40 sm:h-40 bg-white/10 rounded-full blur-xl"></div>
                     <div className="absolute top-1/2 left-1/4 w-12 h-12 sm:w-24 sm:h-24 bg-white/5 rounded-full blur-lg"></div>
                 </div>
-
                 <div className={`transform transition-all duration-1000 ease-out w-full max-w-2xl ${
                     isVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-12 opacity-0 scale-95'
                 }`}>
@@ -259,4 +268,4 @@ function Plant() {
     );
 }
 
-export default Plant
+export default Plant;
