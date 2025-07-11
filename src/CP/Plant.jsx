@@ -105,8 +105,9 @@ function Plant() {
         toast.success('Planting successful!', { position: 'top-center' });
     
         setTimeout(() => {
-            navigate('/cp/PlantProcess');
+            navigate('/cp/PlantProcess', { state: { landNo: num } });
         }, 1000);
+        
         } catch (err) {
         toast.error('Server error. Please try again.', { position: 'top-center' });
         console.error('Planting error:', err);

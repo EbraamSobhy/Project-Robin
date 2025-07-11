@@ -7,7 +7,7 @@ import { LuSwords } from "react-icons/lu";
 import { MdLocalShipping } from 'react-icons/md';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function PlantProcess() {
     const [isVisible, setIsVisible] = useState(false);
@@ -16,6 +16,10 @@ function PlantProcess() {
     const [landSoil, setLandSoil] = useState(null);
     const [seeds, setSeeds] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [selectedSoil, setSelectedSoil] = useState('empty');
+    const [selectedSeed, setSelectedSeed] = useState('appleSeeds');
+    const location = useLocation();
+    const [landNo, setLandNo] = useState(location.state?.landNo);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -27,6 +31,17 @@ function PlantProcess() {
             setUsername(storedUsername);
         }
 
+        const cached = localStorage.getItem("plantProcessData");
+        if (cached) {
+            try {
+                const { landSoil, seeds } = JSON.parse(cached);
+                setLandSoil(landSoil);
+                setSeeds(seeds);
+            } catch {
+                /* ignore bad cache */
+            }
+        }
+
         // favicon
         const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
         link.type = 'image/x-icon';
@@ -34,7 +49,7 @@ function PlantProcess() {
         link.href = '/Plant.png';
         document.getElementsByTagName('head')[0].appendChild(link);
 
-        // Load plant process data
+        // Load plant process data from cache first
         const plantData = localStorage.getItem('plantProcessData');
         if (plantData) {
             try {
@@ -46,6 +61,8 @@ function PlantProcess() {
             }
         }
         setLoading(false);
+        setSelectedSoil('empty');
+        setSelectedSeed('apple');
 
         return () => clearTimeout(timer);
     }, []);
@@ -55,26 +72,25 @@ function PlantProcess() {
     }, []);
 
     const handleLogout = async () => {
-            if (window.confirm("Are you sure you want to logout?")) {
-                try {
-                    // Call backend logout endpoint
-                    await fetch('http://localhost:3000/authen/signout', {
-                        method: 'POST',
-                        credentials: 'include',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                    });
-                } catch {
-                    toast.error("Logout failed on server.", { position: "top-center" });
-                }
-                localStorage.removeItem("username");
-                toast.info("Logged out successfully!", { position: "top-center" });
-                setTimeout(() => {
-                    navigate('/');
-                }, 1500);
+        if (window.confirm("Are you sure you want to logout?")) {
+            try {
+                await fetch('http://localhost:3000/authen/signout', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+            } catch {
+                toast.error("Logout failed on server.", { position: "top-center" });
             }
+            localStorage.removeItem("username");
+            toast.info("Logged out successfully!", { position: "top-center" });
+            setTimeout(() => {
+                navigate('/');
+            }, 1500);
         }
+    };
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -88,6 +104,64 @@ function PlantProcess() {
     const Attack = () => { navigate('/cp/attack'); setIsMobileMenuOpen(false); };
     const Transport = () => { navigate('/cp/transport'); setIsMobileMenuOpen(false); };
     const ViewScores = () => { navigate('/cp/scores'); setIsMobileMenuOpen(false); };
+
+    // Function to Refetch Data
+    const fetchPlantProcessData = async () => {
+        try {
+            setLoading(true);
+            const res = await fetch("http://localhost:3000/CP/plant", {
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                method: "POST",
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || "Failed to fetch data");
+            setLandSoil(data.landSoil);
+            setSeeds(data.seeds);
+            // Optionally cache in localStorage:
+            localStorage.setItem("plantProcessData", JSON.stringify(data));
+        } catch (err) {
+            toast.error(err.message, { position: "top-center" });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Function of Plant
+        const handlePlant = async () => {
+            try {
+            setLoading(true);
+        
+            const seedType = selectedSeed.replace("Seeds", "");
+        
+            const res = await fetch("http://localhost:3000/CP/plant/process", {
+                method: "PATCH",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                targetSoil: selectedSoil || "empty",
+                targetSeed: seedType,
+                landNo,
+                }),
+            });
+        
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || "Planting failed");
+        
+            toast.success(data.message, {
+                position: "top-center",
+                autoClose: 2500,
+                closeOnClick: true,
+                pauseOnHover: true,
+            });
+            await fetchPlantProcessData();
+
+            } catch (err) {
+            toast.error(err.message, { position: "top-center" });
+            } finally {
+            setLoading(false);
+            }
+        };
 
     return (
         <>
@@ -142,7 +216,7 @@ function PlantProcess() {
                         </div>
                         <span className="text-xs text-blue-700 font-semibold">Buy</span>
                     </button>
-                     {/* Plant Tab */}
+                    {/* Plant Tab */}
                     <button onClick={Plant} className="w-full flex flex-col items-center py-2 px-2 group bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
@@ -197,47 +271,87 @@ function PlantProcess() {
                         {/* Subtle inner glow */}
                         <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent rounded-2xl sm:rounded-3xl pointer-events-none"></div>
                         <div className="relative z-10 flex flex-col items-center w-full">
-                            {/* Custom Planting UI */}
+                            {/* No land selector, just planting form */}
                             {loading ? (
                                 <div className="text-lg text-gray-600">Loading...</div>
                             ) : (
-                            <div className="w-full flex flex-col gap-8 items-center justify-center">
-                                <div className="flex flex-col sm:flex-row gap-12 w-full justify-center">
-                                    {/* Left side: Land soils */}
-                                    <div className="flex flex-col gap-6 min-w-[220px]">
-                                        <label className="text-lg font-medium text-gray-700">Land Soils:</label>
-                                        <div className="mt-4 text-gray-700 text-base font-semibold">
-                                            {landSoil ? (
-                                                <div className="ml-4 mt-1 font-normal">
-                                                    empty : {landSoil.empty}<br />
-                                                    apple : {landSoil.apple}<br />
-                                                    wheat : {landSoil.wheat}<br />
-                                                    watermelon : {landSoil.watermelon}
-                                                </div>
-                                            ) : (
-                                                <div>No land soil data.</div>
-                                            )}
-                                        </div>
+                                <div className="w-full flex flex-col items-center justify-center">
+                                    <div className="flex flex-col gap-1 w-full max-w-xs">
+                                        <label htmlFor="landNo" className="font-semibold text-gray-700 mb-1 flex-1 text-center">
+                                            Your Land Number
+                                        </label>
+                                        <input
+                                            id="landNo"
+                                            value={landNo}
+                                            onChange={setLandNo}
+                                            className="border border-blue-300 rounded-lg px-4 py-2 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition w-full mb-10 text-center font-bold text-3xl"
+                                            disabled
+                                        />
                                     </div>
-                                    {/* Right side: Seeds */}
-                                    <div className="flex flex-col gap-6 min-w-[220px]">
-                                        <label className="text-lg font-medium text-gray-700">Your Seeds:</label>
-                                        <div className="mt-4 text-gray-700 text-base font-semibold">
-                                            {seeds ? (
-                                                <div className="ml-4 mt-1 font-normal">
-                                                    apple : {seeds.apple}<br />
-                                                    watermelon : {seeds.watermelon}<br />
-                                                    wheat : {seeds.wheat}
-                                                </div>
-                                            ) : (
-                                                <div>No seeds data.</div>
-                                            )}
+                                    <div className="w-full flex flex-col md:flex-row items-start justify-between gap-8">
+                                        {/* Left: Land Soils and dropdown */}
+                                        <div className="flex flex-col items-start gap-4 flex-1">
+                                            <label className="font-medium text-gray-700 text-sm">the land you will plant in :</label>
+                                            <select
+                                                value={selectedSoil}
+                                                onChange={e => setSelectedSoil(e.target.value)}
+                                                className="border border-gray-300 rounded px-4 py-2 text-base bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+                                            >
+                                                <option value="empty">empty</option>
+                                                <option value="apple">apple</option>
+                                                <option value="watermelon">watermelon</option>
+                                                <option value="wheat">wheat</option>
+                                            </select>
+                                            <div className="mt-2 text-gray-700 text-base font-semibold w-full">
+                                                <span className="font-semibold">the Land Soils:</span>
+                                                {landSoil ? (
+                                                    <ul className="ml-2 mt-1 font-normal space-y-1">
+                                                        <li>empty : {landSoil.empty}</li>
+                                                        <li>apple : {landSoil.apple}</li>
+                                                        <li>watermelon : {landSoil.watermelon}</li>
+                                                        <li>wheat : {landSoil.wheat}</li>
+                                                    </ul>
+                                                ) : (
+                                                    <div>No land soil data.</div>
+                                                )}
+                                            </div>
+                                        </div>
+                                        {/* Right: Seeds and dropdown */}
+                                        <div className="flex flex-col items-start gap-4 flex-1">
+                                            <label className="font-medium text-gray-700">what will you plant :</label>
+                                            <select
+                                                value={selectedSeed}
+                                                onChange={e => setSelectedSeed(e.target.value)}
+                                                className="border border-gray-300 rounded px-4 py-2 text-base bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-300"
+                                            >
+                                                <option value="appleSeeds">apple</option>
+                                                <option value="watermelonSeeds">watermelon</option>
+                                                <option value="wheatSeeds">wheat</option>
+                                            </select>
+                                            <div className="mt-2 text-gray-700 text-base font-semibold w-full">
+                                                <span className="font-semibold">your seeds</span>
+                                                {seeds ? (
+                                                    <ul className="ml-2 mt-1 font-normal space-y-1">
+                                                        <li>apple : {seeds.apple}</li>
+                                                        <li>watermelon : {seeds.watermelon}</li>
+                                                        <li>wheat : {seeds.wheat}</li>
+                                                    </ul>
+                                                ) : (
+                                                    <div>No seeds data.</div>
+                                                )}
+                                            </div>
+                                        </div>
+                                        {/* Plant button at far right */}
+                                        <div className="flex flex-col items-end justify-start flex-1 mt-20">
+                                            <button
+                                                className="mt-4 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold px-8 py-3 rounded-lg shadow text-lg transition"
+                                                onClick={handlePlant}
+                                            >
+                                                Plant
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
-                                {/* Plant button */}
-                                <button className="mt-4 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold px-8 py-3 rounded-lg shadow text-lg transition">Plant</button>
-                            </div>
                             )}
                         </div>
                     </div>
@@ -248,4 +362,4 @@ function PlantProcess() {
     );
 }
 
-export default PlantProcess
+export default PlantProcess;
