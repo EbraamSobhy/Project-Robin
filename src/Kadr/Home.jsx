@@ -122,6 +122,23 @@ const handleLogout = async () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
 
+    const Close = async () => { 
+        try {
+            const response = await fetch('http://localhost:3000/Chef/close', {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const data = await response.json();
+            localStorage.removeItem("username");
+            toast.info(data.message, { position: "top-center" });
+        } catch {
+            toast.error("Failed to Close game.", { position: "top-center" });
+        }
+    };
+
     return (
         <>
             {/* Horizontal Navbar */}
@@ -339,8 +356,8 @@ const handleLogout = async () => {
                                         className="w-full h-auto object-cover rounded-lg sm:rounded-xl shadow-lg transform transition duration-300"
                                     />
                                     {/* File Upload Button */}
-                                    <div className="flex justify-center mt-2">
-                                        <label className="cursor-pointer bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                                    <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mt-2">
+                                        <label className="cursor-pointer bg-blue-500 text-white px-2 py-1 sm:px-4 sm:py-2 rounded text-xs sm:text-sm hover:bg-blue-600 font-bold transition-colors">
                                             Change Image
                                             <input
                                                 type="file"
@@ -359,12 +376,14 @@ const handleLogout = async () => {
                                                 className="hidden"
                                             />
                                         </label>
-                                    </div>
-                                    <div className="flex justify-center">
-                                    {/* Watering Button */}
-                                    <button onClick={GoToWatering} className="flex justify-center text-center mt-4 cursor-pointer bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
-                                        Watering
-                                    </button>
+                                        {/* Watering Button */}
+                                        <button onClick={GoToWatering} className="cursor-pointer bg-blue-500 text-white px-2 py-1 sm:px-4 sm:py-2 rounded text-xs sm:text-sm hover:bg-blue-600 font-bold transition-colors">
+                                            Watering
+                                        </button>
+                                        {/* Close Game Button */}
+                                        <button onClick={Close} className="cursor-pointer bg-red-500 text-white px-2 py-1 sm:px-4 sm:py-2 rounded text-xs sm:text-sm hover:bg-red-600 font-bold transition-colors">
+                                            Switch
+                                        </button>
                                     </div>
                                 </div>
                             </div>

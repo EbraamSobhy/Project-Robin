@@ -11,31 +11,30 @@ import { useNavigate } from 'react-router-dom';
 
 function TransportProcess() {
     const [isVisible, setIsVisible] = useState(false);
-    const [username, setUsername] = useState(" ");
+    const [username, setUsername] = useState("");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [result, setResult] = useState(null); // ✅ defined properly
+    const [initialLand] = useState(1); // hardcoded for now
+    const [finalLand] = useState(2);     // hardcoded for now
+
     const navigate = useNavigate();
 
     useEffect(() => {
-        const timer = setTimeout(() => setIsVisible(true), 200);
+        setTimeout(() => setIsVisible(true), 200);
 
-        // Retrieve username from localStorage
         const storedUsername = localStorage.getItem("username");
         if (storedUsername) {
             setUsername(storedUsername);
         }
 
-        // favicon
+        document.title = "Transport Process";
+
         const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
         link.type = 'image/x-icon';
         link.rel = 'shortcut icon';
         link.href = '/Transport.png';
         document.getElementsByTagName('head')[0].appendChild(link);
-
-        return () => clearTimeout(timer);
-    }, []);
-
-    useEffect(() => {
-        document.title = "Transport Process";
     }, []);
 
     const handleLogout = async () => {
@@ -44,9 +43,7 @@ function TransportProcess() {
                 await fetch('http://localhost:3000/authen/signout', {
                     method: 'POST',
                     credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                 });
             } catch {
                 toast.error("Logout failed on server.", { position: "top-center" });
@@ -57,13 +54,13 @@ function TransportProcess() {
                 navigate('/');
             }, 1500);
         }
-    }
+    };
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
 
-    // Navigation functions (close mobile menu on nav)
+    // Navigation functions
     const Home = () => { navigate('/cp'); setIsMobileMenuOpen(false); };
     const Buy = () => { navigate('/cp/buy'); setIsMobileMenuOpen(false); };
     const Plant = () => { navigate('/cp/plant'); setIsMobileMenuOpen(false); };
@@ -71,6 +68,36 @@ function TransportProcess() {
     const Attack = () => { navigate('/cp/attack'); setIsMobileMenuOpen(false); };
     const Transport = () => { navigate('/cp/transport'); setIsMobileMenuOpen(false); };
     const ViewScores = () => { navigate('/cp/scores'); setIsMobileMenuOpen(false); };
+
+    // ✅ handle transport request and update result
+    const handleTransportSubmit = async (e) => {
+        e.preventDefault();
+        setResult(null);
+        setLoading(true);
+
+        try {
+            const res = await fetch('http://localhost:3000/CP/transport', {
+                method: 'PATCH',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    initialLandNo: initialLand,
+                    finalLandNo: finalLand
+                }),
+            });
+
+            if (!res.ok) throw new Error("Transport failed");
+
+            const data = await res.json();
+            setResult(data);
+            toast.success("Transport successful!", { position: "top-center" });
+
+        } catch {
+            toast.error("Error connecting to server.", { position: "top-center" });
+        }
+
+        setLoading(false);
+    };
 
     return (
         <>
@@ -99,7 +126,7 @@ function TransportProcess() {
                         <button onClick={Plant} className="flex items-center px-6 py-3 text-blue-700 hover:bg-blue-50 transition"><PiPlantBold className="w-5 h-5 mr-3" /><span className="font-semibold">Plant</span></button>
                         <button onClick={Feeding} className="flex items-center px-6 py-3 text-blue-700 hover:bg-blue-50 transition"><GiEating className="w-5 h-5 mr-3" /><span className="font-semibold">Feeding</span></button>
                         <button onClick={Attack} className="flex items-center px-6 py-3 text-blue-700 hover:bg-blue-50 transition"><LuSwords className="w-5 h-5 mr-3" /><span className="font-semibold">Attack</span></button>
-                        <button onClick={Transport} className="flex items-center px-6 py-3 text-blue-700 bg-blue-50 transition"><MdLocalShipping className="w-5 h-5 mr-3" /><span className="font-semibold">Transport</span></button>
+                        <button className="flex items-center px-6 py-3 text-blue-700 bg-blue-50 transition"><MdLocalShipping className="w-5 h-5 mr-3" /><span className="font-semibold">Transport</span></button>
                         <button onClick={ViewScores} className="flex items-center px-6 py-3 text-blue-700 hover:bg-blue-50 transition"><GrScorecard className="w-5 h-5 mr-3" /><span className="font-semibold">View Scores</span></button>
                         <button onClick={handleLogout} className="flex items-center px-6 py-3 text-red-600 hover:bg-red-50 transition mt-2 border-t border-gray-100"><svg className="w-5 h-5 mr-3" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg><span className="font-semibold">Logout</span></button>
                     </div>
@@ -125,7 +152,7 @@ function TransportProcess() {
                         </div>
                         <span className="text-xs text-blue-700 font-semibold">Buy</span>
                     </button>
-                     {/* Plant Tab */}
+                    {/* Plant Tab */}
                     <button onClick={Plant} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
@@ -150,7 +177,7 @@ function TransportProcess() {
                         <span className="text-xs text-blue-700 font-semibold">Attack</span>
                     </button>
                     {/* Transport Tab */}
-                    <button onClick={Transport} className="w-full flex flex-col items-center py-2 px-2 group bg-blue-50 transition relative">
+                    <button className="w-full flex flex-col items-center py-2 px-2 group bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
                             <MdLocalShipping size={25} />
@@ -166,6 +193,7 @@ function TransportProcess() {
                         <span className="text-xs text-blue-700 font-semibold">View Scores</span>
                     </button>
                 </div>
+
                 {/* Decorative background elements */}
                 <div className="absolute inset-0 overflow-hidden pointer-events-none">
                     <div className="absolute top-20 left-10 w-16 h-16 sm:w-32 sm:h-32 bg-white/10 rounded-full blur-xl"></div>
@@ -173,89 +201,64 @@ function TransportProcess() {
                     <div className="absolute top-1/2 left-1/4 w-12 h-12 sm:w-24 sm:h-24 bg-white/5 rounded-full blur-lg"></div>
                 </div>
 
+                {/* Main Card */}
                 <div className={`transform transition-all duration-1000 ease-out w-full max-w-2xl ${
                     isVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-12 opacity-0 scale-95'
                 }`}>
-                    <div className="bg-white/90 backdrop-blur-md rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 lg:p-8 border border-white/30 relative w-full">
-                        {/* Subtle inner glow */}
-                        <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent rounded-2xl sm:rounded-3xl pointer-events-none"></div>
+                    <div className="bg-white/90 backdrop-blur-md rounded-2xl shadow-2xl p-6 border border-white/30 relative w-full">
+                        <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent rounded-2xl pointer-events-none"></div>
+
                         <div className="relative z-10 flex flex-col items-center w-full">
-                            {/* Custom Transport UI - as in image */}
-                            <div className="w-full flex flex-col gap-8 items-center justify-center">
-                                {/* Type dropdown */}
-                                <div className="w-full flex flex-col items-center mb-2">
-                                    <label className="mb-1 px-3 py-1 rounded-full bg-gray-400/60 text-white text-xs font-semibold self-start">type</label>
-                                    <select className="rounded-lg border border-gray-300 px-4 py-2 text-lg bg-white shadow focus:outline-none focus:ring-2 focus:ring-blue-300 w-60">
-                                        <option>apple</option>
-                                        <option>wheat</option>
-                                        <option>watermelon</option>
-                                        <option>soldier</option>
-                                    </select>
+                            <form className="w-full max-w-xl flex flex-col gap-4" onSubmit={handleTransportSubmit}>
+                                <div className="flex flex-col items-center gap-4 w-full">
+                                    <button
+                                        type="submit"
+                                        disabled={loading}
+                                        className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl shadow transition w-full sm:w-auto"
+                                    >
+                                        {loading ? "Submitting..." : "Submit Transport"}
+                                    </button>
                                 </div>
-                                {/* Resources columns */}
-                                <div className="w-full flex flex-col sm:flex-row justify-between gap-8">
-                                    <div className="flex-1 text-gray-700 text-base font-medium">
-                                        resources in the starting land:<br />
-                                        <span className="ml-4 font-normal">
-                                            apple : 2<br />
-                                            watermelon : 1<br />
-                                            wheat : 3<br />
-                                            soldiers : 10
-                                        </span>
+                            </form>
+
+                            {/* ✅ Transport Result */}
+                            {result && (
+                                <div className="mt-6 w-full bg-blue-50 rounded-xl p-4 shadow text-blue-900 text-sm space-y-6">
+
+                                    <div>
+                                        <h3 className="font-bold mb-2 text-blue-700">
+                                            Resources for Land {initialLand}:
+                                        </h3>
+                                        <ul className="list-disc list-inside space-y-1 pl-4">
+                                            {Object.entries(result.starting).map(([k, v]) => (
+                                                <li key={k}><span className="font-semibold capitalize">{k}:</span> {v}</li>
+                                            ))}
+                                        </ul>
                                     </div>
-                                    <div className="flex-1 text-gray-700 text-base font-medium">
-                                        resources in the finish land:<br />
-                                        <span className="ml-4 font-normal">
-                                            apple : 0<br />
-                                            watermelon : 1<br />
-                                            wheat : 1<br />
-                                            soldiers : 3
-                                        </span>
+
+                                    <div>
+                                        <h3 className="font-bold mb-2 text-blue-700">
+                                            Resources for Land {finalLand}:
+                                        </h3>
+                                        <ul className="list-disc list-inside space-y-1 pl-4">
+                                            {Object.entries(result.finishing).map(([k, v]) => (
+                                                <li key={k}><span className="font-semibold capitalize">{k}:</span> {v}</li>
+                                            ))}
+                                        </ul>
                                     </div>
-                                </div>
-                                {/* Quantity input */}
-                                <div className="w-full flex flex-col items-center mb-2">
-                                    <label className="mb-1 px-3 py-1 rounded-full bg-gray-400/60 text-white text-xs font-semibold self-start">quantity</label>
-                                    <input type="number" className="rounded-lg border border-gray-300 px-4 py-2 text-lg bg-white shadow focus:outline-none focus:ring-2 focus:ring-blue-300 w-40" value="2" readOnly />
-                                </div>
-                                {/* Transport info and usage */}
-                                <div className="w-full flex flex-col sm:flex-row gap-8">
-                                    <div className="flex-1 text-gray-700 text-base font-medium">
-                                        you have:<br />
-                                        <span className="ml-4 font-normal">
-                                            horses : 1<br />
-                                            rent horses : 2<br />
-                                            carts : 2<br />
-                                            rent Carts : 1
-                                        </span>
+
+                                    <div>
+                                        <h3 className="font-bold mb-2 text-blue-700">Horse and Carts:</h3>
+                                        <ul className="list-disc list-inside space-y-1 pl-4">
+                                            <li><span className="font-semibold">Horses:</span> {result.horses}</li>
+                                            <li><span className="font-semibold">Rented Horses:</span> {result.rentHorses}</li>
+                                            <li><span className="font-semibold">Carts:</span> {result.carts}</li>
+                                            <li><span className="font-semibold">Rented Carts:</span> {result.rentCarts}</li>
+                                        </ul>
                                     </div>
-                                    <div className="flex-1 flex flex-col gap-2">
-                                        <div className="font-bold text-gray-700 mb-1">you will use</div>
-                                        <div className="flex flex-col gap-2">
-                                            <div className="flex items-center gap-2">
-                                                <label className="w-24 px-2 py-1 rounded-full bg-gray-400/60 text-white text-xs font-semibold">horses</label>
-                                                <input type="number" className="rounded-lg border border-gray-300 px-4 py-2 text-lg bg-white shadow focus:outline-none focus:ring-2 focus:ring-blue-300 flex-1" value="1" readOnly />
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <label className="w-24 px-2 py-1 rounded-full bg-gray-400/60 text-white text-xs font-semibold">rent horses</label>
-                                                <input type="number" className="rounded-lg border border-gray-300 px-4 py-2 text-lg bg-white shadow focus:outline-none focus:ring-2 focus:ring-blue-300 flex-1" value="2" readOnly />
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <label className="w-24 px-2 py-1 rounded-full bg-gray-400/60 text-white text-xs font-semibold">carts</label>
-                                                <input type="number" className="rounded-lg border border-gray-300 px-4 py-2 text-lg bg-white shadow focus:outline-none focus:ring-2 focus:ring-blue-300 flex-1" value="3" readOnly />
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <label className="w-24 px-2 py-1 rounded-full bg-gray-400/60 text-white text-xs font-semibold">rent carts</label>
-                                                <input type="number" className="rounded-lg border border-gray-300 px-4 py-2 text-lg bg-white shadow focus:outline-none focus:ring-2 focus:ring-blue-300 flex-1" value="0" readOnly />
-                                            </div>
-                                        </div>
-                                    </div>
+
                                 </div>
-                                {/* Submit button */}
-                                <div className="w-full flex justify-end mt-4">
-                                    <button className="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold px-8 py-3 rounded-lg shadow text-lg transition">submit</button>
-                                </div>
-                            </div>
+                            )}
                         </div>
                     </div>
                 </div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../Scout/tailwind.css';
 import { GrScorecard } from "react-icons/gr";
-import { PiPlantBold } from "react-icons/pi";   
+import { PiPlantBold } from "react-icons/pi";
 import { GiEating } from "react-icons/gi";
 import { LuSwords } from "react-icons/lu";
 import { MdLocalShipping } from 'react-icons/md';
@@ -46,7 +46,6 @@ function Transport() {
     }, []);
 
     useEffect(() => {
-        // Listen for storage changes (sync image across tabs/pages)
         const onStorage = () => setImage(getSharedImage(imageDefault));
         window.addEventListener('storage', onStorage);
         return () => {
@@ -55,26 +54,25 @@ function Transport() {
     }, []);
 
     const handleLogout = async () => {
-            if (window.confirm("Are you sure you want to logout?")) {
-                try {
-                    // Call backend logout endpoint
-                    await fetch('http://localhost:3000/authen/signout', {
-                        method: 'POST',
-                        credentials: 'include', // if using cookies/session
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                    });
-                } catch {
-                    toast.error("Logout failed on server.", { position: "top-center" });
-                }
-                localStorage.removeItem("username");
-                toast.info("Logged out successfully!", { position: "top-center" });
-                setTimeout(() => {
-                    navigate('/');
-                }, 1500);
+        if (window.confirm("Are you sure you want to logout?")) {
+            try {
+                await fetch('http://localhost:3000/authen/signout', {
+                    method: 'POST',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+            } catch {
+                toast.error("Logout failed on server.", { position: "top-center" });
             }
+            localStorage.removeItem("username");
+            toast.info("Logged out successfully!", { position: "top-center" });
+            setTimeout(() => {
+                navigate('/');
+            }, 1500);
         }
+    }
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -88,44 +86,53 @@ function Transport() {
     const Attack = () => { navigate('/cp/attack'); setIsMobileMenuOpen(false); };
     const ViewScores = () => { navigate('/cp/scores'); setIsMobileMenuOpen(false); };
 
-        // handle Transport
-        const handleTransportSubmit = async (e) => {
-        e.preventDefault();
-        setResult(null);
+    const handleTransportSubmit = async (e) => {
+    e.preventDefault();
+    setResult(null);
 
-        // Input validation
-        const initial = Number(initialLandNo);
-        const final = Number(finalLandNo);
-        if (
-            isNaN(initial) || isNaN(final) ||
-            initial < 1 || initial > 33 ||
-            final < 1 || final > 33
-        ) {
-            toast.error("Land numbers must be between 1 and 33.", { position: "top-center" });
-            return;
-        }
+    // Input validation
+    const initial = Number(initialLandNo);
+    const final = Number(finalLandNo);
+    if (
+        isNaN(initial) || isNaN(final) ||
+        initial < 1 || initial > 33 ||
+        final < 1 || final > 33
+    ) {
+        toast.error("Land numbers must be between 1 and 33.", { position: "top-center" });
+        return;
+    }
+    setLoading(true);
 
-        setLoading(true);
-        try {
-            const res = await fetch('http://localhost:3000/CP/transport', {
-                method: 'PATCH',
-                credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    initialLandNo: initialLandNo,
-                    finalLandNo: finalLandNo
-                }),
-            });
-            if (!res.ok) {
-                throw new Error("Failed to get resources for lands.");
-            }
-            const data = await res.json();
-            setResult(data);
-        } catch {
-            toast.error("Error connecting to server.", { position: "top-center" });
+    try {
+        const res = await fetch('http://localhost:3000/CP/transport', {
+            method: 'PATCH',
+            credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                initialLandNo: initialLandNo,
+                finalLandNo: finalLandNo
+            }),
+        });
+        if (!res.ok) {
+            throw new Error("Failed to get resources for lands.");
         }
-        setLoading(false);
-    };
+        const data = await res.json();     
+        setResult(data);                   
+        navigate(
+            '/cp/TransportProcess',   // make sure the path matches your Route
+            {
+                state: {
+                    result:      data,          // what you want to reuse
+                    initialLand: initialLandNo, // any extra you need
+                    finalLand:   finalLandNo
+                }
+                }
+            );
+    } catch {
+        toast.error("Error connecting to server.", { position: "top-center" });
+    }
+    setLoading(false);
+};
 
     return (
         <>
@@ -180,7 +187,7 @@ function Transport() {
                         </div>
                         <span className="text-xs text-blue-700 font-semibold">Buy</span>
                     </button>
-                     {/* Plant Tab */}
+                    {/* Plant Tab */}
                     <button onClick={Plant} className="w-full flex flex-col items-center py-2 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-1">
@@ -228,9 +235,8 @@ function Transport() {
                     <div className="absolute top-1/2 left-1/4 w-12 h-12 sm:w-24 sm:h-24 bg-white/5 rounded-full blur-lg"></div>
                 </div>
 
-                <div className={`transform transition-all duration-1000 ease-out w-full max-w-2xl ${
-                    isVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-12 opacity-0 scale-95'
-                }`}>
+                <div className={`transform transition-all duration-1000 ease-out w-full max-w-2xl ${isVisible ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-12 opacity-0 scale-95'
+                    }`}>
                     <div className="bg-white/90 backdrop-blur-md rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 lg:p-8 border border-white/30 relative w-full">
                         {/* Subtle inner glow */}
                         <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent rounded-2xl sm:rounded-3xl pointer-events-none"></div>
@@ -262,28 +268,50 @@ function Transport() {
                                         />
                                     </div>
                                     <button
-                                            type="submit"
-                                            disabled={loading}
-                                            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 sm:px-6 py-3 rounded-xl shadow transition w-full sm:w-auto"
-                                        >
-                                            {loading ? "Submitting..." : "Submit"}
-                                        </button>   
+                                        type="submit"
+                                        disabled={loading}
+                                        className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 sm:px-6 py-3 rounded-xl shadow transition w-full sm:w-auto"
+                                    >
+                                        {loading ? "Submitting..." : "Submit"}
+                                    </button>
                                 </div>
                             </form>
-                        {/* Show results if available */}
+                        {/* Show results */}
                         {result && (
-                                <div className="mt-6 w-full bg-blue-50 rounded-xl p-4 shadow text-blue-900 text-sm">
-                                    <h3 className="font-bold mb-2">Resources for Land {initialLandNo}:</h3>
-                                    <pre className="whitespace-pre-wrap break-words">Starting : {(result.starting, null, 2)}</pre>
-                                    <h3 className="font-bold mt-4 mb-2">Resources for Land {finalLandNo}:</h3>
-                                    <pre className="whitespace-pre-wrap break-words">Final : {(result.finishing, null, 2)}</pre>
-                                    <h3 className="font-bold mt-4 mb-2">Horses and Carts:</h3>
-                                    <pre className="whitespace-pre-wrap break-words">Horses : {(result.horses, null, 2)}</pre>
-                                    <pre className="whitespace-pre-wrap break-words">Carts : {(result.carts, null, 2)}</pre>
-                                    <pre className="whitespace-pre-wrap break-words">Rent Horses : {(result.rentHorses, null, 2)}</pre>
-                                    <pre className="whitespace-pre-wrap break-words">Rent Carts : {(result.rentCarts, null, 2)}</pre>
-                                </div>
-                            )}
+    <div className="mt-6 w-full bg-blue-50 rounded-xl p-4 shadow text-blue-900 text-sm space-y-6">
+        {/* Starting Land Resources */}
+        <div>
+            <h3 className="font-bold mb-2 text-blue-700">Resources for Land {initialLandNo}:</h3>
+            <ul className="list-disc list-inside space-y-1 pl-4">
+                {Object.entries(result.starting).map(([key, value]) => (
+                    <li key={key}><span className="font-semibold capitalize">{key}:</span> {value}</li>
+                ))}
+            </ul>
+        </div>
+
+        {/* Final Land Resources */}
+        <div>
+            <h3 className="font-bold mb-2 text-blue-700">Resources for Land {finalLandNo}:</h3>
+            <ul className="list-disc list-inside space-y-1 pl-4">
+                {Object.entries(result.finishing).map(([key, value]) => (
+                    <li key={key}><span className="font-semibold capitalize">{key}:</span> {value}</li>
+                ))}
+            </ul>
+        </div>
+
+        {/* Horses and Carts */}
+        <div>
+            <h3 className="font-bold mb-2 text-blue-700">Horse and Carts:</h3>
+            <ul className="list-disc list-inside space-y-1 pl-4">
+                <li><span className="font-semibold">Horses:</span> {result.horses}</li>
+                <li><span className="font-semibold">Rented Horses:</span> {result.rentHorses}</li>
+                <li><span className="font-semibold">Carts:</span> {result.carts}</li>
+                <li><span className="font-semibold">Rented Carts:</span> {result.rentCarts}</li>
+            </ul>
+        </div>
+    </div>
+)}
+
                         </div>
                         {/* Image below the form, inside the same container */}
                         <div className="flex flex-col items-center mt-6 sm:mt-8">
