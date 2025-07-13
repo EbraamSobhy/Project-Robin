@@ -15,12 +15,18 @@ function Transport() {
     const [isVisible, setIsVisible] = useState(false);
     const [username, setUsername] = useState(" ");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const navigate = useNavigate();
     const [image, setImage] = useState(() => getSharedImage(imageDefault));
-    const [initialLandNo, setInitialLandNo] = useState('');
-    const [finalLandNo, setFinalLandNo] = useState('');
+    const [initialLandNo, setInitialLandNo] = useState(() => {
+        const stored = localStorage.getItem("initialLandNo");
+        return stored ? Number(stored) : 0;
+    });
+    const [finalLandNo, setFinalLandNo] = useState(() => {
+        const stored = localStorage.getItem("finalLandNo");
+        return stored ? Number(stored) : 0;
+    });
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(true), 200);
@@ -35,10 +41,10 @@ function Transport() {
         const storedInitialLand = localStorage.getItem("initialLandNo");
         const storedFinalLand = localStorage.getItem("finalLandNo");
         if (storedInitialLand) {
-            setInitialLandNo(storedInitialLand);
+            setInitialLandNo(Number(storedInitialLand));
         }
         if (storedFinalLand) {
-            setFinalLandNo(storedFinalLand);
+            setFinalLandNo(Number(storedFinalLand));
         }
 
         // favicon
@@ -53,15 +59,15 @@ function Transport() {
 
     // Save initialLandNo to localStorage when it changes
     useEffect(() => {
-        if (initialLandNo !== '') {
-            localStorage.setItem("initialLandNo", initialLandNo);
+        if (initialLandNo !== 0) {
+            localStorage.setItem("initialLandNo", initialLandNo.toString());
         }
     }, [initialLandNo]);
 
     // Save finalLandNo to localStorage when it changes
     useEffect(() => {
-        if (finalLandNo !== '') {
-            localStorage.setItem("finalLandNo", finalLandNo);
+        if (finalLandNo !== 0) {
+            localStorage.setItem("finalLandNo", finalLandNo.toString());
         }
     }, [finalLandNo]);
 
@@ -133,31 +139,29 @@ function Transport() {
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                initialLandNo: initialLandNo,
-                finalLandNo: finalLandNo
+                initialLandNo: initial,
+                finalLandNo: final
             }),
         });
         if (!res.ok) {
             throw new Error("Failed to get resources for lands.");
         }
-        const data = await res.json();     
-        setResult(data);                   
-        navigate(
-            '/cp/TransportProcess',
-            {
-                state: {
-                    result:      data,
-                    initialLand: initialLandNo,
-                    finalLand:   finalLandNo
-                }
-                }
-            );
+        const data = await res.json();
+        setResult(data);
+        
     } catch {
         toast.error("Error connecting to server.", { position: "top-center" });
     }
     setLoading(false);
 };
-
+function navigateTransportProcess() {
+    navigate(
+            '/cp/TransportProcess',
+            {
+                
+                }
+            );
+}
     return (
         <>
             {/* Horizontal Navbar */}
@@ -273,7 +277,7 @@ function Transport() {
                                         id="transport-land-label"
                                         type="number"
                                         value={initialLandNo}
-                                        onChange={(e) => setInitialLandNo(e.target.value)}
+                                        onChange={(e) => setInitialLandNo(Number(e.target.value))}
                                         className="px-4 sm:px-8 py-3 sm:py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg flex-1 w-full max-w-md"
                                         placeholder="must be from 1 - 33"
                                     />
@@ -286,7 +290,7 @@ function Transport() {
                                             id="transport-target-label"
                                             type="number"
                                             value={finalLandNo}
-                                            onChange={(e) => setFinalLandNo(e.target.value)}
+                                            onChange={(e) => setFinalLandNo(Number(e.target.value))}
                                             className="px-4 sm:px-8 py-3 sm:py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg flex-1"
                                             placeholder="must be from 1 - 33"
                                         />
@@ -335,7 +339,14 @@ function Transport() {
         </div>
     </div>
 )}
-
+<button
+                                        type="submit"
+                                        onClick={navigateTransportProcess}
+                                        disabled={loading}
+                                        className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 sm:px-6 py-3 rounded-xl shadow transition w-full sm:w-auto mt-10"
+                                    >
+                                        Go to Process
+                                    </button>
                         </div>
                         {/* Image below the form, inside the same container */}
                         <div className="flex flex-col items-center mt-6 sm:mt-8">

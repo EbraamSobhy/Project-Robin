@@ -14,16 +14,15 @@ function TransportProcess() {
     const [username, setUsername] = useState("");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [result, setResult] = useState(null);
     const location = useLocation();
-    const [initialLand, setInitialLand] = useState(location.state?.initialLand || '');
-    const [finalLand, setFinalLand] = useState(location.state?.finalLand || '');
+    const [initialLand, setInitialLand] = useState(location.state?.initialLand || 0);
+    const [finalLand, setFinalLand] = useState(location.state?.finalLand || 0);
     const [quantity, setQuantity] = useState(0);
     const [horses, setHorses] = useState(0);
     const [rentHorses, setRentHorses] = useState(0);
     const [rentCarts, setRentCarts] = useState(0);
     const [type, setType] = useState('');
-    const [carts, setCarts] = useState('');
+    const [carts, setCarts] = useState(0);
 
     const navigate = useNavigate();
 
@@ -46,15 +45,15 @@ function TransportProcess() {
 
     // Save initialLandNo to localStorage when it changes
     useEffect(() => {
-        if (initialLand !== '') {
-            localStorage.setItem("initialLandNo", initialLand);
+        if (initialLand !== 0) {
+            localStorage.setItem("initialLandNo", initialLand.toString());
         }
     }, [initialLand]);
 
     // Save finalLandNo to localStorage when it changes
     useEffect(() => {
-        if (finalLand !== '') {
-            localStorage.setItem("finalLandNo", finalLand);
+        if (finalLand !== 0) {
+            localStorage.setItem("finalLandNo", finalLand.toString());
         }
     }, [finalLand]);
 
@@ -89,34 +88,6 @@ function TransportProcess() {
     const Attack = () => { navigate('/cp/attack'); setIsMobileMenuOpen(false); };
     const ViewScores = () => { navigate('/cp/scores'); setIsMobileMenuOpen(false); };
 
-    const handleTransportSubmit = async (e) => {
-        e.preventDefault();
-        setResult(null);
-        setLoading(true);
-
-        try {
-            const res = await fetch('http://localhost:3000/CP/transport', {
-                method: 'PATCH',
-                credentials: 'include',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    
-                }),
-            });
-
-            if (!res.ok) throw new Error("Transport failed");
-
-            const data = await res.json();
-            setResult(data);
-            toast.success("Transport successful!", { position: "top-center" });
-
-        } catch {
-            toast.error("Error connecting to server.", { position: "top-center" });
-        }
-
-        setLoading(false);
-    };
-
     // transport process - improved with validation like buy.jsx
     const handleTransportProcess = async (e) => {
         e.preventDefault();
@@ -133,7 +104,6 @@ function TransportProcess() {
         }
 
         setLoading(true);
-        setResult(null);
 
         try {
             const res = await fetch('http://localhost:3000/CP/transport/process', {
@@ -141,20 +111,19 @@ function TransportProcess() {
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    initialLandNo: Number(initialLand),
-                    finalLandNo: Number(finalLand),
+                    intialLand: Number(initialLand),
+                    finalLand: Number(finalLand),
                     quantity: Number(quantity),
                     horses: Number(horses),
                     rentCarts: Number(rentCarts),
                     rentHorses: Number(rentHorses),
                     carts: Number(carts),
-                    type: "typeName",
+                    typeName: type,
                 }),
             });
 
             const data = await res.json();
             if (res.ok) {
-                setResult(data);
                 toast.success(data.message || "Transport process successful!", { position: "top-center" });
                 // Reset form after successful submission
                 setQuantity(0);
@@ -164,7 +133,7 @@ function TransportProcess() {
                 setHorses(0);
                 setRentHorses(0);
                 setRentCarts(0);
-                setCarts('');
+                setCarts(0);
             } else {
                 toast.error(data.message || "Transport process failed.", { position: "top-center" });
             }
@@ -286,7 +255,7 @@ function TransportProcess() {
                         <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent rounded-2xl pointer-events-none"></div>
 
                         <div className="relative z-10 flex flex-col items-center w-full">
-                            <form className="w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-4 justify-center text-center" onSubmit={handleTransportSubmit}>
+                            <form className="w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-4" onSubmit={handleTransportProcess}>
                                 {/* Left Column */}
                                 <div className="flex flex-col gap-4">
                                     {/* Initial Land */}
@@ -301,6 +270,7 @@ function TransportProcess() {
                                             value={initialLand}
                                             onChange={e => setInitialLand(Number(e.target.value))}
                                             type='number'
+                                            disabled={loading}
                                         />
                                     </div>
                                     {/* Final Land */}
@@ -314,68 +284,10 @@ function TransportProcess() {
                                             placeholder="1-33"
                                             value={finalLand}
                                             onChange={e => setFinalLand(Number(e.target.value))}
-                                            type='number'/>
+                                            type='number'
+                                            disabled={loading}
+                                        />
                                     </div>
-                                </div>
-                                {/* Right Column */}
-                                <div className="flex flex-col gap-4 justify-center">
-                                    
-                                </div>
-                                {/* Responsive Submit Button */}
-                                <div className="col-span-1 md:col-span-2 flex justify-center mt-4">
-                                    <button 
-                                        type="submit" 
-                                        className="bg-blue-500 text-white px-6 py-3 rounded-xl font-bold shadow hover:bg-blue-600 transition w-full sm:w-[150px] text-center" 
-                                        disabled={loading}
-                                    >
-                                        {loading ? 'Processing...' : 'Transport'}
-                                    </button>
-                                </div>
-                            </form>
-
-                            {/* Transport Result */}
-                            {result && (
-                                <div className="mt-6 w-full bg-blue-50 rounded-xl p-4 shadow text-blue-900 text-sm space-y-6">
-
-                                    <div>
-                                        <h3 className="font-bold mb-2 text-blue-700">
-                                            Resources for Land {initialLand}:
-                                        </h3>
-                                        <ul className="list-disc list-inside space-y-1 pl-4">
-                                            {Object.entries(result.starting).map(([k, v]) => (
-                                                <li key={k}><span className="font-semibold capitalize">{k}:</span> {v}</li>
-                                            ))}
-                                        </ul>
-                                    </div>
-
-                                    <div>
-                                        <h3 className="font-bold mb-2 text-blue-700">
-                                            Resources for Land {finalLand}:
-                                        </h3>
-                                        <ul className="list-disc list-inside space-y-1 pl-4">
-                                            {Object.entries(result.finishing).map(([k, v]) => (
-                                                <li key={k}><span className="font-semibold capitalize">{k}:</span> {v}</li>
-                                            ))}
-                                        </ul>
-                                    </div>
-
-                                    <div>
-                                        <h3 className="font-bold mb-2 text-blue-700">Horse and Carts:</h3>
-                                        <ul className="list-disc list-inside space-y-1 pl-4">
-                                            <li><span className="font-semibold">Horses:</span> {result.horses}</li>
-                                            <li><span className="font-semibold">Rented Horses:</span> {result.rentHorses}</li>
-                                            <li><span className="font-semibold">Carts:</span> {result.carts}</li>
-                                            <li><span className="font-semibold">Rented Carts:</span> {result.rentCarts}</li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                        {/* New Transport Process Form - styled like buy.jsx */}
-                        <div className="relative z-10 flex flex-col items-center w-full mt-8">
-                            <form className="w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-4" onSubmit={handleTransportProcess}>
-                                {/* Left Column */}
-                                <div className="flex flex-col gap-4">
                                     {/* Quantity */}
                                     <div>
                                         <label className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-32">Quantity</label>
@@ -403,57 +315,59 @@ function TransportProcess() {
                                         />
                                     </div>
                                     <div>
-                                    <label className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-32">Rent Horses</label>
-                                    <input
-                                        type="number"
-                                        min={0}
-                                        className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
-                                        placeholder="Horses"
-                                        value={rentHorses}
-                                        onChange={e => setRentHorses(Number(e.target.value))}
-                                        disabled={loading}
-                                    />
+                                        <label className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-32">Rent Horses</label>
+                                        <input
+                                            type="number"
+                                            min={0}
+                                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
+                                            placeholder="Rent Horses"
+                                            value={rentHorses}
+                                            onChange={e => setRentHorses(Number(e.target.value))}
+                                            disabled={loading}
+                                        />
                                     </div>
-                                    <div>
-                                    <label className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-32">Rent Carts</label>
-                                    <input
-                                        type="number"
-                                        min={0}
-                                        className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
-                                        placeholder="Rent Carts"
-                                        value={rentCarts}
-                                        onChange={e => setRentCarts(Number(e.target.value))}
-                                        disabled={loading}
-                                    />
-                                    </div>
-                                    <label className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-32">Carts</label>
-                                    <input
-                                        type="number"
-                                        min={0}
-                                        className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
-                                        placeholder="Rent Carts"
-                                        value={carts}
-                                        onChange={e => setCarts(e.target.value)}
-                                        disabled={loading}
-                                    />
                                 </div>
                                 {/* Right Column */}
-                                <div className="flex flex-col gap-4 justify-center">
+                                <div className="flex flex-col gap-4">
                                     {/* Type */}
                                     <div>
-                                    <label className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-20">Type</label>
-                                    <select
-                                        className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
-                                        value={type}
-                                        onChange={e => setType(e.target.value)}
-                                        disabled={loading}
-                                    >
-                                        <option value="">Select Type</option>
-                                        <option value="apple">Apple</option>
-                                        <option value="wheat">Wheat</option>
-                                        <option value="watermelon">Watermelon</option>
-                                        <option value="soldier">Soldier</option>
-                                    </select>
+                                        <label className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-20">Type</label>
+                                        <select
+                                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
+                                            value={type}
+                                            onChange={e => setType(e.target.value)}
+                                            disabled={loading}
+                                        >
+                                            <option value="">Select Type</option>
+                                            <option value="apple">Apple</option>
+                                            <option value="wheat">Wheat</option>
+                                            <option value="watermelon">Watermelon</option>
+                                            <option value="soldier">Soldier</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-32">Carts</label>
+                                        <input
+                                            type="number"
+                                            min={0}
+                                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
+                                            placeholder="Carts"
+                                            value={carts}
+                                            onChange={e => setCarts(Number(e.target.value))}
+                                            disabled={loading}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-32">Rent Carts</label>
+                                        <input
+                                            type="number"
+                                            min={0}
+                                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
+                                            placeholder="Rent Carts"
+                                            value={rentCarts}
+                                            onChange={e => setRentCarts(Number(e.target.value))}
+                                            disabled={loading}
+                                        />
                                     </div>
                                 </div>
                                 {/* Responsive Submit Button */}
