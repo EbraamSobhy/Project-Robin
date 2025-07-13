@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../Scout/tailwind.css';
 import { GrScorecard } from "react-icons/gr";
-import { PiPlantBold } from "react-icons/pi";
+import { PiPlantBold } from "react-icons/pi";   
 import { GiEating } from "react-icons/gi";
 import { LuSwords } from "react-icons/lu";
 import { MdLocalShipping } from 'react-icons/md';
@@ -17,6 +17,10 @@ function Transport() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const navigate = useNavigate();
     const [image, setImage] = useState(() => getSharedImage(imageDefault));
+    const [initialLandNo, setInitialLandNo] = useState('');
+    const [finalLandNo, setFinalLandNo] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [result, setResult] = useState(null);
 
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(true), 200);
@@ -82,8 +86,46 @@ function Transport() {
     const Plant = () => { navigate('/cp/plant'); setIsMobileMenuOpen(false); };
     const Feeding = () => { navigate('/cp/feeding'); setIsMobileMenuOpen(false); };
     const Attack = () => { navigate('/cp/attack'); setIsMobileMenuOpen(false); };
-    const Transport = () => { navigate('/cp/transport'); setIsMobileMenuOpen(false); };
     const ViewScores = () => { navigate('/cp/scores'); setIsMobileMenuOpen(false); };
+
+        // handle Transport
+        const handleTransportSubmit = async (e) => {
+        e.preventDefault();
+        setResult(null);
+
+        // Input validation
+        const initial = Number(initialLandNo);
+        const final = Number(finalLandNo);
+        if (
+            isNaN(initial) || isNaN(final) ||
+            initial < 1 || initial > 33 ||
+            final < 1 || final > 33
+        ) {
+            toast.error("Land numbers must be between 1 and 33.", { position: "top-center" });
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const res = await fetch('http://localhost:3000/CP/transport', {
+                method: 'PATCH',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    initialLandNo: initialLandNo,
+                    finalLandNo: finalLandNo
+                }),
+            });
+            if (!res.ok) {
+                throw new Error("Failed to get resources for lands.");
+            }
+            const data = await res.json();
+            setResult(data);
+        } catch {
+            toast.error("Error connecting to server.", { position: "top-center" });
+        }
+        setLoading(false);
+    };
 
     return (
         <>
@@ -193,13 +235,15 @@ function Transport() {
                         {/* Subtle inner glow */}
                         <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent rounded-2xl sm:rounded-3xl pointer-events-none"></div>
                         <div className="relative z-10 flex flex-col items-center w-full">
-                            <form className="w-full max-w-xl flex flex-col gap-4">
+                            <form className="w-full max-w-xl flex flex-col gap-4" onSubmit={handleTransportSubmit}>
                                 {/* Transport Land Number */}
                                 <div className="flex flex-col items-center gap-4 w-full">
                                     <label htmlFor="transport-land-label" className="block bg-gray-700 font-bold text-lg sm:text-2xl mb-2 whitespace-nowrap text-white px-1 py-2 rounded-lg shadow-sm text-center">Starting Land Number</label>
                                     <input
                                         id="transport-land-label"
-                                        type="text"
+                                        type="number"
+                                        value={initialLandNo}
+                                        onChange={(e) => setInitialLandNo(e.target.value)}
                                         className="px-4 sm:px-8 py-3 sm:py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg flex-1 w-full max-w-md"
                                         placeholder="must be from 1 - 33"
                                     />
@@ -210,19 +254,36 @@ function Transport() {
                                     <div className="flex flex-col sm:flex-row gap-2 w-full max-w-md">
                                         <input
                                             id="transport-target-label"
-                                            type="text"
+                                            type="number"
+                                            value={finalLandNo}
+                                            onChange={(e) => setFinalLandNo(e.target.value)}
                                             className="px-4 sm:px-8 py-3 sm:py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg flex-1"
                                             placeholder="must be from 1 - 33"
                                         />
-                                        <button
+                                    </div>
+                                    <button
                                             type="submit"
+                                            disabled={loading}
                                             className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 sm:px-6 py-3 rounded-xl shadow transition w-full sm:w-auto"
                                         >
-                                            Submit
-                                        </button>
-                                    </div>
+                                            {loading ? "Submitting..." : "Submit"}
+                                        </button>   
                                 </div>
                             </form>
+                        {/* Show results if available */}
+                        {result && (
+                                <div className="mt-6 w-full bg-blue-50 rounded-xl p-4 shadow text-blue-900 text-sm">
+                                    <h3 className="font-bold mb-2">Resources for Land {initialLandNo}:</h3>
+                                    <pre className="whitespace-pre-wrap break-words">Starting : {(result.starting, null, 2)}</pre>
+                                    <h3 className="font-bold mt-4 mb-2">Resources for Land {finalLandNo}:</h3>
+                                    <pre className="whitespace-pre-wrap break-words">Final : {(result.finishing, null, 2)}</pre>
+                                    <h3 className="font-bold mt-4 mb-2">Horses and Carts:</h3>
+                                    <pre className="whitespace-pre-wrap break-words">Horses : {(result.horses, null, 2)}</pre>
+                                    <pre className="whitespace-pre-wrap break-words">Carts : {(result.carts, null, 2)}</pre>
+                                    <pre className="whitespace-pre-wrap break-words">Rent Horses : {(result.rentHorses, null, 2)}</pre>
+                                    <pre className="whitespace-pre-wrap break-words">Rent Carts : {(result.rentCarts, null, 2)}</pre>
+                                </div>
+                            )}
                         </div>
                         {/* Image below the form, inside the same container */}
                         <div className="flex flex-col items-center mt-6 sm:mt-8">

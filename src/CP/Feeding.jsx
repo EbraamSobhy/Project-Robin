@@ -58,7 +58,7 @@ function Feeding() {
                     // Call backend logout endpoint
                     await fetch('http://localhost:3000/authen/signout', {
                         method: 'POST',
-                        credentials: 'include', // if using cookies/session
+                        credentials: 'include',
                         headers: {
                             'Content-Type': 'application/json',
                         },

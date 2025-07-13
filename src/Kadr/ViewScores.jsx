@@ -539,7 +539,7 @@ const [isVisible, setIsVisible] = useState(false);
                                     {/* Lands Section */}
                                     {lands.length > 0 && (
                                         <div className="w-full mt-6 sm:mt-8">
-                                            <h3 className="text-lg sm:text-xl font-semibold text-blue-700 mb-4 text-center">Lands Scores</h3>
+                                            <h3 className="text-lg sm:text-xl font-bold text-blue-700 mb-4 text-center">Lands Scores</h3>
                                             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 items-start justify-center">
                                                 {lands.map((land, idx) => (
                                                     <div key={land._id || idx} className="bg-green-100 rounded-lg sm:rounded-xl p-4 sm:p-6 lg:p-8 shadow-inner w-full text-left font-mono text-gray-800" style={{background:'#d4edda'}}>
