@@ -119,11 +119,11 @@ function Transport() {
         const data = await res.json();     
         setResult(data);                   
         navigate(
-            '/cp/TransportProcess',   // make sure the path matches your Route
+            '/cp/TransportProcess',
             {
                 state: {
-                    result:      data,          // what you want to reuse
-                    initialLand: initialLandNo, // any extra you need
+                    result:      data,
+                    initialLand: initialLandNo,
                     finalLand:   finalLandNo
                 }
                 }

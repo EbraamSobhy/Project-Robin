@@ -17,6 +17,11 @@ function TransportProcess() {
     const [result, setResult] = useState(null); // ✅ defined properly
     const [initialLand] = useState(1); // hardcoded for now
     const [finalLand] = useState(2);     // hardcoded for now
+    const [quantity, setQuantity] = useState(0);
+    const [horses, setHorses] = useState(0);
+    const [rentHorses, setRentHorses] = useState(0);
+    const [rentCarts, setRentCarts] = useState(0);
+    const [Type, setType] = useState("");
 
     const navigate = useNavigate();
 
@@ -66,10 +71,8 @@ function TransportProcess() {
     const Plant = () => { navigate('/cp/plant'); setIsMobileMenuOpen(false); };
     const Feeding = () => { navigate('/cp/feeding'); setIsMobileMenuOpen(false); };
     const Attack = () => { navigate('/cp/attack'); setIsMobileMenuOpen(false); };
-    const Transport = () => { navigate('/cp/transport'); setIsMobileMenuOpen(false); };
     const ViewScores = () => { navigate('/cp/scores'); setIsMobileMenuOpen(false); };
 
-    // ✅ handle transport request and update result
     const handleTransportSubmit = async (e) => {
         e.preventDefault();
         setResult(null);
@@ -99,6 +102,43 @@ function TransportProcess() {
         setLoading(false);
     };
 
+    const handleChange = (e) => {
+        const selected = e.target.value;
+        setType(selected);
+    };
+
+    // transport process
+    const handleTransportProcess = async (e) => {
+        e.preventDefault();
+
+        try {
+            const res = await fetch('http://localhost:3000/CP/transport/process', {
+                method: 'PATCH',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    initialLandNo: initialLand,
+                    finalLandNo: finalLand
+                }),
+            });
+
+            if (!res.ok) throw new Error("Transport failed");
+
+            const data = await res.json();
+            setResult(data);
+            toast.success("Transport successful!", { position: "top-center" });
+
+        } catch {
+            toast.error("Error connecting to server.", { position: "top-center" });
+        }
+
+        setLoading(false);
+    };
+
+    const handleChange = (e) => {
+        const selected = e.target.value;
+        setType(selected);
+    };
     return (
         <>
             {/* Horizontal Navbar */}
@@ -209,14 +249,140 @@ function TransportProcess() {
                         <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent rounded-2xl pointer-events-none"></div>
 
                         <div className="relative z-10 flex flex-col items-center w-full">
-                            <form className="w-full max-w-xl flex flex-col gap-4" onSubmit={handleTransportSubmit}>
-                                <div className="flex flex-col items-center gap-4 w-full">
-                                    <button
-                                        type="submit"
+                            <form className="w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-4" onSubmit={handleTransportSubmit}>
+                                {/* Left Column */}
+                                <div className="flex flex-col gap-4">
+                                    {/* Initial Land */}
+                                    <div>
+                                        <label htmlFor="initial-land-input" className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-40">Initial Land</label>
+                                        <input
+                                            id="initial-land-input"
+                                            min={1}
+                                            max={33}
+                                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
+                                            placeholder="1-33"
+                                            value={initialLand}
+                                            disabled
+                                        />
+                                    </div>
+                                    {/* Final Land */}
+                                    <div>
+                                        <label htmlFor="final-land-input" className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-32">Final Land</label>
+                                        <input
+                                            id="final-land-input"
+                                            min={1}
+                                            max={33}
+                                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
+                                            placeholder="1-33"
+                                            value={finalLand}
+                                            disabled
+                                        />
+                                    </div>
+                                    {/* Quantity */}
+                                    <div>
+                                        <label htmlFor="quantity-input" className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-32">Quantity</label>
+                                        <input
+                                            id="quantity-input"
+                                            type="number"
+                                            min={1}
+                                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
+                                            placeholder="0"
+                                            disabled={loading}
+                                        />
+                                    </div>
+                                </div>
+                                {/* Right Column */}
+                                <div className="flex flex-col gap-4 justify-center">
+                                    {/* Type */}
+                                    <div>
+                                        <label htmlFor="transport-type-select" className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-20">Type</label>
+                                        <select
+                                            id="transport-type-select"
+                                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
+                                            value={type}
+                                            onChange={handleChange}
+                                            disabled={loading}
+                                        >
+                                            <option value="apple">Apple</option>
+                                            <option value="wheat">Wheat</option>
+                                            <option value="watermelon">Watermelon</option>
+                                            <option value="soldier">Soldier</option>
+                                        </select>
+                                    </div>
+                                    {/* Priority */}
+                                    <div>
+                                        <label htmlFor="priority-input-1" className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-28">Quantity</label>
+                                        <input
+                                            id="priority-input-1"
+                                            type="number"
+                                            min={1}
+                                            max={10}
+                                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
+                                            placeholder="1-10"
+                                            disabled={loading}
+                                        />
+                                    </div>
+                                    {/* Priority 2 */}
+                                    <div>
+                                        <label htmlFor="priority-input-2" className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-28">Horses</label>
+                                        <input
+                                            id="priority-input-2"
+                                            type="number"
+                                            min={1}
+                                            max={10}
+                                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
+                                            placeholder="1-10"
+                                            disabled={loading}
+                                        />
+                                    </div>
+                                    {/* Priority 3 */}
+                                    <div>
+                                        <label htmlFor="priority-input-3" className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-28">Rent Horses</label>
+                                        <input
+                                            id="priority-input-3"
+                                            type="number"
+                                            min={1}
+                                            max={10}
+                                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
+                                            placeholder="1-10"
+                                            disabled={loading}
+                                        />
+                                    </div>
+                                    {/* Priority 4 */}
+                                    <div>
+                                        <label htmlFor="priority-input-4" className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-28">Carts</label>
+                                        <input
+                                            id="priority-input-4"
+                                            type="number"
+                                            min={1}
+                                            max={10}
+                                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
+                                            placeholder="1-10"
+                                            disabled={loading}
+                                        />
+                                    </div>
+                                    {/* Priority 5 */}
+                                    <div>
+                                        <label htmlFor="priority-input-5" className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-28">Rent Carts</label>
+                                        <input
+                                            id="priority-input-5"
+                                            type="number"
+                                            min={1}
+                                            max={10}
+                                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
+                                            placeholder="1-10"
+                                            disabled={loading}
+                                        />
+                                    </div>
+                                </div>
+                                {/* Responsive Submit Button */}
+                                <div className="col-span-1 md:col-span-2 flex justify-center mt-4">
+                                    <button 
+                                        type="submit" 
+                                        className="bg-blue-500 text-white px-6 py-3 rounded-xl font-bold shadow hover:bg-blue-600 transition w-full sm:w-[150px] text-center" 
                                         disabled={loading}
-                                        className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-xl shadow transition w-full sm:w-auto"
                                     >
-                                        {loading ? "Submitting..." : "Submit Transport"}
+                                        {loading ? 'Processing...' : 'Transport'}
                                     </button>
                                 </div>
                             </form>
@@ -256,7 +422,6 @@ function TransportProcess() {
                                             <li><span className="font-semibold">Rented Carts:</span> {result.rentCarts}</li>
                                         </ul>
                                     </div>
-
                                 </div>
                             )}
                         </div>
