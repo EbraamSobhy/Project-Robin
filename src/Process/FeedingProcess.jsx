@@ -7,12 +7,23 @@ import { LuSwords } from "react-icons/lu";
 import { MdLocalShipping } from 'react-icons/md';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function FeedingProcess() {
     const [isVisible, setIsVisible] = useState(false);
     const [username, setUsername] = useState(" ");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [landInventory, setLandInventory] = useState(null);
+    const [houses, setHouses] = useState(0);
+    const [unfed, setUnfed] = useState(0);
+    const [selectedWatermelon, setSelectedWatermelon] = useState(0);
+    const [selectedApple, setSelectedApple] = useState(0);
+    const [selectedWheat, setSelectedWheat] = useState(0);
+    const [selectedHouses, setSelectedHouses] = useState(0);
+    const location = useLocation();
+    const [landNo, setLandNo] = useState(location.state?.landNo);
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -44,7 +55,7 @@ function FeedingProcess() {
                     // Call backend logout endpoint
                     await fetch('http://localhost:3000/authen/signout', {
                         method: 'POST',
-                        credentials: 'include', // if using cookies/session
+                        credentials: 'include',
                         headers: {
                             'Content-Type': 'application/json',
                         },
@@ -68,10 +79,87 @@ function FeedingProcess() {
     const Home = () => { navigate('/cp'); setIsMobileMenuOpen(false); };
     const Buy = () => { navigate('/cp/buy'); setIsMobileMenuOpen(false); };
     const Plant = () => { navigate('/cp/plant'); setIsMobileMenuOpen(false); };
-    const Feeding = () => { navigate('/cp/feeding'); setIsMobileMenuOpen(false); };
     const Attack = () => { navigate('/cp/attack'); setIsMobileMenuOpen(false); };
     const Transport = () => { navigate('/cp/transport'); setIsMobileMenuOpen(false); };
     const ViewScores = () => { navigate('/cp/scores'); setIsMobileMenuOpen(false); };
+
+    // Fetch data from backend
+    const fetchData = async () => {
+        try {
+            setLoading(true);
+            const res = await fetch("http://localhost:3000/CP/feeding", {
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                method: "POST",
+                body: JSON.stringify({ landNo }),
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || "Failed to fetch data");
+    
+            // Set inventory as an object, and people/houses from backend
+            setLandInventory({
+                apple: data.apple,
+                watermelon: data.watermelon,
+                wheat: data.wheat
+            });
+            setHouses(data.totalHouses);
+            setUnfed(data.unfed);
+        } catch (err) {
+            toast.error(err.message, { position: "top-center" });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (landNo) {
+            fetchData();
+        }
+    }, [landNo]);
+
+    // Function of Feeding
+    const handleFeed = async () => {
+        try {
+            setLoading(true);
+
+            const res = await fetch("http://localhost:3000/CP/feeding/process", {
+                method: "PATCH",
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    watermelon: selectedWatermelon,
+                    apple: selectedApple,
+                    wheat: selectedWheat,
+                    numberOfHouses: selectedHouses,
+                    landNo,
+
+                }),
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.message || "Feeding failed");
+
+            toast.success(data.message, {
+                position: "top-center",
+                autoClose: 2500,
+                closeOnClick: true,
+                pauseOnHover: true,
+            });
+
+        } catch (err) {
+            toast.error(err.message, { position: "top-center" });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Calculate how many people and houses can be fed
+    const calculateFeedingCapacity = () => {
+        const housesFed = Math.floor((selectedWatermelon * 4) + (selectedWheat) + (selectedApple * 2));
+        return { housesFed };
+    };
+
+    const { housesFed } = calculateFeedingCapacity();
 
     return (
         <>
@@ -181,37 +269,96 @@ function FeedingProcess() {
                         {/* Subtle inner glow */}
                         <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent rounded-2xl sm:rounded-3xl pointer-events-none"></div>
                         <div className="relative z-10 flex flex-col items-center w-full">
-                            {/* Custom Feeding UI */}
-                            <div className="w-full flex flex-col gap-8 items-center justify-center">
-                                <div className="w-full flex flex-col gap-2 text-gray-700 text-lg font-medium">
-                                    <div>land number : <span className="font-normal">(the number he chose)</span></div>
-                                    <div>land's inventory :</div>
-                                    <div className="ml-6 font-normal">
-                                        apple : 1<br />
-                                        watermelon : 12<br />
-                                        wheat : 13
+                            {loading ? (
+                                <div className="text-lg text-gray-600">Loading...</div>
+                            ) : (
+                                <div className="w-full flex flex-col items-center justify-center">
+                                    <div className="flex flex-col gap-1 w-full max-w-xs">
+                                        <label htmlFor="landNo" className="font-semibold text-gray-700 mb-1 flex-1 text-center">
+                                            Your Land Number
+                                        </label>
+                                        <input
+                                            id="landNo"
+                                            value={landNo}
+                                            onChange={(e) => setLandNo(e.target.value)}
+                                            disabled
+                                            className="border border-blue-300 rounded-lg px-4 py-2 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 transition w-full mb-10 text-center font-bold text-3xl"
+                                        />
                                     </div>
-                                    <div className="mt-2">the number of people : <span className="font-normal">20</span></div>
-                                    <div>the number of houses: <span className="font-normal">4</span></div>
-                                </div>
-                                <div className="w-full flex flex-col sm:flex-row gap-4 items-center justify-center mt-2">
-                                    <div className="flex flex-col gap-2 w-full max-w-xs">
-                                        <label className="text-gray-700 text-base">watermelon</label>
-                                        <input type="number" className="rounded-lg border border-gray-300 px-4 py-2 text-lg bg-white shadow focus:outline-none focus:ring-2 focus:ring-blue-300" value="1" readOnly />
-                                        <label className="text-gray-700 text-base mt-2">apple</label>
-                                        <input type="number" className="rounded-lg border border-gray-300 px-4 py-2 text-lg bg-white shadow focus:outline-none focus:ring-2 focus:ring-blue-300" value="0" readOnly />
-                                        <label className="text-gray-700 text-base mt-2">wheat</label>
-                                        <input type="number" className="rounded-lg border border-gray-300 px-4 py-2 text-lg bg-white shadow focus:outline-none focus:ring-2 focus:ring-blue-300" value="0" readOnly />
-                                        <label className="text-gray-700 text-base mt-2">Number of Houses you will feed</label>
-                                        <input type="number" className="rounded-lg border border-gray-300 px-4 py-2 text-lg bg-white shadow focus:outline-none focus:ring-2 focus:ring-blue-300" value="0" readOnly />
+                                    <div className="w-full flex flex-col md:flex-row items-start justify-between gap-8">
+                                        {/* Left: Land Inventory and current stats */}
+                                        <div className="flex flex-col items-start gap-4 flex-1">
+                                            <label className="font-medium text-gray-700 text-sm">Land Information:</label>
+                                            <div className="mt-2 text-gray-700 text-base font-semibold w-full">
+                                                <span className="font-semibold">Land Inventory:</span>
+                                                {landInventory ? (
+                                                    <ul className="ml-2 mt-1 font-normal space-y-1">
+                                                    <li>apple : {landInventory?.apple}</li>
+                                                    <li>watermelon : {landInventory?.watermelon}</li>
+                                                    <li>wheat : {landInventory?.wheat}</li>
+                                                </ul>
+                                                ) : (
+                                                    <div>No inventory data.</div>
+                                                )}
+                                            </div>
+                                            <div className="mt-2 text-gray-700 text-base font-semibold w-full">
+                                                <span className="font-semibold">Current Status:</span>
+                                                <ul className="ml-2 mt-1 font-normal space-y-1">
+                                                    <li>UnFed : {unfed}</li>
+                                                    <li>Houses : {houses}</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        {/* Right: Feeding inputs */}
+                                        <div className="flex flex-col items-start gap-4 flex-1">
+                                            <label className="font-medium text-gray-700">Select food to feed:</label>
+                                            <div className="flex flex-col gap-2 w-full">
+                                                <label className="text-gray-700 text-base">Watermelon</label>
+                                                <input
+                                                    type="number"
+                                                    value={selectedWatermelon}
+                                                    onChange={(e) => setSelectedWatermelon(parseInt(e.target.value) || 0)}
+                                                    className="rounded-lg border border-gray-300 px-4 py-2 text-lg bg-white shadow focus:outline-none focus:ring-2 focus:ring-blue-300" 
+                                                />
+                                                <label className="text-gray-700 text-base mt-2">Apple</label>
+                                                <input
+                                                    type="number"
+                                                    value={selectedApple}
+                                                    onChange={(e) => setSelectedApple(parseInt(e.target.value) || 0)}
+                                                    className="rounded-lg border border-gray-300 px-4 py-2 text-lg bg-white shadow focus:outline-none focus:ring-2 focus:ring-blue-300" 
+                                                />
+                                                <label className="text-gray-700 text-base mt-2">Wheat</label>
+                                                <input
+                                                    type="number"
+                                                    value={selectedWheat}
+                                                    onChange={(e) => setSelectedWheat(parseInt(e.target.value) || 0)}
+                                                    className="rounded-lg border border-gray-300 px-4 py-2 text-lg bg-white shadow focus:outline-none focus:ring-2 focus:ring-blue-300" 
+                                                />
+                                                <label className="text-gray-700 text-base mt-2">Number of Houses to feed</label>
+                                                <input
+                                                    type="number"
+                                                    value={selectedHouses}
+                                                    onChange={(e) => setSelectedHouses(parseInt(e.target.value) || 0)}
+                                                    className="rounded-lg border border-gray-300 px-4 py-2 text-lg bg-white shadow focus:outline-none focus:ring-2 focus:ring-blue-300" 
+                                                />
+                                            </div>
+                                        </div>
+                                        {/* Feed button at far right */}
+                                        <div className="flex flex-col items-end justify-start flex-1 mt-20">
+                                            <button
+                                                type='submit'
+                                                className="mt-4 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold px-8 py-3 rounded-lg shadow text-lg transition"
+                                                onClick={handleFeed}
+                                            >
+                                                Feed
+                                            </button>
+                                        </div>
                                     </div>
-                                    <button className="mt-6 sm:mt-0 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold px-8 py-3 rounded-lg shadow text-lg transition self-center">Feed</button>
+                                    <div className="w-full text-gray-700 text-lg font-medium mt-4 text-center">
+                                        <span className="ml-6">houses : <span className='font-bold'>{housesFed} </span></span>
+                                    </div>
                                 </div>
-                                <div className="w-full text-gray-700 text-lg font-medium mt-4">
-                                    the amount you chose is enough for : <span className="font-normal">20 people</span><br />
-                                    <span className="ml-6">4 houses</span>
-                                </div>
-                            </div>
+                            )}
                         </div>
                     </div>
                 </div>

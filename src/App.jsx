@@ -20,6 +20,7 @@ import GDP from "./Kadr/GDP";
 import Harvest from "./Kadr/Harvest";
 import Trade from "./Kadr/Trade";
 import UpdateScores from "./Kadr/UpdateScores";
+import Watering from "./Kadr/Watering";
 
 // process routes
 import PlantProcess from "./Process/PlantProcess";
@@ -44,6 +45,7 @@ function App() {
       <Route path="/kadr/Harvest" element={<Harvest />} />
       <Route path="/kadr/Trade" element={<Trade />} />
       <Route path="/kadr/UpdateScores" element={<UpdateScores />} />
+      <Route path="/Kadr/Watering" element={<Watering />} />
 
       {/* Scout Routes */}
       <Route path="/scout" element={<Scout />} />

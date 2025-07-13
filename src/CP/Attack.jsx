@@ -17,6 +17,7 @@ function Attack() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const navigate = useNavigate();
     const [image, setImage] = useState(() => getSharedImage(imageDefault));
+    const [landNo, setLandNo] = useState("");
 
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(true), 200);
@@ -81,9 +82,48 @@ function Attack() {
     const Buy = () => { navigate('/cp/buy'); setIsMobileMenuOpen(false); };
     const Plant = () => { navigate('/cp/plant'); setIsMobileMenuOpen(false); };
     const Feeding = () => { navigate('/cp/feeding'); setIsMobileMenuOpen(false); };
-    const Attack = () => { navigate('/cp/attack'); setIsMobileMenuOpen(false); };
     const Transport = () => { navigate('/cp/transport'); setIsMobileMenuOpen(false); };
     const ViewScores = () => { navigate('/cp/scores'); setIsMobileMenuOpen(false); };
+
+    // Handle Attack
+        const handlePlant = async (e) => {
+            e.preventDefault();
+        
+            const num = Number(landNo);
+            if (!num || num < 1 || num > 33) {
+            setError('Land number must be between 1 and 33');
+            return;
+            }
+            setError('');
+        
+            try {
+            const response = await fetch('http://localhost:3000/CP/plant', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ landNo: num }),
+                credentials: 'include',
+            });
+        
+            const data = await response.json();
+        
+            if (!response.ok) {
+                toast.error(data.message || 'Something went wrong', { position: 'top-center' });
+                return;
+            }
+        
+            localStorage.setItem('plantProcessData', JSON.stringify(data));
+            setLandNo('');
+            toast.success('Planting successful!', { position: 'top-center' });
+        
+            setTimeout(() => {
+                navigate('/cp/PlantProcess', { state: { landNo: num } });
+            }, 1000);
+            
+            } catch (err) {
+            toast.error('Server error. Please try again.', { position: 'top-center' });
+            console.error('Planting error:', err);
+            }
+        };
 
     return (
         <>

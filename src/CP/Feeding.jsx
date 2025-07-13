@@ -82,12 +82,11 @@ function Feeding() {
     const Home = () => { navigate('/cp'); setIsMobileMenuOpen(false); };
     const Buy = () => { navigate('/cp/buy'); setIsMobileMenuOpen(false); };
     const Plant = () => { navigate('/cp/plant'); setIsMobileMenuOpen(false); };
-    const Feeding = () => { navigate('/cp/feeding'); setIsMobileMenuOpen(false); };
     const Attack = () => { navigate('/cp/attack'); setIsMobileMenuOpen(false); };
     const Transport = () => { navigate('/cp/transport'); setIsMobileMenuOpen(false); };
     const ViewScores = () => { navigate('/cp/scores'); setIsMobileMenuOpen(false); };
 
-    // Handle planting
+    // Handle Feeding
     const handleFeeding = async (e) => {
         e.preventDefault();
     
@@ -101,24 +100,26 @@ function Feeding() {
         try {
         const response = await fetch('http://localhost:3000/CP/feeding', {
             method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ landNo: num }),
             credentials: 'include',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                landNo: num
+                }),
         });
-    
+
         const data = await response.json();
-    
+
         if (!response.ok) {
             toast.error(data.message || 'Something went wrong', { position: 'top-center' });
             return;
         }
     
-        localStorage.setItem('plantProcessData', JSON.stringify(data));
+        localStorage.setItem('feedProcessData', JSON.stringify(data));
         setLandNo('');
-        toast.success('Planting successful!', { position: 'top-center' });
+        toast.success('Feeding successful!', { position: 'top-center' });
     
         setTimeout(() => {
-            navigate('/cp/PlantProcess', { state: { landNo: num } });
+            navigate('/cp/FeedingProcess', { state: { landNo: num } });
         }, 1000);
         
         } catch (err) {

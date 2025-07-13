@@ -59,6 +59,11 @@ function Home() {
         setIsMobileMenuOpen(false);
     };
 
+    const GoToWatering = () => {
+        navigate('/Kadr/Watering');
+        setIsMobileMenuOpen(false);
+    };
+
     // Animation effect
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(true), 200);
@@ -354,6 +359,12 @@ const handleLogout = async () => {
                                                 className="hidden"
                                             />
                                         </label>
+                                    </div>
+                                    <div className="flex justify-center">
+                                    {/* Watering Button */}
+                                    <button onClick={GoToWatering} className="flex justify-center text-center mt-4 cursor-pointer bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                                        Watering
+                                    </button>
                                     </div>
                                 </div>
                             </div>
