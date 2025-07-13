@@ -7,21 +7,23 @@ import { LuSwords } from "react-icons/lu";
 import { MdLocalShipping } from 'react-icons/md';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function TransportProcess() {
     const [isVisible, setIsVisible] = useState(false);
     const [username, setUsername] = useState("");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [result, setResult] = useState(null); // ✅ defined properly
-    const [initialLand] = useState(1); // hardcoded for now
-    const [finalLand] = useState(2);     // hardcoded for now
+    const [result, setResult] = useState(null);
+    const location = useLocation();
+    const [initialLand, setInitialLand] = useState(location.state?.initialLand || '');
+    const [finalLand, setFinalLand] = useState(location.state?.finalLand || '');
     const [quantity, setQuantity] = useState(0);
     const [horses, setHorses] = useState(0);
     const [rentHorses, setRentHorses] = useState(0);
     const [rentCarts, setRentCarts] = useState(0);
-    const [Type, setType] = useState("");
+    const [type, setType] = useState('');
+    const [carts, setCarts] = useState('');
 
     const navigate = useNavigate();
 
@@ -41,6 +43,20 @@ function TransportProcess() {
         link.href = '/Transport.png';
         document.getElementsByTagName('head')[0].appendChild(link);
     }, []);
+
+    // Save initialLandNo to localStorage when it changes
+    useEffect(() => {
+        if (initialLand !== '') {
+            localStorage.setItem("initialLandNo", initialLand);
+        }
+    }, [initialLand]);
+
+    // Save finalLandNo to localStorage when it changes
+    useEffect(() => {
+        if (finalLand !== '') {
+            localStorage.setItem("finalLandNo", finalLand);
+        }
+    }, [finalLand]);
 
     const handleLogout = async () => {
         if (window.confirm("Are you sure you want to logout?")) {
@@ -84,8 +100,7 @@ function TransportProcess() {
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    initialLandNo: initialLand,
-                    finalLandNo: finalLand
+                    
                 }),
             });
 
@@ -102,14 +117,23 @@ function TransportProcess() {
         setLoading(false);
     };
 
-    const handleChange = (e) => {
-        const selected = e.target.value;
-        setType(selected);
-    };
-
-    // transport process
+    // transport process - improved with validation like buy.jsx
     const handleTransportProcess = async (e) => {
         e.preventDefault();
+        
+        // Form validation
+        if (!quantity || !type || !initialLand || !finalLand) {
+            toast.error("Please fill in all required fields.", { position: "top-center" });
+            return;
+        }
+        
+        if (Number(initialLand) < 1 || Number(initialLand) > 33 || Number(finalLand) < 1 || Number(finalLand) > 33) {
+            toast.error("Please enter valid Land Numbers (1 - 33).", { position: "top-center" });
+            return;
+        }
+
+        setLoading(true);
+        setResult(null);
 
         try {
             const res = await fetch('http://localhost:3000/CP/transport/process', {
@@ -117,28 +141,41 @@ function TransportProcess() {
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    initialLandNo: initialLand,
-                    finalLandNo: finalLand
+                    initialLandNo: Number(initialLand),
+                    finalLandNo: Number(finalLand),
+                    quantity: Number(quantity),
+                    horses: Number(horses),
+                    rentCarts: Number(rentCarts),
+                    rentHorses: Number(rentHorses),
+                    carts: Number(carts),
+                    type: "typeName",
                 }),
             });
 
-            if (!res.ok) throw new Error("Transport failed");
-
             const data = await res.json();
-            setResult(data);
-            toast.success("Transport successful!", { position: "top-center" });
+            if (res.ok) {
+                setResult(data);
+                toast.success(data.message || "Transport process successful!", { position: "top-center" });
+                // Reset form after successful submission
+                setQuantity(0);
+                setType('');
+                setInitialLand('');
+                setFinalLand('');
+                setHorses(0);
+                setRentHorses(0);
+                setRentCarts(0);
+                setCarts('');
+            } else {
+                toast.error(data.message || "Transport process failed.", { position: "top-center" });
+            }
 
         } catch {
-            toast.error("Error connecting to server.", { position: "top-center" });
+            toast.error("Network error.", { position: "top-center" });
         }
 
         setLoading(false);
     };
 
-    const handleChange = (e) => {
-        const selected = e.target.value;
-        setType(selected);
-    };
     return (
         <>
             {/* Horizontal Navbar */}
@@ -249,7 +286,7 @@ function TransportProcess() {
                         <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent rounded-2xl pointer-events-none"></div>
 
                         <div className="relative z-10 flex flex-col items-center w-full">
-                            <form className="w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-4" onSubmit={handleTransportSubmit}>
+                            <form className="w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-4 justify-center text-center" onSubmit={handleTransportSubmit}>
                                 {/* Left Column */}
                                 <div className="flex flex-col gap-4">
                                     {/* Initial Land */}
@@ -257,12 +294,13 @@ function TransportProcess() {
                                         <label htmlFor="initial-land-input" className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-40">Initial Land</label>
                                         <input
                                             id="initial-land-input"
-                                            min={1}
+                                            min={0}
                                             max={33}
                                             className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
                                             placeholder="1-33"
                                             value={initialLand}
-                                            disabled
+                                            onChange={e => setInitialLand(Number(e.target.value))}
+                                            type='number'
                                         />
                                     </div>
                                     {/* Final Land */}
@@ -270,110 +308,18 @@ function TransportProcess() {
                                         <label htmlFor="final-land-input" className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-32">Final Land</label>
                                         <input
                                             id="final-land-input"
-                                            min={1}
+                                            min={0}
                                             max={33}
                                             className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
                                             placeholder="1-33"
                                             value={finalLand}
-                                            disabled
-                                        />
-                                    </div>
-                                    {/* Quantity */}
-                                    <div>
-                                        <label htmlFor="quantity-input" className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-32">Quantity</label>
-                                        <input
-                                            id="quantity-input"
-                                            type="number"
-                                            min={1}
-                                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
-                                            placeholder="0"
-                                            disabled={loading}
-                                        />
+                                            onChange={e => setFinalLand(Number(e.target.value))}
+                                            type='number'/>
                                     </div>
                                 </div>
                                 {/* Right Column */}
                                 <div className="flex flex-col gap-4 justify-center">
-                                    {/* Type */}
-                                    <div>
-                                        <label htmlFor="transport-type-select" className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-20">Type</label>
-                                        <select
-                                            id="transport-type-select"
-                                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
-                                            value={type}
-                                            onChange={handleChange}
-                                            disabled={loading}
-                                        >
-                                            <option value="apple">Apple</option>
-                                            <option value="wheat">Wheat</option>
-                                            <option value="watermelon">Watermelon</option>
-                                            <option value="soldier">Soldier</option>
-                                        </select>
-                                    </div>
-                                    {/* Priority */}
-                                    <div>
-                                        <label htmlFor="priority-input-1" className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-28">Quantity</label>
-                                        <input
-                                            id="priority-input-1"
-                                            type="number"
-                                            min={1}
-                                            max={10}
-                                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
-                                            placeholder="1-10"
-                                            disabled={loading}
-                                        />
-                                    </div>
-                                    {/* Priority 2 */}
-                                    <div>
-                                        <label htmlFor="priority-input-2" className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-28">Horses</label>
-                                        <input
-                                            id="priority-input-2"
-                                            type="number"
-                                            min={1}
-                                            max={10}
-                                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
-                                            placeholder="1-10"
-                                            disabled={loading}
-                                        />
-                                    </div>
-                                    {/* Priority 3 */}
-                                    <div>
-                                        <label htmlFor="priority-input-3" className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-28">Rent Horses</label>
-                                        <input
-                                            id="priority-input-3"
-                                            type="number"
-                                            min={1}
-                                            max={10}
-                                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
-                                            placeholder="1-10"
-                                            disabled={loading}
-                                        />
-                                    </div>
-                                    {/* Priority 4 */}
-                                    <div>
-                                        <label htmlFor="priority-input-4" className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-28">Carts</label>
-                                        <input
-                                            id="priority-input-4"
-                                            type="number"
-                                            min={1}
-                                            max={10}
-                                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
-                                            placeholder="1-10"
-                                            disabled={loading}
-                                        />
-                                    </div>
-                                    {/* Priority 5 */}
-                                    <div>
-                                        <label htmlFor="priority-input-5" className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-28">Rent Carts</label>
-                                        <input
-                                            id="priority-input-5"
-                                            type="number"
-                                            min={1}
-                                            max={10}
-                                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
-                                            placeholder="1-10"
-                                            disabled={loading}
-                                        />
-                                    </div>
+                                    
                                 </div>
                                 {/* Responsive Submit Button */}
                                 <div className="col-span-1 md:col-span-2 flex justify-center mt-4">
@@ -387,7 +333,7 @@ function TransportProcess() {
                                 </div>
                             </form>
 
-                            {/* ✅ Transport Result */}
+                            {/* Transport Result */}
                             {result && (
                                 <div className="mt-6 w-full bg-blue-50 rounded-xl p-4 shadow text-blue-900 text-sm space-y-6">
 
@@ -424,6 +370,103 @@ function TransportProcess() {
                                     </div>
                                 </div>
                             )}
+                        </div>
+                        {/* New Transport Process Form - styled like buy.jsx */}
+                        <div className="relative z-10 flex flex-col items-center w-full mt-8">
+                            <form className="w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-4" onSubmit={handleTransportProcess}>
+                                {/* Left Column */}
+                                <div className="flex flex-col gap-4">
+                                    {/* Quantity */}
+                                    <div>
+                                        <label className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-32">Quantity</label>
+                                        <input
+                                            type="number"
+                                            min={1}
+                                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
+                                            placeholder="Quantity"
+                                            value={quantity}
+                                            onChange={e => setQuantity(Number(e.target.value))}
+                                            disabled={loading}
+                                        />
+                                    </div>
+                                    {/* Horses */}
+                                    <div>
+                                        <label className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-32">Horses</label>
+                                        <input
+                                            type="number"
+                                            min={0}
+                                            className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
+                                            placeholder="Horses"
+                                            value={horses}
+                                            onChange={e => setHorses(Number(e.target.value))}
+                                            disabled={loading}
+                                        />
+                                    </div>
+                                    <div>
+                                    <label className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-32">Rent Horses</label>
+                                    <input
+                                        type="number"
+                                        min={0}
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
+                                        placeholder="Horses"
+                                        value={rentHorses}
+                                        onChange={e => setRentHorses(Number(e.target.value))}
+                                        disabled={loading}
+                                    />
+                                    </div>
+                                    <div>
+                                    <label className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-32">Rent Carts</label>
+                                    <input
+                                        type="number"
+                                        min={0}
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
+                                        placeholder="Rent Carts"
+                                        value={rentCarts}
+                                        onChange={e => setRentCarts(Number(e.target.value))}
+                                        disabled={loading}
+                                    />
+                                    </div>
+                                    <label className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-32">Carts</label>
+                                    <input
+                                        type="number"
+                                        min={0}
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
+                                        placeholder="Rent Carts"
+                                        value={carts}
+                                        onChange={e => setCarts(e.target.value)}
+                                        disabled={loading}
+                                    />
+                                </div>
+                                {/* Right Column */}
+                                <div className="flex flex-col gap-4 justify-center">
+                                    {/* Type */}
+                                    <div>
+                                    <label className="block text-white bg-gray-700 font-bold text-xl sm:text-2xl mb-2 rounded-lg px-2 py-1 w-20">Type</label>
+                                    <select
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg sm:text-xl"
+                                        value={type}
+                                        onChange={e => setType(e.target.value)}
+                                        disabled={loading}
+                                    >
+                                        <option value="">Select Type</option>
+                                        <option value="apple">Apple</option>
+                                        <option value="wheat">Wheat</option>
+                                        <option value="watermelon">Watermelon</option>
+                                        <option value="soldier">Soldier</option>
+                                    </select>
+                                    </div>
+                                </div>
+                                {/* Responsive Submit Button */}
+                                <div className="col-span-1 md:col-span-2 flex justify-center mt-4">
+                                    <button
+                                        type="submit"
+                                        className="bg-blue-500 text-white px-6 py-3 rounded-xl font-bold shadow hover:bg-blue-600 transition w-full sm:w-[150px] text-center"
+                                        disabled={loading}
+                                    >
+                                        {loading ? 'Processing...' : 'Process'}
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>

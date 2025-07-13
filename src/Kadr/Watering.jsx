@@ -69,6 +69,11 @@ function Watering() {
 
     // Watering 
     async function waterPlants() {
+        if (!patrol.trim()) {
+            toast.error("Please enter a patrol name", { position: "top-center" });
+            return;
+        }
+
         try {
             const response = await fetch('http://localhost:3000/Chef/watering', {
                 method: 'PATCH',
@@ -85,12 +90,15 @@ function Watering() {
             if (!response.ok) {
                 throw new Error(data.message || 'Error watering plants');
             }
-            return { success: true, message: data.message };
-            } catch (error) {
-
-            return { success: false, message: error.message };
-            }
+            
+            toast.success(data.message || 'Plants watered successfully!', { position: "top-center" });
+            setPatrolName(""); // Clear the input after successful watering
+            
+        } catch (error) {
+            toast.error(error.message || 'Failed to water plants. Please try again.', { position: "top-center" });
+            console.error('Watering error:', error);
         }
+    }
 
     return (
         <>

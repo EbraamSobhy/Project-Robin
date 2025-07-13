@@ -27,6 +27,7 @@ import PlantProcess from "./Process/PlantProcess";
 import FeedingProcess from "./Process/FeedingProcess";
 import AttackProcess from "./Process/AttackProcess";
 import TransportProcess from "./Process/TransportProcess";
+import AttackKing from "./Process/AttackKing";
 
 function App() {
   return (
@@ -65,6 +66,7 @@ function App() {
       <Route path="/cp/FeedingProcess" element={<FeedingProcess />} />
       <Route path="/cp/AttackProcess" element={<AttackProcess />} />
       <Route path="/cp/TransportProcess" element={<TransportProcess />} />
+      <Route path="/cp/AttackKing" element={<AttackKing />} />
     </Routes>
   );
 }

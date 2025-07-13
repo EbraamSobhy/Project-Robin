@@ -31,6 +31,16 @@ function Transport() {
             setUsername(storedUsername);
         }
 
+        // Retrieve initial and final land numbers from localStorage
+        const storedInitialLand = localStorage.getItem("initialLandNo");
+        const storedFinalLand = localStorage.getItem("finalLandNo");
+        if (storedInitialLand) {
+            setInitialLandNo(storedInitialLand);
+        }
+        if (storedFinalLand) {
+            setFinalLandNo(storedFinalLand);
+        }
+
         // favicon
         const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
         link.type = 'image/x-icon';
@@ -40,6 +50,20 @@ function Transport() {
 
         return () => clearTimeout(timer);
     }, []);
+
+    // Save initialLandNo to localStorage when it changes
+    useEffect(() => {
+        if (initialLandNo !== '') {
+            localStorage.setItem("initialLandNo", initialLandNo);
+        }
+    }, [initialLandNo]);
+
+    // Save finalLandNo to localStorage when it changes
+    useEffect(() => {
+        if (finalLandNo !== '') {
+            localStorage.setItem("finalLandNo", finalLandNo);
+        }
+    }, [finalLandNo]);
 
     useEffect(() => {
         document.title = "Transport";
