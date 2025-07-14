@@ -17,6 +17,7 @@ function AttackKing() {
     const { state } = useLocation(); // state?: { landNo, attackedLand }
     const [conditions, setConditions] = useState(null);      // enemy land
     const [qualifications, setQualifications] = useState(null); // you
+    const [loading, setLoading] = useState(false);
 
     const landNo = 
         state?.landNo || localStorage.getItem("landNo") || ""; // your land
@@ -43,14 +44,14 @@ function AttackKing() {
 
     useEffect(() => {
         if (!landNo || !attackedLand) return; // nothing to fetch yet
-        
+            
         const controller = new AbortController();
         
         async function loadData() {
             try {
                 const res = await fetch(`http://localhost:3000/CP/kadrAttack?landNo=${landNo}&attackedLand=${attackedLand}`, 
                     { 
-                        credentials: "include", 
+                        credentials: "include",
                         signal: controller.signal,
                         method: 'GET',
                         headers: {
@@ -108,6 +109,60 @@ function AttackKing() {
     const Attack = () => { navigate('/cp/attack'); setIsMobileMenuOpen(false); };
     const Transport = () => { navigate('/cp/transport'); setIsMobileMenuOpen(false); };
     const ViewScores = () => { navigate('/cp/scores'); setIsMobileMenuOpen(false); };
+
+    // Handle Attack
+    const handleAttack = async () => {
+        if (!landNo || !attackedLand) {
+            toast.error("Missing land information", { position: "top-center" });
+            return;
+        }
+
+        if (loading) return; // Prevent multiple clicks
+        
+        setLoading(true);
+        
+        try {
+            const response = await fetch('http://localhost:3000/CP/attack', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    landNo: Number(landNo),
+                    attackedLand: Number(attackedLand)
+                }),
+                credentials: 'include',
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                toast.error(data.message || 'Attack failed', { position: 'top-center' });
+                return;
+            }
+
+            // Handle different attack results
+            if (data.attacked === "kadr") {
+                toast.success('Attack successful! You attacked Kadr!', { position: 'top-center' });
+                // Stay on this page since we're already on AttackKing
+            } else if (data.attacked === "patrol") {
+                toast.success('Attack successful! You attacked a patrol!', { position: 'top-center' });
+                setTimeout(() => {
+                    navigate('/cp/AttackProcess');
+                }, 1500);
+            } else {
+                toast.success('Attack completed!', { position: 'top-center' });
+                // Navigate back to attack page after successful attack
+                setTimeout(() => {
+                    navigate('/cp/attack');
+                }, 1500);
+            }
+            
+        } catch (err) {
+            toast.error('Server error. Please try again.', { position: 'top-center' });
+            console.error('Attack error:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <>
@@ -253,7 +308,17 @@ function AttackKing() {
                                 </div>
                             </div>
                             {/* Attack button */}
-                            <button className="mt-4 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold px-10 py-3 rounded-lg shadow text-lg transition">Attack</button>
+                            <button 
+                                onClick={handleAttack}
+                                disabled={loading}
+                                className={`mt-4 font-semibold px-10 py-3 rounded-lg shadow text-lg transition ${
+                                    loading 
+                                        ? 'bg-gray-400 cursor-not-allowed' 
+                                        : 'bg-indigo-500 hover:bg-indigo-600 text-white'
+                                }`}
+                            >
+                                {loading ? 'Attacking...' : 'Attack'}
+                            </button>
                         </div>
                     </div>
                 </div>

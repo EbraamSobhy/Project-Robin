@@ -13,7 +13,34 @@ function AttackProcess() {
     const [isVisible, setIsVisible] = useState(false);
     const [username, setUsername] = useState(" ");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [attackData, setAttackData] = useState({
+        initialLand: null,
+        attackedLand: null,
+        initialPatrol: null,
+        attackedPatrol: null
+    });
+    const [soldiers, setSoldiers] = useState(0);
     const navigate = useNavigate();
+
+    // Calculate minimum required soldiers for attack
+    const getMinRequiredSoldiers = () => {
+        if (!attackData.attackedLand) return 0;
+        return attackData.attackedLand.soldiers + 2;
+    };
+
+    // Calculate maximum available soldiers
+    const getMaxAvailableSoldiers = () => {
+        if (!attackData.initialLand) return 0;
+        return attackData.initialLand.soldiers;
+    };
+
+    // Check if attack is possible
+    const isAttackPossible = () => {
+        const minRequired = getMinRequiredSoldiers();
+        const maxAvailable = getMaxAvailableSoldiers();
+        return maxAvailable >= minRequired;
+    };
 
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(true), 200);
@@ -37,6 +64,48 @@ function AttackProcess() {
     useEffect(() => {
         document.title = "Attack Process";
     }, []);
+
+    // Fetch attack data when component mounts
+    useEffect(() => {
+        const fetchAttackData = async () => {
+            try {
+                const initialLandNo = localStorage.getItem("attackLandNo");
+                const targetLandNo = localStorage.getItem("attackTargetLandNo");
+                
+                if (!initialLandNo || !targetLandNo) {
+                    toast.error("Missing attack data", { position: "top-center" });
+                    navigate('/cp/attack');
+                    return;
+                }
+
+                const response = await fetch(`http://localhost:3000/CP/attack/data?initialL=${initialLandNo}&attackedL=${targetLandNo}`, {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch attack data');
+                }
+
+                const data = await response.json();
+                setAttackData(data);
+                
+                // Set default soldiers to initial land's soldiers
+                if (data.initialLand && data.initialLand.soldiers) {
+                    setSoldiers(data.initialLand.soldiers);
+                }
+            } catch (error) {
+                console.error('Error fetching attack data:', error);
+                toast.error("Failed to load attack data", { position: "top-center" });
+                navigate('/cp/attack');
+            }
+        };
+
+        fetchAttackData();
+    }, [navigate]);
 
     const handleLogout = async () => {
         if (window.confirm("Are you sure you want to logout?")) {
@@ -71,6 +140,72 @@ function AttackProcess() {
     const Attack = () => { navigate('/cp/attack'); setIsMobileMenuOpen(false); };
     const Transport = () => { navigate('/cp/transport'); setIsMobileMenuOpen(false); };
     const ViewScores = () => { navigate('/cp/scores'); setIsMobileMenuOpen(false); };
+
+    // Handle attack submission
+    const handleAttackSubmit = async () => {
+        if (!attackData.initialLand || !attackData.attackedLand || !attackData.attackedPatrol) {
+            toast.error("Missing attack data", { position: "top-center" });
+            return;
+        }
+
+        if (soldiers <= 0) {
+            toast.error("Please enter a valid number of soldiers", { position: "top-center" });
+            return;
+        }
+
+        if (soldiers > attackData.initialLand.soldiers) {
+            toast.error("This land doesn't contain this much soldiers", { position: "top-center" });
+            return;
+        }
+
+        // Check if you have enough soldiers to attack (soldiers - attackedLand.soldiers >= 2)
+        if (soldiers - attackData.attackedLand.soldiers < 2) {
+            toast.error("Not enough soldiers to attack. You need at least 2 more soldiers than the defending land.", { position: "top-center" });
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const response = await fetch('http://localhost:3000/CP/attack', {
+                method: 'PATCH',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    initialL: attackData.initialLand.land_no,
+                    attackedL: attackData.attackedLand.land_no,
+                    attackedPatrol: attackData.attackedPatrol.name,
+                    soldiers: soldiers
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                toast.error(data.message || 'Attack failed', { position: 'top-center' });
+                return;
+            }
+
+            toast.success(data.message || 'Attack successful!', { position: 'top-center' });
+            
+            // Clear localStorage
+            localStorage.removeItem("attackLandNo");
+            localStorage.removeItem("attackTargetLandNo");
+            
+            // Navigate back to attack page after delay
+            setTimeout(() => {
+                navigate('/cp/attack');
+            }, 2000);
+
+        } catch (error) {
+            console.error('Attack error:', error);
+            toast.error('Server error. Please try again.', { position: 'top-center' });
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <>
@@ -186,15 +321,19 @@ function AttackProcess() {
                                     {/* Left side: Your land */}
                                     <div className="flex-1 flex flex-col items-center sm:items-start">
                                         <div className="text-gray-700 text-lg font-medium mb-2">the number of soldiers in your land</div>
-                                        <div className="text-3xl font-bold text-gray-800 mb-2">20</div>
-                                        <div className="text-2xl font-semibold text-gray-700 mb-4">patrol 1 Name</div>
+                                        <div className="text-3xl font-bold text-gray-800 mb-2">
+                                            {attackData.initialLand ? attackData.initialLand.soldiers : 'Loading...'}
+                                        </div>
+                                        <div className="text-2xl font-semibold text-gray-700 mb-4">
+                                            {attackData.initialPatrol ? attackData.initialPatrol.name : 'Loading...'}
+                                        </div>
                                         <div className="text-gray-700 text-base font-medium mb-1">the resources of the land :</div>
                                         <div className="ml-2 text-gray-700 text-base font-normal">
-                                            houses : 2<br />
-                                            apple soil :1<br />
-                                            watermelon soil : 1<br />
-                                            wheat soil : 2<br />
-                                            empty soil : 0
+                                            <span>houses: {attackData.initialLand ? attackData.initialLand.houses : 0}</span><br />
+                                            <span>apple soil: {attackData.initialLand && attackData.initialLand.soils ? attackData.initialLand.soils.apple || 0 : 0}</span><br />
+                                            <span>watermelon soil: {attackData.initialLand && attackData.initialLand.soils ? attackData.initialLand.soils.watermelon || 0 : 0}</span><br />
+                                            <span>wheat soil: {attackData.initialLand && attackData.initialLand.soils ? attackData.initialLand.soils.wheat || 0 : 0}</span><br />
+                                            <span>empty soil: {attackData.initialLand && attackData.initialLand.soils ? attackData.initialLand.soils.empty || 0 : 0}</span>
                                         </div>
                                     </div>
                                     {/* Center VS */}
@@ -204,12 +343,49 @@ function AttackProcess() {
                                     {/* Right side: Attacked land */}
                                     <div className="flex-1 flex flex-col items-center sm:items-end">
                                         <div className="text-gray-700 text-lg font-medium mb-2">the number of soldiers in the attacked land</div>
-                                        <div className="text-3xl font-bold text-gray-800 mb-2">18</div>
-                                        <div className="text-2xl font-semibold text-gray-700 mb-4">patrol 2 Name</div>
+                                        <div className="text-3xl font-bold text-gray-800 mb-2">
+                                            {attackData.attackedLand ? attackData.attackedLand.soldiers : 'Loading...'}
+                                        </div>
+                                        <div className="text-2xl font-semibold text-gray-700 mb-4">
+                                            {attackData.attackedPatrol ? attackData.attackedPatrol.name : 'Loading...'}
+                                        </div>
                                     </div>
                                 </div>
+                                
+                                {/* Soldiers input */}
+                                <div className="w-full max-w-md">
+                                    <label className="block text-gray-700 text-lg font-medium mb-2 text-center">
+                                        Number of soldiers to attack with:
+                                    </label>
+                                    <input
+                                        type="number"
+                                        min={getMinRequiredSoldiers()}
+                                        max={getMaxAvailableSoldiers()}
+                                        value={soldiers}
+                                        onChange={(e) => setSoldiers(Number(e.target.value))}
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg text-center"
+                                        placeholder={`Min: ${getMinRequiredSoldiers()}, Max: ${getMaxAvailableSoldiers()}`}
+                                    />
+                                    {/* Attack requirements info */}
+                                    <div className="mt-3 text-sm text-gray-600 text-center">
+                                        <div>Minimum required: {getMinRequiredSoldiers()} soldiers</div>
+                                        <div>Maximum available: {getMaxAvailableSoldiers()} soldiers</div>
+                                        {!isAttackPossible() && (
+                                            <div className="text-red-600 font-medium mt-1">
+                                                ⚠️ You need at least {getMinRequiredSoldiers()} soldiers to attack this land
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                                
                                 {/* Attack button */}
-                                <button className="mt-4 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold px-10 py-3 rounded-lg shadow text-lg transition">Attack</button>
+                                <button 
+                                    onClick={handleAttackSubmit}
+                                    disabled={loading || !attackData.initialLand || !attackData.attackedLand || !isAttackPossible()}
+                                    className="mt-4 bg-indigo-500 hover:bg-indigo-600 disabled:bg-gray-400 text-white font-semibold px-10 py-3 rounded-lg shadow text-lg transition"
+                                >
+                                    {loading ? 'Attacking...' : 'Attack'}
+                                </button>
                             </div>
                         </div>
                     </div>
