@@ -121,15 +121,37 @@ function AttackProcess() {
             toast.warn("Invalid number of soldiers for attack", { position: "top-center" });
             return;
         }
-
+    
         try {
             setLoading(true);
-            
-            toast.success("Attack successful!", { position: "top-center" });
-            await fetchAttackData();
+            const response = await fetch('http://localhost:3000/CP/attack', {
+                method: 'PATCH',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    initialL: attackData.land1,        
+                    attackedL: attackData.land2,       
+                    attackedPatrol: attackData.patrol2, 
+                    soldiers: soldiers                 
+                })
+            });
+    
+            const data = await response.json();
+    
+            if (!response.ok) {
+                throw new Error(data.message || "Attack failed");
+            }
+    
+            toast.success(data.message || "Attack successful!", { position: "top-center" });
+            setTimeout(() => {
+                navigate('/cp');
+            }, 1500);
+
         } catch (error) {
             console.error('Attack failed:', error);
-            toast.error("Attack failed", { position: "top-center" });
+            toast.error(error.message || "Attack failed", { position: "top-center" });
         } finally {
             setLoading(false);
         }
@@ -320,7 +342,7 @@ function AttackProcess() {
                                         </div>
                                     </div>
                                 </div>
-                               
+ 
                                 {/* Soldiers input */}
                                 <div className="w-full max-w-md">
                                     <label className="block text-gray-700 text-lg font-medium mb-2 text-center">
@@ -349,8 +371,9 @@ function AttackProcess() {
                                
                                 {/* Attack button */}
                                 <button
+                                    type='submit'
                                     onClick={handleAttackSubmit}
-                                    disabled={loading || !attackData.initialLand || !attackData.attackedLand || !isAttackPossible()}
+                                    disabled={loading}
                                     className="mt-4 bg-indigo-500 hover:bg-indigo-600 disabled:bg-gray-400 text-white font-semibold px-10 py-3 rounded-lg shadow text-lg transition"
                                 >
                                     {loading ? 'Attacking...' : 'Attack'}
