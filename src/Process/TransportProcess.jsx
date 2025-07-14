@@ -7,16 +7,15 @@ import { LuSwords } from "react-icons/lu";
 import { MdLocalShipping } from 'react-icons/md';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function TransportProcess() {
     const [isVisible, setIsVisible] = useState(false);
     const [username, setUsername] = useState("");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-    const location = useLocation();
-    const [initialLand, setInitialLand] = useState(location.state?.initialLand || 0);
-    const [finalLand, setFinalLand] = useState(location.state?.finalLand || 0);
+    const [initialLand, setInitialLand] = useState(0);
+    const [finalLand, setFinalLand] = useState(0);
     const [quantity, setQuantity] = useState(0);
     const [horses, setHorses] = useState(0);
     const [rentHorses, setRentHorses] = useState(0);
@@ -42,20 +41,6 @@ function TransportProcess() {
         link.href = '/Transport.png';
         document.getElementsByTagName('head')[0].appendChild(link);
     }, []);
-
-    // Save initialLandNo to localStorage when it changes
-    useEffect(() => {
-        if (initialLand !== 0) {
-            localStorage.setItem("initialLandNo", initialLand.toString());
-        }
-    }, [initialLand]);
-
-    // Save finalLandNo to localStorage when it changes
-    useEffect(() => {
-        if (finalLand !== 0) {
-            localStorage.setItem("finalLandNo", finalLand.toString());
-        }
-    }, [finalLand]);
 
     const handleLogout = async () => {
         if (window.confirm("Are you sure you want to logout?")) {
@@ -125,15 +110,6 @@ function TransportProcess() {
             const data = await res.json();
             if (res.ok) {
                 toast.success(data.message || "Transport process successful!", { position: "top-center" });
-                // Reset form after successful submission
-                setQuantity(0);
-                setType('');
-                setInitialLand('');
-                setFinalLand('');
-                setHorses(0);
-                setRentHorses(0);
-                setRentCarts(0);
-                setCarts(0);
             } else {
                 toast.error(data.message || "Transport process failed.", { position: "top-center" });
             }
@@ -144,7 +120,16 @@ function TransportProcess() {
 
         setLoading(false);
     };
-
+    console.log('Rendering TransportProcess with state:', {
+        initialLand,
+        finalLand,
+        quantity,
+        horses,
+        rentHorses,
+        rentCarts,
+        type,
+        carts
+    });
     return (
         <>
             {/* Horizontal Navbar */}

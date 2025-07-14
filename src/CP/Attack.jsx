@@ -138,9 +138,9 @@ function Attack() {
         try {
             const response = await fetch('http://localhost:3000/CP/attack', {
                 method: 'POST',
+                credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ landNo: targetLand }),
-                credentials: 'include',
             });
     
             const data = await response.json();

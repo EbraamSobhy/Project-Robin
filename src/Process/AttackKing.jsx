@@ -14,17 +14,19 @@ function AttackKing() {
     const [username, setUsername] = useState(" ");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const navigate = useNavigate();
-    const { state } = useLocation(); // state?: { landNo, attackedLand }
-    const [conditions, setConditions] = useState(null);      // enemy land
-    const [qualifications, setQualifications] = useState(null); // you
+    const { state } = useLocation();
+    const [conditions, setConditions] = useState(null);
+    const [qualifications, setQualifications] = useState(null);
     const [loading, setLoading] = useState(false);
 
     const landNo = 
-        state?.landNo || localStorage.getItem("landNo") || ""; // your land
+        state?.landNo || localStorage.getItem("landNo") || "";
     const attackedLand = 
         state?.attackedLand || 
         localStorage.getItem("attackedLand") || 
-        ""; // enemy land
+        "";
+
+
 
     useEffect(() => {
         // fade-in animation
@@ -44,37 +46,47 @@ function AttackKing() {
 
     useEffect(() => {
         if (!landNo || !attackedLand) return; // nothing to fetch yet
-            
-        const controller = new AbortController();
-        
-        async function loadData() {
-            try {
-                const res = await fetch(`http://localhost:3000/CP/kadrAttack?landNo=${landNo}&attackedLand=${attackedLand}`, 
-                    { 
-                        credentials: "include",
-                        signal: controller.signal,
-                        method: 'GET',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        }
+
+    const controller = new AbortController();
+
+    // Fetch Data
+    async function loadData() {
+        setLoading(true); // Set loading to true when fetching starts
+        try {
+            // Construct the URL with query parameters
+            const url = `http://localhost:3000/CP/kadrAttack?landNo=${landNo}&attackedLand=${attackedLand}`;
+
+            const res = await fetch(url,
+                {
+                    method: 'GET',
+                    credentials: "include",
+                    signal: controller.signal,
+                    headers: {
+                        'Content-Type': 'application/json',
                     }
-                );
-                if (!res.ok) throw new Error("Network response was not ok");
-                
-                const { conditions, qualifications } = await res.json();
-                setConditions(conditions);
-                setQualifications(qualifications);
-            } catch (err) {
-                if (err.name !== "AbortError") {
-                    console.error(err);
-                    toast.error("Failed to fetch attack data", { position: "top-center" });
                 }
+            );
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.message || "Network response was not ok");
             }
+
+            const { conditions, qualifications } = await res.json();
+            setConditions(conditions);
+            setQualifications(qualifications);
+        } catch (err) {
+            if (err.name !== "AbortError") {
+                console.error("Failed to fetch attack data:", err);
+                toast.error(err.message || "Failed to fetch attack data", { position: "top-center" });
+            }
+        } finally {
+            setLoading(false); // Set loading to false when fetching completes (success or error)
         }
-        
-        loadData();
-        return () => controller.abort();
-    }, [landNo, attackedLand]);
+    }
+
+    loadData();
+    return () => controller.abort();
+}, [landNo, attackedLand]); 
 
     const handleLogout = async () => {
         if (window.confirm("Are you sure you want to logout?")) {
@@ -110,59 +122,19 @@ function AttackKing() {
     const Transport = () => { navigate('/cp/transport'); setIsMobileMenuOpen(false); };
     const ViewScores = () => { navigate('/cp/scores'); setIsMobileMenuOpen(false); };
 
-    // Handle Attack
-    const handleAttack = async () => {
-        if (!landNo || !attackedLand) {
-            toast.error("Missing land information", { position: "top-center" });
-            return;
-        }
-
-        if (loading) return; // Prevent multiple clicks
+    
+    const AttackKadrProcess = () => {
+        const Process  = setTimeout(() => {
+            navigate('/cp/ProcessOfAttack');
+        }, 1500);
         
-        setLoading(true);
-        
-        try {
-            const response = await fetch('http://localhost:3000/CP/attack', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    landNo: Number(landNo),
-                    attackedLand: Number(attackedLand)
-                }),
-                credentials: 'include',
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                toast.error(data.message || 'Attack failed', { position: 'top-center' });
-                return;
-            }
-
-            // Handle different attack results
-            if (data.attacked === "kadr") {
-                toast.success('Attack successful! You attacked Kadr!', { position: 'top-center' });
-                // Stay on this page since we're already on AttackKing
-            } else if (data.attacked === "patrol") {
-                toast.success('Attack successful! You attacked a patrol!', { position: 'top-center' });
-                setTimeout(() => {
-                    navigate('/cp/AttackProcess');
-                }, 1500);
-            } else {
-                toast.success('Attack completed!', { position: 'top-center' });
-                // Navigate back to attack page after successful attack
-                setTimeout(() => {
-                    navigate('/cp/attack');
-                }, 1500);
-            }
-            
-        } catch (err) {
-            toast.error('Server error. Please try again.', { position: 'top-center' });
-            console.error('Attack error:', err);
-        } finally {
-            setLoading(false);
+        if (Process) {
+            toast.success("Go to Process Successfully", { position: "top-center" })
         }
-    };
+        else {
+            toast.error("Failed to go to Process" , { position: "top-center" })
+        }
+    }
 
     return (
         <>
@@ -276,7 +248,7 @@ function AttackKing() {
                             <div className="w-full flex flex-col sm:flex-row justify-between items-start gap-8 mb-8">
                                 {/* Left: Land Requirements */}
                                 <div className="flex-1 flex flex-col items-center sm:items-start">
-                                    <div className="text-gray-700 text-lg font-medium mb-2">the land requirements</div>
+                                    <div className="text-gray-700 text-lg font-bold mb-2">the land requirements</div>
                                     <div className="ml-2 text-gray-700 text-base font-normal mb-2">
                                         total soldiers : {conditions?.soldiers ?? "—"}
                                         <br />
@@ -292,13 +264,13 @@ function AttackKing() {
                                 </div>
                                 {/* Right: You Have */}
                                 <div className="flex-1 flex flex-col items-center sm:items-end">
-                                    <div className="text-gray-700 text-lg font-medium mb-2">You Have</div>
+                                    <div className="text-gray-700 text-lg font-bold mb-2">You Have</div>
                                     <div className="ml-2 text-gray-700 text-base font-normal mb-2">
                                         total soldiers : {qualifications?.soldiers ?? "—"}
                                         <br />
                                         total houses &nbsp;: {qualifications?.houses ?? "—"}
                                         <br />
-                                        total lands &nbsp;&nbsp;: {qualifications?.lands ?? "—"}
+                                        total lands &nbsp;&nbsp;: {qualifications?.inLandSoldiers ?? "—"}    
                                         <br />
                                         total coins &nbsp;&nbsp;: {qualifications?.coins ?? "—"}
                                     </div>
@@ -307,9 +279,9 @@ function AttackKing() {
                                     </div>
                                 </div>
                             </div>
-                            {/* Attack button */}
-                            <button 
-                                onClick={handleAttack}
+                        {/* Process Of Attack */}
+                        <button 
+                                onClick={AttackKadrProcess}
                                 disabled={loading}
                                 className={`mt-4 font-semibold px-10 py-3 rounded-lg shadow text-lg transition ${
                                     loading 
@@ -317,8 +289,8 @@ function AttackKing() {
                                         : 'bg-indigo-500 hover:bg-indigo-600 text-white'
                                 }`}
                             >
-                                {loading ? 'Attacking...' : 'Attack'}
-                            </button>
+                                {loading ? 'Processing...' : 'Go to Process'}
+                            </button>    
                         </div>
                     </div>
                 </div>

@@ -21,6 +21,7 @@ import Harvest from "./Kadr/Harvest";
 import Trade from "./Kadr/Trade";
 import UpdateScores from "./Kadr/UpdateScores";
 import Watering from "./Kadr/Watering";
+import ProcessOfAttack from "./Process/ProcessOfAttack";
 
 // process routes
 import PlantProcess from "./Process/PlantProcess";
@@ -67,6 +68,7 @@ function App() {
       <Route path="/cp/AttackProcess" element={<AttackProcess />} />
       <Route path="/cp/TransportProcess" element={<TransportProcess />} />
       <Route path="/cp/AttackKing" element={<AttackKing />} />
+      <Route path="/cp/ProcessOfAttack" element={<ProcessOfAttack />} />
     </Routes>
   );
 }
