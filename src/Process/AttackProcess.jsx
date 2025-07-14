@@ -131,10 +131,10 @@ function AttackProcess() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    initialL: attackData.land1,        
-                    attackedL: attackData.land2,       
-                    attackedPatrol: attackData.patrol2, 
-                    soldiers: soldiers                 
+                    initialL: attackData.land1,
+                    attackedL: attackData.land2,
+                    attackedPatrol: attackData.patrol2,
+                    soldiers: soldiers
                 })
             });
     

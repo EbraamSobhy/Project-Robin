@@ -75,21 +75,62 @@ function Trade() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        
+        // Validate form data before submission
+        if (!form.patrol1 || !form.patrol2 || !form.type1 || !form.type2 || 
+            form.quantity1 <= 0 || form.quantity2 <= 0) {
+            toast.error("Please fill all fields with valid values", { position: "top-center" });
+            return;
+        }
+    
         try {
             const res = await fetch('http://localhost:3000/Chef/trade/process', {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
-                body: JSON.stringify(form),
+                body: JSON.stringify({
+                    patrol1: form.patrol1,
+                    patrol2: form.patrol2,
+                    type1: form.type1,
+                    type2: form.type2,
+                    quantity1: form.quantity1,
+                    quantity2: form.quantity2,
+                    SLand1: form.SLand1 || null,  // Send null if 0
+                    SLand2: form.SLand2 || null,  // Send null if 0
+                    DLand1: form.DLand1 || null,  // Send null if 0
+                    DLand2: form.DLand2 || null   // Send null if 0
+                }),
             });
-
-            if (res.ok) {
-                toast.success("Trade successful!", { position: "top-center" });
-            } else {
-                toast.error("Trade failed!", { position: "top-center" });
+    
+            const data = await res.json();
+    
+            if (!res.ok) {
+                // If the server provides an error message, show it
+                throw new Error(data.message);
             }
-        } catch {
-            toast.error("Network error", { position: "top-center" });
+    
+            toast.success("Trade successful!", { position: "top-center" });
+            
+            // Reset form after successful trade
+            setForm({
+                patrol1: " ",
+                patrol2: " ",
+                type1: " ",
+                type2: " ",
+                quantity1: 0,
+                quantity2: 0,
+                SLand1: 0,
+                SLand2: 0,
+                DLand1: 0,
+                DLand2: 0
+            });
+    
+        } catch (error) {
+            console.error('Trade error:', error);
+            toast.error(error.message || "Trade failed. Please check your inputs.", { 
+                position: "top-center",
+                autoClose: 5000
+            });
         }
     };
 
@@ -278,7 +319,7 @@ function Trade() {
                                         <label className="text-xl font-bold text-gray-800">Source Land 1</label>
                                         <input
                                             name="SLand1"
-                                            type="text"
+                                            type="number"
                                             value={form.SLand1}
                                             onChange={handleChange}
                                             className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg mb-2"
@@ -287,7 +328,7 @@ function Trade() {
                                         <label className="text-xl font-bold text-gray-800">Destination Land 1</label>
                                         <input
                                             name="DLand1"
-                                            type="text"
+                                            type="number"
                                             value={form.DLand1}
                                             onChange={handleChange}
                                             className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg mb-2"
@@ -340,7 +381,7 @@ function Trade() {
                                         <label className="text-xl font-bold text-gray-800">Source Land 2</label>
                                         <input
                                             name="SLand2"
-                                            type="text"
+                                            type="number"
                                             value={form.SLand2}
                                             onChange={handleChange}
                                             className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg mb-2"
@@ -349,7 +390,7 @@ function Trade() {
                                         <label className="text-xl font-bold text-gray-800">Destination Land 2</label>
                                         <input
                                             name="DLand2"
-                                            type="text"
+                                            type="number"
                                             value={form.DLand2}
                                             onChange={handleChange}
                                             className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg mb-2"
