@@ -20,7 +20,7 @@ function ViewScores() {
     const navigate = useNavigate();
 
     // Patrol names based on the dropdown options found in other components
-    const patrolNames = ['Panther', 'Lion', 'Cobra', 'Tiger', 'Fox', 'Wolf'];
+    const patrolNames = ['Lion', 'Panther', 'Cobra', 'Wolf', 'Fox', 'Tiger'];
 
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(true), 200);
@@ -252,26 +252,26 @@ function ViewScores() {
         if (!patrol) return null;
         
         const patrolInfo = [
-            { label: "💂 Total Soldiers", value: patrol.totalSoldiers || 0 },
-            { label: "🏘️ Total Houses", value: patrol.totalHouses || 0 },
-            { label: "🏇 Total Carts", value: patrol.totalCarts || 0 },
-            { label: "🛠️ Total Workshops", value: patrol.totalWorkshops || 0 },
-            { label: "🏞️ Total Lands", value: patrol.totalLands || 0 },
-            { label: "🐎 Total Horses", value: patrol.totalHorses || 0 },
-            { label: "💰 Total Coins", value: patrol.totalCoins || 0 },
-            { label: "🐎 Rent Horses", value: patrol.rentHorses || 0 },
-            { label: "🏇 Rent Carts", value: patrol.rentCarts || 0 },
+            { label: "💂 Total Soldiers", value: patrol.tot_sol || 0 },
+            { label: "🏘️ Total Houses", value: patrol.tot_houses || 0 },
+            { label: "🏇 Total Carts", value: patrol.tot_carts || 0 },
+            { label: "🛠️ Total Workshops", value: patrol.tot_workshops || 0 },
+            { label: "🏞️ Total Lands", value: patrol.tot_lands || 0 },
+            { label: "🐎 Total Horses", value: patrol.tot_horses || 0 },
+            { label: "💰 Total Coins", value: patrol.coins || 0 },
+            { label: "🐎 Rent Horses", value: patrol.rentHorse || 0 },
+            { label: "🏇 Rent Carts", value: patrol.rentCart || 0 },
             { label: "🌾 Wheat Seeds", value: patrol.wheatSeeds || 0 },
             { label: "🍎 Apple Seeds", value: patrol.appleSeeds || 0 },
             { label: "🍉 Watermelon Seeds", value: patrol.watermelonSeeds || 0 },
             { label: "🍉 Watermelon", value: patrol.watermelon || 0 },
             { label: "🍎 Apple", value: patrol.apple || 0 },
             { label: "🌾 Wheat", value: patrol.wheat || 0 },
-            { label: "🌱 Total Soil", value: patrol.totalSoil || 0 },
-            { label: "🍎 Apple Soil", value: patrol.appleSoil || 0 },
-            { label: "🍉 Watermelon Soil", value: patrol.watermelonSoil || 0 },
-            { label: "🌾 Wheat Soil", value: patrol.wheatSoil || 0 },
-            { label: "⬜ Empty Soil", value: patrol.emptySoil || 0 },
+            { label: "🌱 Total Soil", value: patrol.tot_soil || 0 },
+            { label: "🍎 Apple Soil", value: patrol.soils.apple || 0 },
+            { label: "🍉 Watermelon Soil", value: patrol.soils.watermelon || 0 },
+            { label: "🌾 Wheat Soil", value: patrol.soils.wheat || 0 },
+            { label: "⬜ Empty Soil", value: patrol.soils.empty || 0 },
         ];
 
         return patrolInfo.map((item, i) => (

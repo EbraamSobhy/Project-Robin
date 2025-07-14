@@ -21,7 +21,7 @@ const [isVisible, setIsVisible] = useState(false);
     const navigate = useNavigate();
 
     // Patrol names based on the dropdown options found in other components
-    const patrolNames = ['Panther', 'Lion', 'Cobra', 'Tiger', 'Fox', 'Wolf'];
+    const patrolNames = ['Lion', 'Panther', 'Cobra', 'Wolf', 'Fox', 'Tiger'];
 
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(true), 200);
@@ -48,151 +48,151 @@ const [isVisible, setIsVisible] = useState(false);
 
     // Fetch data from MongoDB
     useEffect(() => {
-            const fetchScores = async () => {
-                try {
-                    setLoading(true);
-                    setError(null);
-                    
-                    const response = await fetch('http://localhost:3000/scout/view-scores', {
-                        method: 'GET',
-                        credentials: 'include',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                    });
+        const fetchScores = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                
+                const response = await fetch('http://localhost:3000/scout/view-scores', {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
 
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
 
-                    const data = await response.json();
-                    console.log('Response data:', data);
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                // Handle different response formats
+                if (data && typeof data === 'object') {
+                    let patrolsArray = [];
                     
-                    // Handle different response formats
-                    if (data && typeof data === 'object') {
-                        let patrolsArray = [];
-                        
-                        // Check if data has patrol1, patrol2, etc. structure
-                        if (data.patrol1 || data.patrol2 || data.patrol3 || data.patrol4 || data.patrol5 || data.patrol6) {
-                            for (let i = 1; i <= 6; i++) {
-                                const patrolKey = `patrol${i}`;
-                                if (data[patrolKey]) {
-                                    patrolsArray.push({
-                                        ...data[patrolKey],
-                                        patrolName: data[patrolKey].patrolName || patrolNames[i-1]
-                                    });
-                                } else {
-                                    // Add empty patrol with default name
-                                    patrolsArray.push({
-                                        patrolName: patrolNames[i-1],
-                                        totalSoldiers: 0,
-                                        totalHouses: 0,
-                                        totalCarts: 0,
-                                        totalWorkshops: 0,
-                                        totalLands: 0,
-                                        totalHorses: 0,
-                                        totalCoins: 0,
-                                        rentHorses: 0,
-                                        rentCarts: 0,
-                                        wheatSeeds: 0,
-                                        appleSeeds: 0,
-                                        watermelonSeeds: 0,
-                                        watermelon: 0,
-                                        apple: 0,
-                                        wheat: 0,
-                                        totalSoil: 0,
-                                        appleSoil: 0,
-                                        watermelonSoil: 0,
-                                        wheatSoil: 0,
-                                        emptySoil: 0
-                                    });
-                                }
+                    // Check if data has patrol1, patrol2, etc. structure
+                    if (data.patrol1 || data.patrol2 || data.patrol3 || data.patrol4 || data.patrol5 || data.patrol6) {
+                        for (let i = 1; i <= 6; i++) {
+                            const patrolKey = `patrol${i}`;
+                            if (data[patrolKey]) {
+                                patrolsArray.push({
+                                    ...data[patrolKey],
+                                    patrolName: data[patrolKey].patrolName || patrolNames[i-1]
+                                });
+                            } else {
+                                // Add empty patrol with default name
+                                patrolsArray.push({
+                                    patrolName: patrolNames[i-1],
+                                    totalSoldiers: 0,
+                                    totalHouses: 0,
+                                    totalCarts: 0,
+                                    totalWorkshops: 0,
+                                    totalLands: 0,
+                                    totalHorses: 0,
+                                    totalCoins: 0,
+                                    rentHorses: 0,
+                                    rentCarts: 0,
+                                    wheatSeeds: 0,
+                                    appleSeeds: 0,
+                                    watermelonSeeds: 0,
+                                    watermelon: 0,
+                                    apple: 0,
+                                    wheat: 0,
+                                    totalSoil: 0,
+                                    appleSoil: 0,
+                                    watermelonSoil: 0,
+                                    wheatSoil: 0,
+                                    emptySoil: 0
+                                });
                             }
                         }
-                        // Check if data is an array of patrols
-                        else if (Array.isArray(data)) {
-                            patrolsArray = data.map((patrol) => ({
-                                ...patrol,
-                                patrolName: patrol.patrolName
-                            }));
-                        }
-                        // Check if data has a patrols property
-                        else if (data.patrols && Array.isArray(data.patrols)) {
-                            patrolsArray = data.patrols.map((patrol) => ({
-                                ...patrol,
-                                patrolName: patrol.patrolName
-                            }));
-                        }
-                        // If no patrol data found, create default patrols
-                        else {
-                            patrolsArray = patrolNames.map(name => ({
-                                patrolName: name,
-                                totalSoldiers: 0,
-                                totalHouses: 0,
-                                totalCarts: 0,
-                                totalWorkshops: 0,
-                                totalLands: 0,
-                                totalHorses: 0,
-                                totalCoins: 0,
-                                rentHorses: 0,
-                                rentCarts: 0,
-                                wheatSeeds: 0,
-                                appleSeeds: 0,
-                                watermelonSeeds: 0,
-                                watermelon: 0,
-                                apple: 0,
-                                wheat: 0,
-                                totalSoil: 0,
-                                appleSoil: 0,
-                                watermelonSoil: 0,
-                                wheatSoil: 0,
-                                emptySoil: 0
-                            }));
-                        }
-                        
-                        setPatrols(patrolsArray);
-                        setLands(data.lands || data.land || []);
-                        
-                    } else {
-                        throw new Error('Invalid data format received from server');
                     }
-                } catch (error) {
-                    console.error('Error fetching scores:', error);
-                    setError(error.message);
+                    // Check if data is an array of patrols
+                    else if (Array.isArray(data)) {
+                        patrolsArray = data.map((patrol, index) => ({
+                            ...patrol,
+                            patrolName: patrol.patrolName || patrolNames[index] || `Patrol ${index + 1}`
+                        }));
+                    }
+                    // Check if data has a patrols property
+                    else if (data.patrols && Array.isArray(data.patrols)) {
+                        patrolsArray = data.patrols.map((patrol, index) => ({
+                            ...patrol,
+                            patrolName: patrol.patrolName || patrolNames[index] || `Patrol ${index + 1}`
+                        }));
+                    }
+                    // If no patrol data found, create default patrols
+                    // else {
+                    //     patrolsArray = patrolNames.map(name => ({
+                    //         patrolName: name,
+                    //         totalSoldiers: 0,
+                    //         totalHouses: 0,
+                    //         totalCarts: 0,
+                    //         totalWorkshops: 0,
+                    //         totalLands: 0,
+                    //         totalHorses: 0,
+                    //         totalCoins: 0,
+                    //         rentHorses: 0,
+                    //         rentCarts: 0,
+                    //         wheatSeeds: 0,
+                    //         appleSeeds: 0,
+                    //         watermelonSeeds: 0,
+                    //         watermelon: 0,
+                    //         apple: 0,
+                    //         wheat: 0,
+                    //         totalSoil: 0,
+                    //         appleSoil: 0,
+                    //         watermelonSoil: 0,
+                    //         wheatSoil: 0,
+                    //         emptySoil: 0
+                    //     }));
+                    // }
                     
-                    // If backend is not available, create default patrols with sample data
-                    const defaultPatrols = patrolNames.map((name, index) => ({
-                        patrolName: name,
-                        totalSoldiers: Math.floor(Math.random() * 10) + 1 + index,
-                        totalHouses: Math.floor(Math.random() * 5) + 1 + index,
-                        totalCarts: Math.floor(Math.random() * 4) + 1 + index,
-                        totalWorkshops: Math.floor(Math.random() * 3) + 1 + index,
-                        totalLands: Math.floor(Math.random() * 6) + 1 + index,
-                        totalHorses: Math.floor(Math.random() * 8) + 1 + index,
-                        totalCoins: Math.floor(Math.random() * 100) + 10 + (index * 10),
-                        rentHorses: Math.floor(Math.random() * 3) + index,
-                        rentCarts: Math.floor(Math.random() * 2) + index,
-                        wheatSeeds: Math.floor(Math.random() * 10) + 1 + index,
-                        appleSeeds: Math.floor(Math.random() * 8) + 1 + index,
-                        watermelonSeeds: Math.floor(Math.random() * 12) + 1 + index,
-                        watermelon: Math.floor(Math.random() * 15) + 1 + index,
-                        apple: Math.floor(Math.random() * 20) + 1 + index,
-                        wheat: Math.floor(Math.random() * 25) + 1 + index,
-                        totalSoil: Math.floor(Math.random() * 20) + 5 + index,
-                        appleSoil: Math.floor(Math.random() * 8) + 1 + index,
-                        watermelonSoil: Math.floor(Math.random() * 10) + 1 + index,
-                        wheatSoil: Math.floor(Math.random() * 12) + 1 + index,
-                        emptySoil: Math.floor(Math.random() * 5) + 1 + index
-                    }));
+                    setPatrols(patrolsArray);
+                    setLands(data.lands || data.land || []);
                     
-                    setPatrols(defaultPatrols);
-                    setLands([]);
-                    
-                    toast.warning('Backend not available. Showing sample data.', { position: "top-center" });
-                } finally {
-                    setLoading(false);
+                } else {
+                    throw new Error('Invalid data format received from server');
                 }
-            };
+            } catch (error) {
+                console.error('Error fetching scores:', error);
+                setError(error.message);
+                
+                // If backend is not available, create default patrols with sample data
+                const defaultPatrols = patrolNames.map((name, index) => ({
+                    patrolName: name,
+                    totalSoldiers: Math.floor(Math.random() * 10) + 1 + index,
+                    totalHouses: Math.floor(Math.random() * 5) + 1 + index,
+                    totalCarts: Math.floor(Math.random() * 4) + 1 + index,
+                    totalWorkshops: Math.floor(Math.random() * 3) + 1 + index,
+                    totalLands: Math.floor(Math.random() * 6) + 1 + index,
+                    totalHorses: Math.floor(Math.random() * 8) + 1 + index,
+                    totalCoins: Math.floor(Math.random() * 100) + 10 + (index * 10),
+                    rentHorses: Math.floor(Math.random() * 3) + index,
+                    rentCarts: Math.floor(Math.random() * 2) + index,
+                    wheatSeeds: Math.floor(Math.random() * 10) + 1 + index,
+                    appleSeeds: Math.floor(Math.random() * 8) + 1 + index,
+                    watermelonSeeds: Math.floor(Math.random() * 12) + 1 + index,
+                    watermelon: Math.floor(Math.random() * 15) + 1 + index,
+                    apple: Math.floor(Math.random() * 20) + 1 + index,
+                    wheat: Math.floor(Math.random() * 25) + 1 + index,
+                    totalSoil: Math.floor(Math.random() * 20) + 5 + index,
+                    appleSoil: Math.floor(Math.random() * 8) + 1 + index,
+                    watermelonSoil: Math.floor(Math.random() * 10) + 1 + index,
+                    wheatSoil: Math.floor(Math.random() * 12) + 1 + index,
+                    emptySoil: Math.floor(Math.random() * 5) + 1 + index
+                }));
+                
+                setPatrols(defaultPatrols);
+                setLands([]);
+                
+                toast.warning('Backend not available. Showing sample data.', { position: "top-center" });
+            } finally {
+                setLoading(false);
+            }
+        };
 
         fetchScores();
     }, []);
@@ -264,26 +264,26 @@ const [isVisible, setIsVisible] = useState(false);
         if (!patrol) return null;
         
         const patrolInfo = [
-            { label: "💂 Total Soldiers", value: patrol.totalSoldiers || 0 },
-            { label: "🏘️ Total Houses", value: patrol.totalHouses || 0 },
-            { label: "🏇 Total Carts", value: patrol.totalCarts || 0 },
-            { label: "🛠️ Total Workshops", value: patrol.totalWorkshops || 0 },
-            { label: "🏞️ Total Lands", value: patrol.totalLands || 0 },
-            { label: "🐎 Total Horses", value: patrol.totalHorses || 0 },
-            { label: "💰 Total Coins", value: patrol.totalCoins || 0 },
-            { label: "🐎 Rent Horses", value: patrol.rentHorses || 0 },
-            { label: "🏇 Rent Carts", value: patrol.rentCarts || 0 },
+            { label: "💂 Total Soldiers", value: patrol.tot_sol || 0 },
+            { label: "🏘️ Total Houses", value: patrol.tot_houses || 0 },
+            { label: "🏇 Total Carts", value: patrol.tot_carts || 0 },
+            { label: "🛠️ Total Workshops", value: patrol.tot_workshops || 0 },
+            { label: "🏞️ Total Lands", value: patrol.tot_lands || 0 },
+            { label: "🐎 Total Horses", value: patrol.tot_horses || 0 },
+            { label: "💰 Total Coins", value: patrol.coins || 0 },
+            { label: "🐎 Rent Horses", value: patrol.rentHorse || 0 },
+            { label: "🏇 Rent Carts", value: patrol.rentCart || 0 },
             { label: "🌾 Wheat Seeds", value: patrol.wheatSeeds || 0 },
             { label: "🍎 Apple Seeds", value: patrol.appleSeeds || 0 },
             { label: "🍉 Watermelon Seeds", value: patrol.watermelonSeeds || 0 },
             { label: "🍉 Watermelon", value: patrol.watermelon || 0 },
             { label: "🍎 Apple", value: patrol.apple || 0 },
             { label: "🌾 Wheat", value: patrol.wheat || 0 },
-            { label: "🌱 Total Soil", value: patrol.totalSoil || 0 },
-            { label: "🍎 Apple Soil", value: patrol.appleSoil || 0 },
-            { label: "🍉 Watermelon Soil", value: patrol.watermelonSoil || 0 },
-            { label: "🌾 Wheat Soil", value: patrol.wheatSoil || 0 },
-            { label: "⬜ Empty Soil", value: patrol.emptySoil || 0 },
+            { label: "🌱 Total Soil", value: patrol.tot_soil || 0 },
+            { label: "🍎 Apple Soil", value: patrol.soils.apple || 0 },
+            { label: "🍉 Watermelon Soil", value: patrol.soils.watermelon || 0 },
+            { label: "🌾 Wheat Soil", value: patrol.soils.wheat || 0 },
+            { label: "⬜ Empty Soil", value: patrol.soils.empty || 0 },
         ];
 
         return patrolInfo.map((item, i) => (

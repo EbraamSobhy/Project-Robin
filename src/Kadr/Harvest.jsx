@@ -245,7 +245,7 @@ function Harvest() {
                                                             <span className="font-bold text-lg text-yellow-700">{crops.wheat}</span>
                                                         </div>
                                                         <div className="flex items-center bg-green-100 rounded-xl shadow p-3">
-                                                            <span className="text-2xl mr-3">🍉</span>
+                                                            <span className="text-2xl mr-1">🍉</span>
                                                             <span className="font-semibold text-gray-700 flex-1">Watermelon</span>
                                                             <span className="font-bold text-lg text-green-700">{crops.watermelon}</span>
                                                         </div>
@@ -276,7 +276,7 @@ function Harvest() {
                                                             <span className="font-bold text-lg text-yellow-700">{crops.wheat}</span>
                                                         </div>
                                                         <div className="flex items-center bg-green-100 rounded-xl shadow p-3">
-                                                            <span className="text-2xl mr-3">🍉</span>
+                                                            <span className="text-2xl mr-1">🍉</span>
                                                             <span className="font-semibold text-gray-700 flex-1">Watermelon</span>
                                                             <span className="font-bold text-lg text-green-700">{crops.watermelon}</span>
                                                         </div>
