@@ -143,7 +143,7 @@ function Harvest() {
             const data = await res.json();
             if (res.ok) {
                 toast.success(data.message || "Harvest done successfully!", { position: "top-center" });
-                fetchPatrols(); // Refresh data
+                fetchPatrols();
             } else {
                 throw new Error(data.message || "Harvest failed");
             }

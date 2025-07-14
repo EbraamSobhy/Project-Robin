@@ -286,7 +286,7 @@ function Take() {
                                             <option value="tot_carts">Cart</option>
                                             <option value="apple">Apple Crop</option>
                                             <option value="wheat">Wheat Crop</option>
-                                            <option value="watermelom">Watermelom Crop</option>
+                                            <option value="watermelon">Watermelon Crop</option>
                                             <option value="appleSeeds">Apple Seeds</option>
                                             <option value="wheatSeeds">Wheat Seeds</option>
                                             <option value="watermelonSeeds">Watermelon Seeds</option>

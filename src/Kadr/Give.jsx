@@ -130,7 +130,7 @@ function Give() {
             });
             const data = await response.json();
             if (data.success) {
-                toast.success("Asset given successfully!", { position: "top-center" });
+                toast.success("Given successfully!", { position: "top-center" });
                 // Optionally reset form fields
                 setQuantity("");
                 setLandNumber("");
@@ -292,7 +292,7 @@ function Give() {
                                             <option value="tot_carts">Cart</option>
                                             <option value="apple">Apple Crop</option>
                                             <option value="wheat">Wheat Crop</option>
-                                            <option value="watermelom">Watermelom Crop</option>
+                                            <option value="watermelon">Watermelon Crop</option>
                                             <option value="appleSeeds">Apple Seeds</option>
                                             <option value="wheatSeeds">Wheat Seeds</option>
                                             <option value="watermelonSeeds">Watermelon Seeds</option>
