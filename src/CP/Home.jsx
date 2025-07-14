@@ -1,3 +1,4 @@
+// Home.jsx - (No changes needed, keeping for context)
 import React, { useEffect, useState } from 'react';
 import '../Scout/tailwind.css';
 import imageDefault from '../assets/image.PNG';
@@ -16,6 +17,9 @@ function Home() {
     const [username, setUsername] = useState(" ");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [image, setImage] = useState(() => getSharedImage(imageDefault));
+    const [patrolData, setPatrolData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -107,29 +111,45 @@ function Home() {
         navigate(route);
     };
 
-    const patrolData = [
-        "Patrol Name:",
-        "total soldiers: 5",
-        "total houses: 3",
-        "total carts: 2",
-        "total workshops: 3",
-        "total lands: 2",
-        "total horses: 4",
-        "total coins: 10",
-        "rent horses: 1",
-        "rent carts: 1",
-        "wheat seeds: 3",
-        "apple seeds: 1",
-        "watermelon seeds: 3",
-        "watermelon: 1",
-        "apple: 1",
-        "wheat: 2",
-        "total soil: 8",
-        "apple soil: 2",
-        "watermelon soil: 3",
-        "wheat soil: 1",
-        "empty soil: 2"
-    ];
+    useEffect(() => {
+        const fetchPatrolData = async () => {
+            try {
+                const response = await fetch('http://localhost:3000/CP/', {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                setPatrolData(data.patrol || []);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchPatrolData();
+    }, []);
+
+    // Helper function to extract value from patrolData array
+    const getValue = (key) => {
+        const item = patrolData.find(item => item.includes(key));
+        return item ? item.split(': ')[1] : '0';
+    };
+
+    if (loading) {
+        return <div className="text-center mt-10 text-gray-700">Loading patrol data...</div>;
+    }
+
+    if (error) {
+        return <div className="text-center mt-10 text-red-600">Error: {error}</div>;
+    }
 
     return (
         <>
@@ -322,209 +342,208 @@ function Home() {
                             </div>
                         </div>
                         
-                        {/* Patrol Data Dashboard */}
                         <div className="mt-10 sm:mt-16 w-full">
-                            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 sm:p-6 border border-blue-100 shadow-sm">
-                                <div className="flex items-center mb-4 sm:mb-6">
-                                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 rounded-lg flex items-center justify-center mr-3">
-                                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                        </svg>
-                                    </div>
-                                    <h3 className="text-lg sm:text-xl font-bold text-blue-800">Patrol Overview</h3>
-                                </div>
-                                
-                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-                                    {/* Military & Personnel */}
-                                    <div className="bg-white rounded-lg p-4 border border-blue-200 shadow-sm">
-                                        <div className="flex items-center mb-3">
-                                            <div className="w-6 h-6 bg-red-500 rounded-md flex items-center justify-center mr-2">
-                                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                                                </svg>
-                                            </div>
-                                            <h4 className="font-semibold text-gray-800">Soldiers</h4>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-sm text-gray-600">Total Soldiers:</span>
-                                                <span className="font-semibold text-gray-800">{patrolData.find(item => item.includes("total soldiers"))?.split(": ")[1] || "0"}</span>
-                                            </div>
-                                        </div>
-                                    </div>
+            <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 sm:p-6 border border-blue-100 shadow-sm">
+                <div className="flex items-center mb-4 sm:mb-6">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500 rounded-lg flex items-center justify-center mr-3">
+                        <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                    </div>
+                    <h3 className="text-lg sm:text-xl font-bold text-blue-800">Patrol Overview</h3>
+                </div>
 
-                                    {/* Infrastructure */}
-                                    <div className="bg-white rounded-lg p-4 border border-blue-200 shadow-sm">
-                                        <div className="flex items-center mb-3">
-                                            <div className="w-6 h-6 bg-green-500 rounded-md flex items-center justify-center mr-2">
-                                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                                </svg>
-                                            </div>
-                                            <h4 className="font-semibold text-gray-800">Buildings</h4>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-sm text-gray-600">Houses:</span>
-                                                <span className="font-semibold text-gray-800">{patrolData.find(item => item.includes("total houses"))?.split(": ")[1] || "0"}</span>
-                                            </div>
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-sm text-gray-600">Workshops:</span>
-                                                <span className="font-semibold text-gray-800">{patrolData.find(item => item.includes("total workshops"))?.split(": ")[1] || "0"}</span>
-                                            </div>
-                                        </div>
-                                    </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                    {/* Military & Personnel */}
+                    <div className="bg-white rounded-lg p-4 border border-blue-200 shadow-sm">
+                        <div className="flex items-center mb-3">
+                            <div className="w-6 h-6 bg-red-500 rounded-md flex items-center justify-center mr-2">
+                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                </svg>
+                            </div>
+                            <h4 className="font-semibold text-gray-800">Soldiers</h4>
+                        </div>
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm text-gray-600">Total Soldiers:</span>
+                                <span className="font-semibold text-gray-800">{getValue("total soldiers")}</span>
+                            </div>
+                        </div>
+                    </div>
 
-                                    {/* Transportation */}
-                                    <div className="bg-white rounded-lg p-4 border border-blue-200 shadow-sm">
-                                        <div className="flex items-center mb-3">
-                                            <div className="w-6 h-6 bg-purple-500 rounded-md flex items-center justify-center mr-2">
-                                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                </svg>
-                                            </div>
-                                            <h4 className="font-semibold text-gray-800">Transportation</h4>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-sm text-gray-600">Carts:</span>
-                                                <span className="font-semibold text-gray-800">{patrolData.find(item => item.includes("total carts"))?.split(": ")[1] || "0"}</span>
-                                            </div>
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-sm text-gray-600">Horses:</span>
-                                                <span className="font-semibold text-gray-800">{patrolData.find(item => item.includes("total horses"))?.split(": ")[1] || "0"}</span>
-                                            </div>
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-sm text-gray-600">Rent Horses:</span>
-                                                <span className="font-semibold text-gray-800">{patrolData.find(item => item.includes("rent horses"))?.split(": ")[1] || "0"}</span>
-                                            </div>
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-sm text-gray-600">Rent Carts:</span>
-                                                <span className="font-semibold text-gray-800">{patrolData.find(item => item.includes("rent carts"))?.split(": ")[1] || "0"}</span>
-                                            </div>
-                                        </div>
-                                    </div>
+                    {/* Infrastructure */}
+                    <div className="bg-white rounded-lg p-4 border border-blue-200 shadow-sm">
+                        <div className="flex items-center mb-3">
+                            <div className="w-6 h-6 bg-green-500 rounded-md flex items-center justify-center mr-2">
+                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                </svg>
+                            </div>
+                            <h4 className="font-semibold text-gray-800">Buildings</h4>
+                        </div>
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm text-gray-600">Houses:</span>
+                                <span className="font-semibold text-gray-800">{getValue("total houses")}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm text-gray-600">Workshops:</span>
+                                <span className="font-semibold text-gray-800">{getValue("total workshops")}</span>
+                            </div>
+                        </div>
+                    </div>
 
-                                    {/* Economy */}
-                                    <div className="bg-white rounded-lg p-4 border border-blue-200 shadow-sm">
-                                        <div className="flex items-center mb-3">
-                                            <div className="w-6 h-6 bg-yellow-500 rounded-md flex items-center justify-center mr-2">
-                                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
-                                                </svg>
-                                            </div>
-                                            <h4 className="font-semibold text-gray-800">Economy</h4>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-sm text-gray-600">Total Coins:</span>
-                                                <span className="font-semibold text-gray-800">{patrolData.find(item => item.includes("total coins"))?.split(": ")[1] || "0"}</span>
-                                            </div>
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-sm text-gray-600">Lands:</span>
-                                                <span className="font-semibold text-gray-800">{patrolData.find(item => item.includes("total lands"))?.split(": ")[1] || "0"}</span>
-                                            </div>
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-sm text-gray-600">Current GDP:</span>
-                                                <span className="font-semibold text-gray-800">{patrolData.find(item => item.includes("total lands"))?.split(": ")[1] || "0"}</span>
-                                            </div>
-                                        </div>
-                                    </div>
+                    {/* Transportation */}
+                    <div className="bg-white rounded-lg p-4 border border-blue-200 shadow-sm">
+                        <div className="flex items-center mb-3">
+                            <div className="w-6 h-6 bg-purple-500 rounded-md flex items-center justify-center mr-2">
+                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                            <h4 className="font-semibold text-gray-800">Transportation</h4>
+                        </div>
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm text-gray-600">Carts:</span>
+                                <span className="font-semibold text-gray-800">{getValue("total carts")}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm text-gray-600">Horses:</span>
+                                <span className="font-semibold text-gray-800">{getValue("total horses")}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm text-gray-600">Rent Horses:</span>
+                                <span className="font-semibold text-gray-800">{getValue("rent horses")}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm text-gray-600">Rent Carts:</span>
+                                <span className="font-semibold text-gray-800">{getValue("rent carts")}</span>
+                            </div>
+                        </div>
+                    </div>
 
-                                    {/* Seeds & Crops */}
-                                    <div className="bg-white rounded-lg p-4 border border-blue-200 shadow-sm">
-                                        <div className="flex items-center mb-3">
-                                            <div className="w-6 h-6 bg-orange-500 rounded-md flex items-center justify-center mr-2">
-                                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                                                </svg>
-                                            </div>
-                                            <h4 className="font-semibold text-gray-800">Agriculture</h4>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-sm text-gray-600">Wheat Seeds:</span>
-                                                <span className="font-semibold text-gray-800">{patrolData.find(item => item.includes("wheat seeds"))?.split(": ")[1] || "0"}</span>
-                                            </div>
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-sm text-gray-600">Apple Seeds:</span>
-                                                <span className="font-semibold text-gray-800">{patrolData.find(item => item.includes("apple seeds"))?.split(": ")[1] || "0"}</span>
-                                            </div>
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-sm text-gray-600">Watermelon Seeds:</span>
-                                                <span className="font-semibold text-gray-800">{patrolData.find(item => item.includes("watermelon seeds"))?.split(": ")[1] || "0"}</span>
-                                            </div>
-                                        </div>
-                                    </div>
+                    {/* Economy */}
+                    <div className="bg-white rounded-lg p-4 border border-blue-200 shadow-sm">
+                        <div className="flex items-center mb-3">
+                            <div className="w-6 h-6 bg-yellow-500 rounded-md flex items-center justify-center mr-2">
+                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                                </svg>
+                            </div>
+                            <h4 className="font-semibold text-gray-800">Economy</h4>
+                        </div>
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm text-gray-600">Total Coins:</span>
+                                <span className="font-semibold text-gray-800">{getValue("total coins")}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm text-gray-600">Lands:</span>
+                                <span className="font-semibold text-gray-800">{getValue("total lands")}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm text-gray-600">Current GDP:</span>
+                                <span className="font-semibold text-gray-800">{getValue("gdp")}</span>
+                            </div>
+                        </div>
+                    </div>
 
-                                    {/* Harvest */}
-                                    <div className="bg-white rounded-lg p-4 border border-blue-200 shadow-sm">
-                                        <div className="flex items-center mb-3">
-                                            <div className="w-6 h-6 bg-emerald-500 rounded-md flex items-center justify-center mr-2">
-                                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
-                                                </svg>
-                                            </div>
-                                            <h4 className="font-semibold text-gray-800">Harvest</h4>
-                                        </div>
-                                        <div className="space-y-2">
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-sm text-gray-600">Wheat:</span>
-                                                <span className="font-semibold text-gray-800">{patrolData.find(item => item.includes("wheat:") && !item.includes("seeds"))?.split(": ")[1] || "0"}</span>
-                                            </div>
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-sm text-gray-600">Apple:</span>
-                                                <span className="font-semibold text-gray-800">{patrolData.find(item => item.includes("apple:") && !item.includes("seeds"))?.split(": ")[1] || "0"}</span>
-                                            </div>
-                                            <div className="flex justify-between items-center">
-                                                <span className="text-sm text-gray-600">Watermelon:</span>
-                                                <span className="font-semibold text-gray-800">{patrolData.find(item => item.includes("watermelon:") && !item.includes("seeds"))?.split(": ")[1] || "0"}</span>
-                                            </div>
-                                        </div>
-                                    </div>
+                    {/* Seeds & Crops */}
+                    <div className="bg-white rounded-lg p-4 border border-blue-200 shadow-sm">
+                        <div className="flex items-center mb-3">
+                            <div className="w-6 h-6 bg-orange-500 rounded-md flex items-center justify-center mr-2">
+                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                </svg>
+                            </div>
+                            <h4 className="font-semibold text-gray-800">Agriculture</h4>
+                        </div>
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm text-gray-600">Wheat Seeds:</span>
+                                <span className="font-semibold text-gray-800">{getValue("wheat seeds")}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm text-gray-600">Apple Seeds:</span>
+                                <span className="font-semibold text-gray-800">{getValue("apple seeds")}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm text-gray-600">Watermelon Seeds:</span>
+                                <span className="font-semibold text-gray-800">{getValue("watermelon seeds")}</span>
+                            </div>
+                        </div>
+                    </div>
 
-                                    {/* Soil Management */}
-                                    <div className="bg-white rounded-lg p-4 border border-blue-200 shadow-sm sm:col-span-2 lg:col-span-3">
-                                        <div className="flex items-center mb-3">
-                                            <div className="w-6 h-6 bg-amber-700 rounded-md flex items-center justify-center mr-2">
-                                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                                                </svg>
-                                            </div>
-                                            <h4 className="font-semibold text-gray-800">Soil Management</h4>
-                                        </div>
-                                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                                            <div className="flex justify-between items-center bg-gray-50 rounded-lg p-3">
-                                                <span className="text-sm text-gray-600">Total Soil:</span>
-                                                <span className="font-semibold text-gray-800">{patrolData.find(item => item.includes("total soil"))?.split(": ")[1] || "0"}</span>
-                                            </div>
-                                            <div className="flex justify-between items-center bg-gray-50 rounded-lg p-3">
-                                                <span className="text-sm text-gray-600">Wheat Soil:</span>
-                                                <span className="font-semibold text-gray-800">{patrolData.find(item => item.includes("wheat soil"))?.split(": ")[1] || "0"}</span>
-                                            </div>
-                                            <div className="flex justify-between items-center bg-gray-50 rounded-lg p-3">
-                                                <span className="text-sm text-gray-600">Apple Soil:</span>
-                                                <span className="font-semibold text-gray-800">{patrolData.find(item => item.includes("apple soil"))?.split(": ")[1] || "0"}</span>
-                                            </div>
-                                            <div className="flex justify-between items-center bg-gray-50 rounded-lg p-3">
-                                                <span className="text-sm text-gray-600">Watermelon Soil:</span>
-                                                <span className="font-semibold text-gray-800">{patrolData.find(item => item.includes("watermelon soil"))?.split(": ")[1] || "0"}</span>
-                                            </div>
-                                            <div className="flex justify-between items-center bg-gray-50 rounded-lg p-3 sm:col-span-2 lg:col-span-1">
-                                                <span className="text-sm text-gray-600">Empty Soil:</span>
-                                                <span className="font-semibold text-gray-800">{patrolData.find(item => item.includes("empty soil"))?.split(": ")[1] || "0"}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                    {/* Harvest */}
+                    <div className="bg-white rounded-lg p-4 border border-blue-200 shadow-sm">
+                        <div className="flex items-center mb-3">
+                            <div className="w-6 h-6 bg-emerald-500 rounded-md flex items-center justify-center mr-2">
+                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2-2z" />
+                                </svg>
+                            </div>
+                            <h4 className="font-semibold text-gray-800">Harvest</h4>
+                        </div>
+                        <div className="space-y-2">
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm text-gray-600">Wheat:</span>
+                                <span className="font-semibold text-gray-800">{getValue("wheat:")}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm text-gray-600">Apple:</span>
+                                <span className="font-semibold text-gray-800">{getValue("apple:")}</span>
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <span className="text-sm text-gray-600">Watermelon:</span>
+                                <span className="font-semibold text-gray-800">{getValue("watermelon:")}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Soil Management */}
+                    <div className="bg-white rounded-lg p-4 border border-blue-200 shadow-sm sm:col-span-2 lg:col-span-3">
+                        <div className="flex items-center mb-3">
+                            <div className="w-6 h-6 bg-amber-700 rounded-md flex items-center justify-center mr-2">
+                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                </svg>
+                            </div>
+                            <h4 className="font-semibold text-gray-800">Soil Management</h4>
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                            <div className="flex justify-between items-center bg-gray-50 rounded-lg p-3">
+                                <span className="text-sm text-gray-600">Total Soil:</span>
+                                <span className="font-semibold text-gray-800">{getValue("total soil")}</span>
+                            </div>
+                            <div className="flex justify-between items-center bg-gray-50 rounded-lg p-3">
+                                <span className="text-sm text-gray-600">Wheat Soil:</span>
+                                <span className="font-semibold text-gray-800">{getValue("wheat soil")}</span>
+                            </div>
+                            <div className="flex justify-between items-center bg-gray-50 rounded-lg p-3">
+                                <span className="text-sm text-gray-600">Apple Soil:</span>
+                                <span className="font-semibold text-gray-800">{getValue("apple soil")}</span>
+                            </div>
+                            <div className="flex justify-between items-center bg-gray-50 rounded-lg p-3">
+                                <span className="text-sm text-gray-600">Watermelon Soil:</span>
+                                <span className="font-semibold text-gray-800">{getValue("watermelon soil")}</span>
+                            </div>
+                            <div className="flex justify-between items-center bg-gray-50 rounded-lg p-3 sm:col-span-2 lg:col-span-1">
+                                <span className="text-sm text-gray-600">Empty Soil:</span>
+                                <span className="font-semibold text-gray-800">{getValue("empty soil")}</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                <ToastContainer />
             </div>
+        </div>
+                <ToastContainer />
+        </div>
+    </div>
+</div>
         </>
     );
 }
 
-export default Home
+export default Home;

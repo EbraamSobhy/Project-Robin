@@ -17,30 +17,26 @@ function AttackProcess() {
     const [attackData, setAttackData] = useState({
         initialLand: null,
         attackedLand: null,
-        initialPatrol: null,
-        attackedPatrol: null
+        patrol1: "",
+        patrol2: "",
+        soldiers1: 0,
+        soldiers2: 0,
+        land1 : 0,
+        land2 : 0,
+        resources: {
+            houses: 0,
+            appleSoils: 0,
+            watermelonSoils: 0,
+            wheatSoils: 0,
+            emptySoils: 0,
+            wheat: 0,
+            apple: 0,
+            watermelon: 0
+        }
     });
     const [soldiers, setSoldiers] = useState(0);
+    
     const navigate = useNavigate();
-
-    // Calculate minimum required soldiers for attack
-    const getMinRequiredSoldiers = () => {
-        if (!attackData.attackedLand) return 0;
-        return attackData.attackedLand.soldiers + 2;
-    };
-
-    // Calculate maximum available soldiers
-    const getMaxAvailableSoldiers = () => {
-        if (!attackData.initialLand) return 0;
-        return attackData.initialLand.soldiers;
-    };
-
-    // Check if attack is possible
-    const isAttackPossible = () => {
-        const minRequired = getMinRequiredSoldiers();
-        const maxAvailable = getMaxAvailableSoldiers();
-        return maxAvailable >= minRequired;
-    };
 
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(true), 200);
@@ -50,6 +46,9 @@ function AttackProcess() {
         if (storedUsername) {
             setUsername(storedUsername);
         }
+
+        // Fetch attack data when component mounts
+        fetchAttackData();
 
         // favicon
         const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
@@ -65,47 +64,76 @@ function AttackProcess() {
         document.title = "Attack Process";
     }, []);
 
-    // Fetch attack data when component mounts
-    useEffect(() => {
-        const fetchAttackData = async () => {
-            try {
-                const initialLandNo = localStorage.getItem("attackLandNo");
-                const targetLandNo = localStorage.getItem("attackTargetLandNo");
-                
-                if (!initialLandNo || !targetLandNo) {
-                    toast.error("Missing attack data", { position: "top-center" });
-                    navigate('/cp/attack');
-                    return;
-                }
+    const fetchAttackData = async () => {
+        try {
+            setLoading(true);
+            const response = await fetch('http://localhost:3000/CP/patrolAttack', {
+                method: 'PATCH',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    initialLandNo: 1,
+                    finalLandNo: 2
+                })
+            });
 
-                const response = await fetch(`http://localhost:3000/CP/attack/data?initialL=${initialLandNo}&attackedL=${targetLandNo}`, {
-                    method: 'GET',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-
-                if (!response.ok) {
-                    throw new Error('Failed to fetch attack data');
-                }
-
-                const data = await response.json();
-                setAttackData(data);
-                
-                // Set default soldiers to initial land's soldiers
-                if (data.initialLand && data.initialLand.soldiers) {
-                    setSoldiers(data.initialLand.soldiers);
-                }
-            } catch (error) {
-                console.error('Error fetching attack data:', error);
-                toast.error("Failed to load attack data", { position: "top-center" });
-                navigate('/cp/attack');
+            if (!response.ok) {
+                throw new Error('Failed to fetch attack data');
             }
-        };
 
-        fetchAttackData();
-    }, [navigate]);
+            const data = await response.json();
+            setAttackData({
+                initialLand: data.patrol1,
+                attackedLand: data.patrol2,
+                patrol1: data.patrol1,
+                patrol2: data.patrol2,
+                soldiers1: data.soldiers1,
+                soldiers2: data.soldiers2,
+                resources: data.resources,
+                land1: data.land1,
+                land2: data.land2
+            });
+        } catch (error) {
+            console.error('Error fetching attack data:', error);
+            toast.error("Failed to load attack data", { position: "top-center" });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const getMinRequiredSoldiers = () => {
+        // Example: require at least 20% of enemy soldiers
+        return Math.ceil(attackData.soldiers2 * 0.2);
+    };
+
+    const getMaxAvailableSoldiers = () => {
+        return attackData.soldiers1;
+    };
+
+    const isAttackPossible = () => {
+        return soldiers >= getMinRequiredSoldiers() && soldiers <= getMaxAvailableSoldiers();
+    };
+
+    const handleAttackSubmit = async () => {
+        if (!isAttackPossible()) {
+            toast.warn("Invalid number of soldiers for attack", { position: "top-center" });
+            return;
+        }
+
+        try {
+            setLoading(true);
+            
+            toast.success("Attack successful!", { position: "top-center" });
+            await fetchAttackData();
+        } catch (error) {
+            console.error('Attack failed:', error);
+            toast.error("Attack failed", { position: "top-center" });
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleLogout = async () => {
         if (window.confirm("Are you sure you want to logout?")) {
@@ -117,7 +145,8 @@ function AttackProcess() {
                         'Content-Type': 'application/json',
                     },
                 });
-            } catch {
+            } catch (error) {
+                console.error('Logout error:', error);
                 toast.error("Logout failed on server.", { position: "top-center" });
             }
             localStorage.removeItem("username");
@@ -126,7 +155,7 @@ function AttackProcess() {
                 navigate('/');
             }, 1500);
         }
-    }
+    };
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -140,72 +169,6 @@ function AttackProcess() {
     const Attack = () => { navigate('/cp/attack'); setIsMobileMenuOpen(false); };
     const Transport = () => { navigate('/cp/transport'); setIsMobileMenuOpen(false); };
     const ViewScores = () => { navigate('/cp/scores'); setIsMobileMenuOpen(false); };
-
-    // Handle attack submission
-    const handleAttackSubmit = async () => {
-        if (!attackData.initialLand || !attackData.attackedLand || !attackData.attackedPatrol) {
-            toast.error("Missing attack data", { position: "top-center" });
-            return;
-        }
-
-        if (soldiers <= 0) {
-            toast.error("Please enter a valid number of soldiers", { position: "top-center" });
-            return;
-        }
-
-        if (soldiers > attackData.initialLand.soldiers) {
-            toast.error("This land doesn't contain this much soldiers", { position: "top-center" });
-            return;
-        }
-
-        // Check if you have enough soldiers to attack (soldiers - attackedLand.soldiers >= 2)
-        if (soldiers - attackData.attackedLand.soldiers < 2) {
-            toast.error("Not enough soldiers to attack. You need at least 2 more soldiers than the defending land.", { position: "top-center" });
-            return;
-        }
-
-        setLoading(true);
-
-        try {
-            const response = await fetch('http://localhost:3000/CP/attack', {
-                method: 'PATCH',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    initialL: attackData.initialLand.land_no,
-                    attackedL: attackData.attackedLand.land_no,
-                    attackedPatrol: attackData.attackedPatrol.name,
-                    soldiers: soldiers
-                }),
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                toast.error(data.message || 'Attack failed', { position: 'top-center' });
-                return;
-            }
-
-            toast.success(data.message || 'Attack successful!', { position: 'top-center' });
-            
-            // Clear localStorage
-            localStorage.removeItem("attackLandNo");
-            localStorage.removeItem("attackTargetLandNo");
-            
-            // Navigate back to attack page after delay
-            setTimeout(() => {
-                navigate('/cp/attack');
-            }, 2000);
-
-        } catch (error) {
-            console.error('Attack error:', error);
-            toast.error('Server error. Please try again.', { position: 'top-center' });
-        } finally {
-            setLoading(false);
-        }
-    };
 
     return (
         <>
@@ -322,18 +285,18 @@ function AttackProcess() {
                                     <div className="flex-1 flex flex-col items-center sm:items-start">
                                         <div className="text-gray-700 text-lg font-medium mb-2">the number of soldiers in your land</div>
                                         <div className="text-3xl font-bold text-gray-800 mb-2">
-                                            {attackData.initialLand ? attackData.initialLand.soldiers : 'Loading...'}
+                                            {attackData.soldiers1}
                                         </div>
                                         <div className="text-2xl font-semibold text-gray-700 mb-4">
-                                            {attackData.initialPatrol ? attackData.initialPatrol.name : 'Loading...'}
+                                            {attackData.patrol1}
                                         </div>
                                         <div className="text-gray-700 text-base font-medium mb-1">the resources of the land :</div>
                                         <div className="ml-2 text-gray-700 text-base font-normal">
-                                            <span>houses: {attackData.initialLand ? attackData.initialLand.houses : 0}</span><br />
-                                            <span>apple soil: {attackData.initialLand && attackData.initialLand.soils ? attackData.initialLand.soils.apple || 0 : 0}</span><br />
-                                            <span>watermelon soil: {attackData.initialLand && attackData.initialLand.soils ? attackData.initialLand.soils.watermelon || 0 : 0}</span><br />
-                                            <span>wheat soil: {attackData.initialLand && attackData.initialLand.soils ? attackData.initialLand.soils.wheat || 0 : 0}</span><br />
-                                            <span>empty soil: {attackData.initialLand && attackData.initialLand.soils ? attackData.initialLand.soils.empty || 0 : 0}</span>
+                                            <span>houses: {attackData.resources.houses}</span><br />
+                                            <span>apple soil: {attackData.resources.appleSoils}</span><br />
+                                            <span>watermelon soil: {attackData.resources.watermelonSoils}</span><br />
+                                            <span>wheat soil: {attackData.resources.wheatSoils}</span><br />
+                                            <span>empty soil: {attackData.resources.emptySoils}</span>
                                         </div>
                                     </div>
                                     {/* Center VS */}
@@ -344,14 +307,20 @@ function AttackProcess() {
                                     <div className="flex-1 flex flex-col items-center sm:items-end">
                                         <div className="text-gray-700 text-lg font-medium mb-2">the number of soldiers in the attacked land</div>
                                         <div className="text-3xl font-bold text-gray-800 mb-2">
-                                            {attackData.attackedLand ? attackData.attackedLand.soldiers : 'Loading...'}
+                                            {attackData.soldiers2}
                                         </div>
                                         <div className="text-2xl font-semibold text-gray-700 mb-4">
-                                            {attackData.attackedPatrol ? attackData.attackedPatrol.name : 'Loading...'}
+                                            {attackData.patrol2}
+                                        </div>
+                                        <div className="text-2xl font-semibold text-gray-700 mb-4">
+                                        Starting Land No: {attackData.land1}
+                                        </div>
+                                        <div className="text-2xl font-semibold text-gray-700 mb-4">
+                                        Finishing Land No {attackData.land2}
                                         </div>
                                     </div>
                                 </div>
-                                
+                               
                                 {/* Soldiers input */}
                                 <div className="w-full max-w-md">
                                     <label className="block text-gray-700 text-lg font-medium mb-2 text-center">
@@ -377,9 +346,9 @@ function AttackProcess() {
                                         )}
                                     </div>
                                 </div>
-                                
+                               
                                 {/* Attack button */}
-                                <button 
+                                <button
                                     onClick={handleAttackSubmit}
                                     disabled={loading || !attackData.initialLand || !attackData.attackedLand || !isAttackPossible()}
                                     className="mt-4 bg-indigo-500 hover:bg-indigo-600 disabled:bg-gray-400 text-white font-semibold px-10 py-3 rounded-lg shadow text-lg transition"
