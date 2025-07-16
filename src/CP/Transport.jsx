@@ -31,13 +31,11 @@ function Transport() {
     useEffect(() => {
         const timer = setTimeout(() => setIsVisible(true), 200);
 
-        // Retrieve username from localStorage
         const storedUsername = localStorage.getItem("username");
         if (storedUsername) {
             setUsername(storedUsername);
         }
 
-        // Retrieve initial and final land numbers from localStorage
         const storedInitialLand = localStorage.getItem("initialLandNo");
         const storedFinalLand = localStorage.getItem("finalLandNo");
         if (storedInitialLand) {
@@ -47,7 +45,6 @@ function Transport() {
             setFinalLandNo(Number(storedFinalLand));
         }
 
-        // favicon
         const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
         link.type = 'image/x-icon';
         link.rel = 'shortcut icon';
@@ -57,14 +54,12 @@ function Transport() {
         return () => clearTimeout(timer);
     }, []);
 
-    // Save initialLandNo to localStorage when it changes
     useEffect(() => {
         if (initialLandNo !== 0) {
             localStorage.setItem("initialLandNo", initialLandNo.toString());
         }
     }, [initialLandNo]);
 
-    // Save finalLandNo to localStorage when it changes
     useEffect(() => {
         if (finalLandNo !== 0) {
             localStorage.setItem("finalLandNo", finalLandNo.toString());
@@ -108,7 +103,6 @@ function Transport() {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
 
-    // Navigation functions (close mobile menu on nav)
     const Home = () => { navigate('/cp'); setIsMobileMenuOpen(false); };
     const Buy = () => { navigate('/cp/buy'); setIsMobileMenuOpen(false); };
     const Plant = () => { navigate('/cp/plant'); setIsMobileMenuOpen(false); };
@@ -117,51 +111,65 @@ function Transport() {
     const ViewScores = () => { navigate('/cp/scores'); setIsMobileMenuOpen(false); };
 
     const handleTransportSubmit = async (e) => {
-    e.preventDefault();
-    setResult(null);
+        e.preventDefault();
+        setResult(null);
 
-    // Input validation
-    const initial = Number(initialLandNo);
-    const final = Number(finalLandNo);
-    if (
-        isNaN(initial) || isNaN(final) ||
-        initial < 1 || initial > 33 ||
-        final < 1 || final > 33
-    ) {
-        toast.error("Land numbers must be between 1 and 33.", { position: "top-center" });
-        return;
-    }
-    setLoading(true);
-
-    try {
-        const res = await fetch('http://localhost:3000/CP/transport', {
-            method: 'PATCH',
-            credentials: 'include',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                initialLandNo: initial,
-                finalLandNo: final
-            }),
-        });
-        if (!res.ok) {
-            throw new Error("Failed to get resources for lands.");
+        const initial = Number(initialLandNo);
+        const final = Number(finalLandNo);
+        if (
+            isNaN(initial) || isNaN(final) ||
+            initial < 1 || initial > 33 ||
+            final < 1 || final > 33
+        ) {
+            toast.error("Land numbers must be between 1 and 33.", { position: "top-center" });
+            return;
         }
-        const data = await res.json();
-        setResult(data);
-        
-    } catch {
-        toast.error("Error connecting to server.", { position: "top-center" });
+        setLoading(true);
+
+        try {
+            const res = await fetch('http://localhost:3000/CP/transport', {
+                method: 'PATCH',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    initialLandNo: initial,
+                    finalLandNo: final
+                }),
+            });
+            if (!res.ok) {
+                throw new Error("Failed to get resources for lands.");
+            }
+            const data = await res.json();
+            setResult(data);
+            
+        } catch {
+            toast.error("Error connecting to server.", { position: "top-center" });
+        }
+        setLoading(false);
+    };
+
+    function navigateTransportProcess() {
+        if (result) {
+            toast.success('Go To Process', { position: "top-center" });
+        }
+            else {
+                toast.error('Error to Submit', { position: "top-center" })
+            }
+
+        // Save to localStorage
+        localStorage.setItem('transportFormData', JSON.stringify({
+            initialLand: initialLandNo,
+            finalLand: finalLandNo,
+        }));
+
+        // Navigate with state
+        navigate('/cp/TransportProcess', {
+            state: {
+                initialLand: initialLandNo,
+                finalLand: finalLandNo,
+            }
+        });
     }
-    setLoading(false);
-};
-function navigateTransportProcess() {
-    navigate(
-            '/cp/TransportProcess',
-            {
-                
-                }
-            );
-}
     return (
         <>
             {/* Horizontal Navbar */}

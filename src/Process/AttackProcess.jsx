@@ -105,7 +105,7 @@ function AttackProcess() {
 
     const getMinRequiredSoldiers = () => {
         // Example: require at least 20% of enemy soldiers
-        return Math.ceil(attackData.soldiers2 * 0.2);
+        return Math.ceil(attackData.soldiers2 + 2);
     };
 
     const getMaxAvailableSoldiers = () => {

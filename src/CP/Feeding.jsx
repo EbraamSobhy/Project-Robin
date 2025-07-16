@@ -16,7 +16,7 @@ function Feeding() {
     const [username, setUsername] = useState(" ");
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [image, setImage] = useState(() => getSharedImage(imageDefault));
-    const [landNo, setLandNo] = useState("");
+    const [landNo, setLandNo] = useState(0);
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
@@ -115,7 +115,7 @@ function Feeding() {
         }
     
         localStorage.setItem('feedProcessData', JSON.stringify(data));
-        setLandNo('');
+        setLandNo(0);
         toast.success('Feeding successful!', { position: 'top-center' });
     
         setTimeout(() => {
@@ -247,7 +247,6 @@ function Feeding() {
                                             value={landNo}
                                             onChange={e => setLandNo(e.target.value)}
                                             className="px-4 sm:px-8 py-3 sm:py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-4 focus:ring-blue-400 bg-gray-50 text-lg flex-1"
-                                            placeholder="must be from 1 - 33"
                                         />
                                         <button
                                             type="submit"

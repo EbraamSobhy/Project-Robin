@@ -17,8 +17,8 @@ function Attack() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const navigate = useNavigate();
     const [image, setImage] = useState(() => getSharedImage(imageDefault));
-    const [landNo, setLandNo] = useState("");
-    const [targetLandNo, setTargetLandNo] = useState("");
+    const [landNo, setLandNo] = useState(0);
+    const [targetLandNo, setTargetLandNo] = useState(0);
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -140,7 +140,12 @@ function Attack() {
                 method: 'POST',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ landNo: targetLand }),
+                body: JSON.stringify({ 
+                    // landNo: targetLand,
+                    landNo: sourceLand,
+                    targetLandNo: targetLand
+                    
+                }),
             });
     
             const data = await response.json();
@@ -165,8 +170,8 @@ function Attack() {
                 toast.success('Attack completed!', { position: 'top-center' });
             }
             
-            setLandNo('');
-            setTargetLandNo('');
+            setLandNo(0);
+            setTargetLandNo(0);
             
         } catch (err) {
             toast.error('Server error. Please try again.', { position: 'top-center' });

@@ -105,32 +105,33 @@ function PlantProcess() {
     const Transport = () => { navigate('/cp/transport'); setIsMobileMenuOpen(false); };
     const ViewScores = () => { navigate('/cp/scores'); setIsMobileMenuOpen(false); };
 
-    // Function to Refetch Data
-    const fetchPlantProcessData = async () => {
-        try {
-            setLoading(true);
-            const res = await fetch("http://localhost:3000/CP/plant", {
-                credentials: "include",
-                headers: { "Content-Type": "application/json" },
-                method: "POST",
-            });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.message || "Failed to fetch data");
-            setLandSoil(data.landSoil);
-            setSeeds(data.seeds);
-            // Optionally cache in localStorage:
-            localStorage.setItem("plantProcessData", JSON.stringify(data));
-        } catch (err) {
-            toast.error(err.message, { position: "top-center" });
-        } finally {
-            setLoading(false);
-        }
-    };
+    // // Function to Refetch Data
+    // const fetchPlantProcessData = async () => {
+    //     try {
+    //         setLoading(true);
+    //         const res = await fetch("http://localhost:3000/CP/plant", {
+    //             credentials: "include",
+    //             headers: { "Content-Type": "application/json" },
+    //             method: "POST",
+    //         });
+    //         const data = await res.json();
+    //         if (!res.ok) throw new Error(data.message || "Failed to fetch data");
+    //         setLandSoil(data.landSoil);
+    //         setSeeds(data.seeds);
+    //         // Optionally cache in localStorage:
+    //         localStorage.setItem("plantProcessData", JSON.stringify(data));
+    //     } catch (err) {
+    //         toast.error(err.message, { position: "top-center" });
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
 
     // Function of Plant
         const handlePlant = async () => {
             try {
             setLoading(true);
+
         
             const seedType = selectedSeed.replace("Seeds", "");
         
@@ -144,6 +145,9 @@ function PlantProcess() {
                 landNo,
                 }),
             });
+            setTimeout(() => {
+                navigate('/cp');
+            }, 1500);
         
             const data = await res.json();
             if (!res.ok) throw new Error(data.message || "Planting failed");
@@ -154,10 +158,10 @@ function PlantProcess() {
                 closeOnClick: true,
                 pauseOnHover: true,
             });
-            await fetchPlantProcessData();
+            
 
             } catch (err) {
-            toast.error(err.message, { position: "top-center" });
+                toast.error(err);
             } finally {
             setLoading(false);
             }

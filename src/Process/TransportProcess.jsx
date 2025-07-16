@@ -7,7 +7,7 @@ import { LuSwords } from "react-icons/lu";
 import { MdLocalShipping } from 'react-icons/md';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 function TransportProcess() {
     const [isVisible, setIsVisible] = useState(false);
@@ -24,6 +24,7 @@ function TransportProcess() {
     const [carts, setCarts] = useState(0);
 
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         setTimeout(() => setIsVisible(true), 200);
@@ -120,16 +121,52 @@ function TransportProcess() {
 
         setLoading(false);
     };
-    console.log('Rendering TransportProcess with state:', {
-        initialLand,
-        finalLand,
-        quantity,
-        horses,
-        rentHorses,
-        rentCarts,
-        type,
-        carts
-    });
+
+    useEffect(() => {
+        // use location
+        if (location.state) {
+            const { 
+                initialLand: locInitialLand, 
+                finalLand: locFinalLand,
+            } = location.state;
+    
+            if (locInitialLand) setInitialLand(locInitialLand);
+            if (locFinalLand) setFinalLand(locFinalLand);
+        }
+    
+        // Then try to get from localStorage
+        const savedFormData = localStorage.getItem('transportFormData');
+        if (savedFormData) {
+            try {
+                const parsedData = JSON.Number(savedFormData);
+                if (parsedData.initialLand) setInitialLand(parsedData.initialLand);
+                if (parsedData.finalLand) setFinalLand(parsedData.finalLand);
+            } catch (e) {
+                console.error("Failed to parse saved form data", e);
+            }
+        }
+    }, [location.state]);
+    
+    // Save form data to localStorage whenever it changes
+    useEffect(() => {
+        const formData = {
+            initialLand,
+            finalLand,
+        };
+        localStorage.setItem('transportFormData', JSON.stringify(formData));
+    }, [initialLand, finalLand, ]);
+
+
+    // console.log('Rendering TransportProcess with state:', {
+    //     initialLand,
+    //     finalLand,
+    //     quantity,
+    //     horses,
+    //     rentHorses,
+    //     rentCarts,
+    //     type,
+    //     carts
+    // });
     return (
         <>
             {/* Horizontal Navbar */}
@@ -255,7 +292,7 @@ function TransportProcess() {
                                             value={initialLand}
                                             onChange={e => setInitialLand(Number(e.target.value))}
                                             type='number'
-                                            disabled={loading}
+                                            disabled
                                         />
                                     </div>
                                     {/* Final Land */}
@@ -270,7 +307,7 @@ function TransportProcess() {
                                             value={finalLand}
                                             onChange={e => setFinalLand(Number(e.target.value))}
                                             type='number'
-                                            disabled={loading}
+                                            disabled
                                         />
                                     </div>
                                     {/* Quantity */}
