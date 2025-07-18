@@ -46,7 +46,7 @@ function TransportProcess() {
     const handleLogout = async () => {
         if (window.confirm("Are you sure you want to logout?")) {
             try {
-                await fetch('http://localhost:3000/authen/signout', {
+                await fetch('https://projectrobin.onrender.com/authen/signout', {
                     method: 'POST',
                     credentials: 'include',
                     headers: { 'Content-Type': 'application/json' },
@@ -92,7 +92,7 @@ function TransportProcess() {
         setLoading(true);
 
         try {
-            const res = await fetch('http://localhost:3000/CP/transport/process', {
+            const res = await fetch('https://projectrobin.onrender.com/CP/transport/process', {
                 method: 'PATCH',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },
@@ -156,17 +156,6 @@ function TransportProcess() {
         localStorage.setItem('transportFormData', JSON.stringify(formData));
     }, [initialLand, finalLand, ]);
 
-
-    // console.log('Rendering TransportProcess with state:', {
-    //     initialLand,
-    //     finalLand,
-    //     quantity,
-    //     horses,
-    //     rentHorses,
-    //     rentCarts,
-    //     type,
-    //     carts
-    // });
     return (
         <>
             {/* Horizontal Navbar */}

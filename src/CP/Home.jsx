@@ -82,10 +82,9 @@ function Home() {
     const handleLogout = async () => {
         if (window.confirm("Are you sure you want to logout?")) {
             try {
-                // Call backend logout endpoint
-                await fetch('http://localhost:3000/authen/signout', {
+                await fetch('https://projectrobin.onrender.com/authen/signout', {
                     method: 'POST',
-                    credentials: 'include', // if using cookies/session
+                    credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -105,7 +104,6 @@ function Home() {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
 
-    // Navigation handlers for mobile menu (stub, you can add navigation logic)
     const handleNav = (route) => {
         setIsMobileMenuOpen(false);
         navigate(route);
@@ -114,7 +112,7 @@ function Home() {
     useEffect(() => {
         const fetchPatrolData = async () => {
             try {
-                const response = await fetch('http://localhost:3000/CP/', {
+                const response = await fetch('https://projectrobin.onrender.com/CP/', {
                     method: 'GET',
                     credentials: 'include',
                     headers: {

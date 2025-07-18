@@ -56,7 +56,7 @@ function Feeding() {
             if (window.confirm("Are you sure you want to logout?")) {
                 try {
                     // Call backend logout endpoint
-                    await fetch('http://localhost:3000/authen/signout', {
+                    await fetch('https://projectrobin.onrender.com/authen/signout', {
                         method: 'POST',
                         credentials: 'include',
                         headers: {
@@ -98,7 +98,7 @@ function Feeding() {
         setError('');
     
         try {
-        const response = await fetch('http://localhost:3000/CP/feeding', {
+        const response = await fetch('https://projectrobin.onrender.com/CP/feeding', {
             method: 'PATCH',
             credentials: 'include',
             headers: { 'Content-Type': 'application/json' },

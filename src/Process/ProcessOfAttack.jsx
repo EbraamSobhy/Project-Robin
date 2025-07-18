@@ -50,7 +50,7 @@ function ProcessOfAttack() {
     const handleLogout = async () => {
         if (window.confirm("Are you sure you want to logout?")) {
             try {
-                await fetch('http://localhost:3000/authen/signout', {
+                await fetch('https://projectrobin.onrender.com/authen/signout', {
                     method: 'POST',
                     credentials: 'include',
                     headers: {
@@ -98,7 +98,7 @@ function ProcessOfAttack() {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:3000/CP/attack/kadr', {
+            const response = await fetch('https://projectrobin.onrender.com/CP/attack/kadr', {
                 method: 'POST',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },

@@ -58,7 +58,7 @@ function Buy() {
             if (!quantity || !type) return;
             setLoading(true);
             try {
-                const res = await fetch(`http://localhost:3000/CP/buy`, {
+                const res = await fetch(`https://projectrobin.onrender.com/CP/buy`, {
                     method: 'POST',
                     credentials: 'include',
                     headers: {
@@ -118,7 +118,7 @@ function Buy() {
             if (window.confirm("Are you sure you want to logout?")) {
                 try {
                     // Call backend logout endpoint
-                    await fetch('http://localhost:3000/authen/signout', {
+                    await fetch('https://projectrobin.onrender.com/authen/signout', {
                         method: 'POST',
                         credentials: 'include',
                         headers: {

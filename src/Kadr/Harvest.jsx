@@ -29,7 +29,7 @@ function Harvest() {
     const fetchPatrols = async () => {
         setLoading(true);
         try {
-            const response = await fetch('http://localhost:3000/Chef/harvest', {
+            const response = await fetch('https://projectrobin.onrender.com/Chef/harvest', {
                 method: 'GET',
                 credentials: 'include',
             });
@@ -70,7 +70,7 @@ function Harvest() {
             if (window.confirm("Are you sure you want to logout?")) {
                 try {
                     // Call backend logout endpoint
-                    await fetch('http://localhost:3000/authen/signout', {
+                    await fetch('https://projectrobin.onrender.com/authen/signout', {
                         method: 'POST',
                         credentials: 'include', // if using cookies/session
                         headers: {
@@ -133,7 +133,7 @@ function Harvest() {
         e.preventDefault();
         try {
             setLoading(true);
-            const res = await fetch('http://localhost:3000/Chef/harvest/process', {
+            const res = await fetch('https://projectrobin.onrender.com/Chef/harvest/process', {
                 method: 'PATCH',
                 credentials: 'include',
                 headers: {

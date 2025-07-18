@@ -100,7 +100,7 @@ function Home() {
 const handleLogout = async () => { 
         if (window.confirm("Are you sure you want to logout?")) {
             try {
-                await fetch('http://localhost:3000/authen/signout', {
+                await fetch('https://projectrobin.onrender.com/authen/signout', {
                     method: 'POST',
                     credentials: 'include',
                     headers: {
@@ -124,7 +124,7 @@ const handleLogout = async () => {
 
     const Close = async () => { 
         try {
-            const response = await fetch('http://localhost:3000/Chef/close', {
+            const response = await fetch('https://projectrobin.onrender.com/Chef/close', {
                 method: 'POST',
                 credentials: 'include',
                 headers: {

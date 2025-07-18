@@ -57,7 +57,7 @@ function Trade() {
     const handleLogout = async () => {
         if (window.confirm("Are you sure you want to logout?")) {
             try {
-                await fetch('http://localhost:3000/authen/signout', {
+                await fetch('https://projectrobin.onrender.com/authen/signout', {
                     method: 'POST',
                     credentials: 'include',
                     headers: { 'Content-Type': 'application/json' },
@@ -84,7 +84,7 @@ function Trade() {
         }
     
         try {
-            const res = await fetch('http://localhost:3000/Chef/trade/process', {
+            const res = await fetch('https://projectrobin.onrender.com/Chef/trade/process', {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',

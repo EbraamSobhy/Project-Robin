@@ -67,7 +67,7 @@ function AttackProcess() {
     const fetchAttackData = async () => {
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:3000/CP/patrolAttack', {
+            const response = await fetch('https://projectrobin.onrender.com/CP/patrolAttack', {
                 method: 'PATCH',
                 credentials: 'include',
                 headers: {
@@ -124,7 +124,7 @@ function AttackProcess() {
     
         try {
             setLoading(true);
-            const response = await fetch('http://localhost:3000/CP/attack', {
+            const response = await fetch('https://projectrobin.onrender.com/CP/attack', {
                 method: 'PATCH',
                 credentials: 'include',
                 headers: {
@@ -160,7 +160,7 @@ function AttackProcess() {
     const handleLogout = async () => {
         if (window.confirm("Are you sure you want to logout?")) {
             try {
-                await fetch('http://localhost:3000/authen/signout', {
+                await fetch('https://projectrobin.onrender.com/authen/signout', {
                     method: 'POST',
                     credentials: 'include',
                     headers: {

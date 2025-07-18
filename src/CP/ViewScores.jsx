@@ -52,7 +52,7 @@ function ViewScores() {
                 setLoading(true);
                 setError(null);
                 
-                const response = await fetch('http://localhost:3000/scout/view-scores', {
+                const response = await fetch('https://projectrobin.onrender.com/scout/view-scores', {
                     method: 'GET',
                     credentials: 'include',
                     headers: {
@@ -200,7 +200,7 @@ function ViewScores() {
         if (window.confirm("Are you sure you want to logout?")) {
             try {
                 // Call backend logout endpoint
-                await fetch('http://localhost:3000/authen/signout', {
+                await fetch('https://projectrobin.onrender.com/authen/signout', {
                     method: 'POST',
                     credentials: 'include', // if using cookies/session
                     headers: {

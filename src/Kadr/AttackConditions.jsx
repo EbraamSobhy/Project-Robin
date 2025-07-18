@@ -34,7 +34,7 @@ function AttackConditions() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const res = await fetch('http://localhost:3000/Chef/attackConditions', {
+            const res = await fetch('https://projectrobin.onrender.com/Chef/attackConditions', {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -80,7 +80,7 @@ function AttackConditions() {
             if (window.confirm("Are you sure you want to logout?")) {
                 try {
                     // Call backend logout endpoint
-                    await fetch('http://localhost:3000/authen/signout', {
+                    await fetch('https://projectrobin.onrender.com/authen/signout', {
                         method: 'POST',
                         credentials: 'include',
                         headers: {

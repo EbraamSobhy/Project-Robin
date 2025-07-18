@@ -54,7 +54,7 @@ function AttackKing() {
         setLoading(true); // Set loading to true when fetching starts
         try {
             // Construct the URL with query parameters
-            const url = `http://localhost:3000/CP/kadrAttack?landNo=${landNo}&attackedLand=${attackedLand}`;
+            const url = `https://projectrobin.onrender.com/CP/kadrAttack?landNo=${landNo}&attackedLand=${attackedLand}`;
 
             const res = await fetch(url,
                 {
@@ -91,7 +91,7 @@ function AttackKing() {
     const handleLogout = async () => {
         if (window.confirm("Are you sure you want to logout?")) {
             try {
-                await fetch('http://localhost:3000/authen/signout', {
+                await fetch('https://projectrobin.onrender.com/authen/signout', {
                     method: 'POST',
                     credentials: 'include',
                     headers: {

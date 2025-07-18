@@ -81,7 +81,7 @@ function Transport() {
     const handleLogout = async () => {
         if (window.confirm("Are you sure you want to logout?")) {
             try {
-                await fetch('http://localhost:3000/authen/signout', {
+                await fetch('https://projectrobin.onrender.com/authen/signout', {
                     method: 'POST',
                     credentials: 'include',
                     headers: {
@@ -127,7 +127,7 @@ function Transport() {
         setLoading(true);
 
         try {
-            const res = await fetch('http://localhost:3000/CP/transport', {
+            const res = await fetch('https://projectrobin.onrender.com/CP/transport', {
                 method: 'PATCH',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' },

@@ -74,7 +74,7 @@ function PlantProcess() {
     const handleLogout = async () => {
         if (window.confirm("Are you sure you want to logout?")) {
             try {
-                await fetch('http://localhost:3000/authen/signout', {
+                await fetch('https://projectrobin.onrender.com/authen/signout', {
                     method: 'POST',
                     credentials: 'include',
                     headers: {
@@ -135,7 +135,7 @@ function PlantProcess() {
         
             const seedType = selectedSeed.replace("Seeds", "");
         
-            const res = await fetch("http://localhost:3000/CP/plant/process", {
+            const res = await fetch("https://projectrobin.onrender.com/CP/plant/process", {
                 method: "PATCH",
                 credentials: "include",
                 headers: { "Content-Type": "application/json" },

@@ -56,7 +56,7 @@ function Plant() {
             if (window.confirm("Are you sure you want to logout?")) {
                 try {
                     // Call backend logout endpoint
-                    await fetch('http://localhost:3000/authen/signout', {
+                    await fetch('https://projectrobin.onrender.com/authen/signout', {
                         method: 'POST',
                         credentials: 'include', // if using cookies/session
                         headers: {
@@ -86,7 +86,7 @@ function Plant() {
         setError('');
     
         try {
-        const response = await fetch('http://localhost:3000/CP/plant', {
+        const response = await fetch('https://projectrobin.onrender.com/CP/plant', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ landNo: num }),

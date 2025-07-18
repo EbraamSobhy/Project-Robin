@@ -38,7 +38,7 @@ function UpdateScores() {
     const handleLogout = async () => {
         if (window.confirm("Are you sure you want to logout?")) {
             try {
-                await fetch('http://localhost:3000/authen/signout', {
+                await fetch('https://projectrobin.onrender.com/authen/signout', {
                     method: 'POST',
                     credentials: 'include',
                     headers: { 'Content-Type': 'application/json' },
@@ -94,7 +94,7 @@ function UpdateScores() {
             if (val !== '') payload[key] = Number(val);
         });
         try {
-            const response = await fetch('http://localhost:3000/Chef/update-scores', {
+            const response = await fetch('https://projectrobin.onrender.com/Chef/update-scores', {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
