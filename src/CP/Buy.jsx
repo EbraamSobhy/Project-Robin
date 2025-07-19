@@ -145,7 +145,7 @@ function Buy() {
         }
         setLoading(true);
         try {
-            const res = await fetch('http://localhost:3000/CP/buy', {
+            const res = await fetch('https://projectrobin.onrender.com/CP/buy', {
                 method: 'PATCH',
                 credentials: 'include',
                 headers: {
