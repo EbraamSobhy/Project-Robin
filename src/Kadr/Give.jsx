@@ -95,11 +95,6 @@ function Give() {
         navigate('/kadr/Harvest');
         setIsMobileMenuOpen(false);
     };
-    const Give = () => {
-        navigate('/kadr/Give');
-        setIsMobileMenuOpen(false);
-    };
-
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };

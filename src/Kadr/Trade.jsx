@@ -140,7 +140,8 @@ function Trade() {
 
     // Navigation functions (close mobile menu on nav)
     const Home = () => { navigate('/kadr'); setIsMobileMenuOpen(false); };
-    const UpdateScores = () => { navigate('/kadr/scores'); setIsMobileMenuOpen(false); };
+    const UpdateScores = () => { navigate('/kadr/UpdateScores'); setIsMobileMenuOpen(false); };
+    const ViewScores = () => { navigate('/kadr/scores'); setIsMobileMenuOpen(false); };
     const AttackConditions = () => { navigate('/kadr/AttackConditions'); setIsMobileMenuOpen(false); };
     const Take = () => { navigate('/kadr/Take'); setIsMobileMenuOpen(false); };
     const Give = () => { navigate('/kadr/Give'); setIsMobileMenuOpen(false); };
@@ -201,7 +202,7 @@ function Trade() {
                         <span className="text-xs text-blue-700 font-semibold">Update Scores</span>
                     </button>
                     {/* View Scores Tab */}
-                    <button onClick={UpdateScores} className="w-full flex flex-col items-center py-1 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={ViewScores} className="w-full flex flex-col items-center py-1 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-0.5">
                             <GrScorecard size={25} />
