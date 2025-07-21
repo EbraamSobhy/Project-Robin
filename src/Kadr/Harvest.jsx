@@ -291,13 +291,14 @@ function Harvest() {
                                         )}
                                     </div>
                                 </div>
-                            </form>
-                            {/* Submit Button */}
+                                 {/* Submit Button */}
                             <div className="flex justify-center pt-4">
                                 <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white font-bold text-base sm:text-lg px-6 sm:px-8 py-2 sm:py-3 rounded-xl shadow-lg transition duration-300 transform hover:scale-105 w-full max-w-xs" disabled={loading}>
                                     {loading ? 'Processing...' : 'Harvest'}
                                 </button>
                             </div>
+                            </form>
+                           
                         </div>
                     </div>
                 </div>
