@@ -161,4 +161,4 @@ MIT License (see [LICENSE](LICENSE) file)
 
 ---
 
-**Transform your goals into achievements with Robin Game—where every step forward is a victory!**
+**Transform your goals into achievements with Clash of Patrols—where every step forward is a victory!**
