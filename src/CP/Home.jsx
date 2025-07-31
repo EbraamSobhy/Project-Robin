@@ -324,8 +324,8 @@ function Home() {
                                             تيموثاوس الأولى 4:14
                                         </p>
                                          */}
-                                        <p className="text-sm sm:text-lg lg:text-2xl text-black mb-2 leading-relaxed">
-                                                Scouting For Live
+                                        <p className="text-sm sm:text-lg lg:text-2xl text-black mb-2 leading-relaxed text-center justify-center flex items-center font-extrabold">
+                                                Scouting For Life
                                         </p>
                                     </div>
                                 </div>

@@ -341,8 +341,8 @@ const handleLogout = async () => {
                                             <p className="text-xs sm:text-sm lg:text-lg text-gray-600">
                                             افسس 6:6
                                             </p> */}
-                                            <p className="text-sm sm:text-lg lg:text-2xl text-black mb-2 leading-relaxed">
-                                                Scouting For Live
+                                            <p className="text-sm sm:text-lg lg:text-2xl text-black mb-2 leading-relaxed text-center justify-center flex items-center font-extrabold">
+                                                Scouting For Life
                                             </p>
                                     </div>
                                 </div>
