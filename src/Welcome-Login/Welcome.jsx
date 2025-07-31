@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "./tailwind.css";
-import image from '../assets/image.PNG';
+import image from '../assets/clash_of_patrols.png';
 
 function Welcome() {
     const [isVisible, setIsVisible] = useState(false);
@@ -11,7 +11,7 @@ function Welcome() {
     const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
     link.type = 'image/x-icon';
     link.rel = 'shortcut icon';
-    link.href = '/clash of patrols.png';
+    link.href = '/Home.png';
     document.getElementsByTagName('head')[0].appendChild(link);
     // Set page title
     document.title = "Clash of Patrols";
