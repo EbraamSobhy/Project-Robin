@@ -103,7 +103,7 @@ function Harvest() {
         setIsMobileMenuOpen(false);
     };
 
-  const UpdateScores = () => {
+    const UpdateScores = () => {
         navigate('/kadr/UpdateScores');
         setIsMobileMenuOpen(false);
     };
