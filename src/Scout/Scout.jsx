@@ -169,14 +169,15 @@ function Scout() {
                                 <div className="absolute -inset-1 bg-gradient-to-r bg-gray-400 rounded-xl sm:rounded-2xl blur transition duration-300"></div>
                                 <div className="relative">
                                     <div className="bg-white inline-block px-3 sm:px-6 py-3 sm:py-4 rounded-lg sm:rounded-xl text-right border border-blue-100 shadow-sm w-full" dir="rtl" lang="ar">
-                                    {/*
-                                        <p className="text-sm sm:text-lg lg:text-2xl text-black mb-2 leading-relaxed">
+                                        {/* <p className="text-sm sm:text-lg lg:text-2xl text-black mb-2 leading-relaxed">
                                             لَا تُهْمِلِ الْمَوْهِبَةَ الْخَاصَّةَ الَّتِي فِيكَ، الَّتِي أُعْطِيَتْ لَكَ بِالتَّنَبُّوءِ وَوَضْعِ الشُّيُوخِ أَيْدِيَهُمْ عَلَيْكَ.
                                         </p>
                                         <p className="text-xs sm:text-sm lg:text-lg text-gray-600">
                                             تيموثاوس الأولى 4:14
-                                        </p>
-                                        */}
+                                        </p> */}
+                                        <p className="text-sm sm:text-lg lg:text-2xl text-black mb-2 leading-relaxed">
+                                                Scouting For Live
+                                            </p>
                                     </div>
                                 </div>
                             </div>
