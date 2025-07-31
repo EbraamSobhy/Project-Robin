@@ -56,7 +56,7 @@ function Harvest() {
         const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
         link.type = 'image/x-icon';
         link.rel = 'shortcut icon';
-        link.href = '/public/Harvest.png';
+        link.href = '/Harvest.png';
         document.getElementsByTagName('head')[0].appendChild(link);
         fetchPatrols();
         return () => clearTimeout(timer);
@@ -297,10 +297,10 @@ function Harvest() {
                             </div>
                             
                             {/* Centered Submit Button - now properly inside form but below columns */}
-                            <div className="flex justify-center w-full">
+                            <div className="flex justify-center w-full ml-4">
                                 <button 
                                 type="submit" 
-                                className="bg-blue-500 hover:bg-blue-600 text-white font-bold text-lg px-10 py-4 rounded-xl shadow-lg transition duration-300 transform hover:scale-105 w-[150px] sm:w-[150px]" 
+                                className="bg-blue-500 hover:bg-blue-600 text-white font-bold text-lg px-10  py-4 rounded-xl shadow-lg transition duration-300 transform hover:scale-105 w-[150px] sm:w-[150px]" 
                                 disabled={loading}
                                 >
                                 {loading ? 'Processing...' : 'Harvest'}
