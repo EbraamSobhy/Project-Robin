@@ -228,77 +228,85 @@ function Harvest() {
                         {/* Subtle inner glow */}
                         <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent rounded-2xl sm:rounded-3xl pointer-events-none"></div>
                         <div className="relative z-10 flex flex-col items-center w-full">
-                            <form className="w-full flex flex-col md:flex-row gap-4 sm:gap-8" onSubmit={handleHarvest}>
+                        <form className="w-full flex flex-col gap-4 sm:gap-8 mr-10" onSubmit={handleHarvest}>
+                            {/* Columns Container */}
+                            <div className="flex flex-col md:flex-row gap-4 w-full">
                                 {/* Left Column - Patrols 1-3 */}
                                 <div className="flex-1 ml-0 md:ml-14 w-full">
-                                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-3 sm:p-6 border border-white/30">
-                                        {loading ? (
-                                            <div className="text-center text-blue-500">Loading...</div>
-                                        ) : (
-                                            Object.entries(patrols).slice(0, 3).map(([name, crops]) => (
-                                                <div key={name} className="mb-4 sm:mb-6">
-                                                    <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2 sm:mb-4 text-center">{name}</h3>
-                                                    <div className="flex flex-col gap-3">
-                                                        <div className="flex items-center bg-red-100 rounded-xl shadow p-3 mb-1">
-                                                            <span className="text-2xl mr-3">🍎</span>
-                                                            <span className="font-semibold text-gray-700 flex-1">Apple</span>
-                                                            <span className="font-bold text-lg text-red-600">{crops.apple}</span>
-                                                        </div>
-                                                        <div className="flex items-center bg-yellow-100 rounded-xl shadow p-3 mb-1">
-                                                            <span className="text-2xl mr-3">🌾</span>
-                                                            <span className="font-semibold text-gray-700 flex-1">Wheat</span>
-                                                            <span className="font-bold text-lg text-yellow-700">{crops.wheat}</span>
-                                                        </div>
-                                                        <div className="flex items-center bg-green-100 rounded-xl shadow p-3">
-                                                            <span className="text-2xl mr-1">🍉</span>
-                                                            <span className="font-semibold text-gray-700 flex-1">Watermelon</span>
-                                                            <span className="font-bold text-lg text-green-700">{crops.watermelon}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ))
-                                        )}
-                                    </div>
+                                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-3 sm:p-6 border border-white/30">
+                                    {loading ? (
+                                    <div className="text-center text-blue-500">Loading...</div>
+                                    ) : (
+                                    Object.entries(patrols).slice(0, 3).map(([name, crops]) => (
+                                        <div key={name} className="mb-4 sm:mb-6">
+                                        <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2 sm:mb-4 text-center">{name}</h3>
+                                        <div className="flex flex-col gap-3">
+                                            <div className="flex items-center bg-red-100 rounded-xl shadow p-3 mb-1">
+                                            <span className="text-2xl mr-3">🍎</span>
+                                            <span className="font-semibold text-gray-700 flex-1">Apple</span>
+                                            <span className="font-bold text-lg text-red-600">{crops.apple}</span>
+                                            </div>
+                                            <div className="flex items-center bg-yellow-100 rounded-xl shadow p-3 mb-1">
+                                            <span className="text-2xl mr-3">🌾</span>
+                                            <span className="font-semibold text-gray-700 flex-1">Wheat</span>
+                                            <span className="font-bold text-lg text-yellow-700">{crops.wheat}</span>
+                                            </div>
+                                            <div className="flex items-center bg-green-100 rounded-xl shadow p-3">
+                                            <span className="text-2xl mr-1">🍉</span>
+                                            <span className="font-semibold text-gray-700 flex-1">Watermelon</span>
+                                            <span className="font-bold text-lg text-green-700">{crops.watermelon}</span>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    ))
+                                    )}
                                 </div>
+                                </div>
+                                
                                 {/* Right Column - Patrols 4-6 */}
                                 <div className="flex-1 w-full">
-                                    <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-3 sm:p-6 border border-white/30">
-                                        {loading ? (
-                                            <div className="text-center text-blue-500">Loading...</div>
-                                        ) : (
-                                            Object.entries(patrols).slice(3, 6).map(([name, crops]) => (
-                                                <div key={name} className="mb-4 sm:mb-6">
-                                                    <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2 sm:mb-4 text-center">{name}</h3>
-                                                    <div className="flex flex-col gap-3">
-                                                        <div className="flex items-center bg-red-100 rounded-xl shadow p-3 mb-1">
-                                                            <span className="text-2xl mr-3">🍎</span>
-                                                            <span className="font-semibold text-gray-700 flex-1">Apple</span>
-                                                            <span className="font-bold text-lg text-red-600">{crops.apple}</span>
-                                                        </div>
-                                                        <div className="flex items-center bg-yellow-100 rounded-xl shadow p-3 mb-1">
-                                                            <span className="text-2xl mr-3">🌾</span>
-                                                            <span className="font-semibold text-gray-700 flex-1">Wheat</span>
-                                                            <span className="font-bold text-lg text-yellow-700">{crops.wheat}</span>
-                                                        </div>
-                                                        <div className="flex items-center bg-green-100 rounded-xl shadow p-3">
-                                                            <span className="text-2xl mr-1">🍉</span>
-                                                            <span className="font-semibold text-gray-700 flex-1">Watermelon</span>
-                                                            <span className="font-bold text-lg text-green-700">{crops.watermelon}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ))
-                                        )}
-                                    </div>
+                                <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-3 sm:p-6 border border-white/30">
+                                    {loading ? (
+                                    <div className="text-center text-blue-500">Loading...</div>
+                                    ) : (
+                                    Object.entries(patrols).slice(3, 6).map(([name, crops]) => (
+                                        <div key={name} className="mb-4 sm:mb-6">
+                                        <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2 sm:mb-4 text-center">{name}</h3>
+                                        <div className="flex flex-col gap-3">
+                                            <div className="flex items-center bg-red-100 rounded-xl shadow p-3 mb-1">
+                                            <span className="text-2xl mr-3">🍎</span>
+                                            <span className="font-semibold text-gray-700 flex-1">Apple</span>
+                                            <span className="font-bold text-lg text-red-600">{crops.apple}</span>
+                                            </div>
+                                            <div className="flex items-center bg-yellow-100 rounded-xl shadow p-3 mb-1">
+                                            <span className="text-2xl mr-3">🌾</span>
+                                            <span className="font-semibold text-gray-700 flex-1">Wheat</span>
+                                            <span className="font-bold text-lg text-yellow-700">{crops.wheat}</span>
+                                            </div>
+                                            <div className="flex items-center bg-green-100 rounded-xl shadow p-3">
+                                            <span className="text-2xl mr-1">🍉</span>
+                                            <span className="font-semibold text-gray-700 flex-1">Watermelon</span>
+                                            <span className="font-bold text-lg text-green-700">{crops.watermelon}</span>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    ))
+                                    )}
                                 </div>
-                                 {/* Submit Button */}
-                            <div className="flex justify-center pt-4">
-                                <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white font-bold text-base sm:text-lg px-6 sm:px-8 py-2 sm:py-3 rounded-xl shadow-lg transition duration-300 transform hover:scale-105 w-full max-w-xs" disabled={loading}>
-                                    {loading ? 'Processing...' : 'Harvest'}
+                                </div>
+                            </div>
+                            
+                            {/* Centered Submit Button - now properly inside form but below columns */}
+                            <div className="flex justify-center w-full">
+                                <button 
+                                type="submit" 
+                                className="bg-blue-500 hover:bg-blue-600 text-white font-bold text-lg px-10 py-4 rounded-xl shadow-lg transition duration-300 transform hover:scale-105 w-[150px] sm:w-[150px]" 
+                                disabled={loading}
+                                >
+                                {loading ? 'Processing...' : 'Harvest'}
                                 </button>
                             </div>
                             </form>
-                           
                         </div>
                     </div>
                 </div>
