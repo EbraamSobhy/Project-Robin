@@ -11,7 +11,7 @@ function Welcome() {
     const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
     link.type = 'image/x-icon';
     link.rel = 'shortcut icon';
-    link.href = '/Home.png';
+    link.href = '/clash of patrols.png';
     document.getElementsByTagName('head')[0].appendChild(link);
     // Set page title
     document.title = "Clash of Patrols";
