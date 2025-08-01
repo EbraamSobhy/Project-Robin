@@ -335,14 +335,11 @@ const handleLogout = async () => {
                                 <div className="absolute -inset-1 bg-gradient-to-r bg-gray-400 rounded-xl sm:rounded-2xl blur transition duration-300"></div>
                                 <div className="relative">
                                 <div className="bg-white inline-block px-3 sm:px-6 py-3 sm:py-4 rounded-lg sm:rounded-xl text-right border border-blue-100 shadow-sm w-full" dir="rtl" lang="ar">
-                                            {/* <p className="text-sm sm:text-lg lg:text-2xl text-black mb-2 leading-relaxed">
+                                            <p className="text-sm sm:text-lg lg:text-2xl text-black mb-2 leading-relaxed">
                                             غير عاملين بجد فقط حين تكون عُيُونُهُمْ عَلَيْكُمْ كَمَنْ يُحَاوِلُ إرضاء الناس، بل انطلاقاً مِنْ كَوْنِكُمْ عَبِيداً لِلْمَسِيحُ
                                             </p>
                                             <p className="text-xs sm:text-sm lg:text-lg text-gray-600">
                                             افسس 6:6
-                                            </p> */}
-                                            <p className="text-sm sm:text-lg lg:text-2xl text-black mb-2 leading-relaxed text-center justify-center flex items-center font-extrabold">
-                                                Scouting For Life
                                             </p>
                                     </div>
                                 </div>
