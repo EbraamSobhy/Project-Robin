@@ -1,6 +1,6 @@
-# Clash of Patrols: Gamified Tracking System
+# Clash of Patrols: Gamified Tracking System Web App
 
-Welcome to the official documentation for the frontend of **Robin Game**, a gamified tracking system designed to make goal tracking engaging and rewarding. This document serves as a comprehensive guide for developers and contributors to understand, use, and extend the frontend of this repository.
+Welcome to the official documentation for the frontend of **Clash of Patrols**, a gamified tracking system designed to make goal tracking engaging and rewarding. This document serves as a comprehensive guide for developers and contributors to understand, use, and extend the frontend of this repository.
 
 ---
 
@@ -22,7 +22,7 @@ Welcome to the official documentation for the frontend of **Robin Game**, a gami
 
 ## Overview
 
-Clash of Patrols is a gamified tracking system that combines goal tracking with engaging game mechanics. It empowers users to monitor their progress, build positive habits, and achieve milestones while enjoying a rewarding experience.
+Clash of Patrols is a gamified tracking system that combines goal tracking with engaging game mechanics. It empowers users to monitor their progress, challenges and play with other patrols,  while enjoying a rewarding experience.
 
 ---
 
@@ -31,15 +31,11 @@ Clash of Patrols is a gamified tracking system that combines goal tracking with 
 ### Core Capabilities
 
 - **Goal Tracking:** Monitor daily, weekly, and monthly objectives.
-- **Habit Formation:** Build and reinforce positive habits with reminders.
-- **Progress Analytics:** Visualize improvement over time via charts and statistics.
-- **Custom Categories:** Organize tracking by various life or work areas.
+- **Progress Analytics:** Visualize improvement over time View Scores page.
 
 ### Gamification Elements
 
 - **Experience Points (XP):** Earn XP for completing tasks and challenges.
-- **Level System:** Progress through levels to unlock new features.
-- **Achievement Badges:** Unlock badges for reaching milestones.
 - **Streak Tracking:** Maintain streaks for bonus rewards.
 - **Quest System:** Complete special challenges for additional XP.
 - **Leaderboards:** Compete with friends or track personal bests.
@@ -64,9 +60,8 @@ Clash of Patrols is a gamified tracking system that combines goal tracking with 
 - **Routing:** React Router DOM (v7.6.2)
 - **Code Quality:** ESLint (React-specific rules)
 - **Icons/UX:** React Icons, Toastify for notifications
-
----
-
+- **Axios:** API communication.
+- **FontAwesome:** For icons.
 ## Setup & Installation
 
 ### Prerequisites
@@ -90,7 +85,7 @@ Clash of Patrols is a gamified tracking system that combines goal tracking with 
    npm run dev
    ```
 4. **Access the app:**
-   - Visit [http://localhost:5173](http://localhost:5173) in your browser.
+   - Visit [Clash of Patrols](https://clash-of-patrols.vercel.app/) in your browser.
 
 ### Scripts
 
@@ -105,8 +100,7 @@ Clash of Patrols is a gamified tracking system that combines goal tracking with 
 
 - **Landing Page:** A visually appealing welcome screen with smooth animations.
 - **Authentication:** Register or log in to access features.
-- **Dashboard:** View your level, XP, and achievements.
-- **Goal Setting:** Create and manage tracking categories/objectives.
+- **View Scores:** View your score and lands.
 - **Earning Points:** Complete tasks, maintain streaks, and achieve milestones for XP and rewards.
 
 ---
@@ -133,7 +127,7 @@ src/          # Source code
   Process/    # Components for process-related features
   Scout/      # Components for scouting features
   utils/      # Utility functions and shared logic
-  Welcome-Login/ # Components for login and welcome screens
+  Welcome-Login/ # Components for login and welcome 
 ```
 
 ---
@@ -154,17 +148,6 @@ We welcome contributions to improve Clash of Patrols! To contribute:
 - Add comments for complex logic.
 - Test your changes thoroughly.
 - Update documentation as needed.
-
----
-
-## Planned Enhancements
-
-- Social features (friend connections, achievement sharing)
-- Advanced analytics and reporting
-- Customizable themes
-- Native mobile apps (iOS/Android)
-- Data export and integration APIs
-- Seasonal events, team challenges, story mode
 
 ---
 
