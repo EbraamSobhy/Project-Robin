@@ -78,7 +78,7 @@ function Home() {
         const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
         link.type = 'image/x-icon';
         link.rel = 'shortcut icon';
-        link.href = '/public/Home.png';
+        link.href = '/Home.png';
         document.getElementsByTagName('head')[0].appendChild(link);
 
         return () => clearTimeout(timer);
@@ -246,13 +246,13 @@ const handleLogout = async () => {
                 {/* Vertical Navbar - hidden on mobile */}
                 <div className="hidden lg:flex fixed top-0 right-0 h-full w-24 bg-white shadow-lg flex-col items-center mt-[63px] z-50 border-l border-blue-200">
                     {/* Home Tab - Active */}
-                    <button className="w-full flex flex-col items-center py-1 px-2 group bg-blue-50 transition relative">
+                    <button className="w-full flex flex-col items-center py-0.5 px-2 group bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-blue-500 rounded-r transition"></span>
                         <svg className="w-7 h-7 text-blue-500 mb-0.5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0h6" /></svg>
                         <span className="text-xs text-blue-700 font-semibold">Home</span>
                     </button>
                     {/* Update Scores Tab */}
-                    <button onClick={UpdateScores} className="w-full flex flex-col items-center py-1 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={UpdateScores} className="w-full flex flex-col items-center py-0.5 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-0.5">
                             <RiCoinsFill size={25} />
@@ -260,7 +260,7 @@ const handleLogout = async () => {
                         <span className="text-xs text-blue-700 font-semibold">Update Scores</span>
                     </button>
                     {/* View Scores Tab */}
-                    <button onClick={ViewScores} className="w-full flex flex-col items-center py-1 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={ViewScores} className="w-full flex flex-col items-center py-0.5 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-0.5">
                             <GrScorecard size={25} />
@@ -268,7 +268,7 @@ const handleLogout = async () => {
                         <span className="text-xs text-blue-700 font-semibold">View Scores</span>
                     </button>
                      {/* Attack Tab */}
-                    <button onClick={AttackConditions} className="w-full flex flex-col items-center py-1 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={AttackConditions} className="w-full flex flex-col items-center py-0.5 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-0.5">
                             <PiSword size={25} />
@@ -276,7 +276,7 @@ const handleLogout = async () => {
                         <span className="text-xs text-blue-700 font-semibold">Attack Conditions</span>
                     </button>
                     {/* Trade Tab */}
-                    <button onClick={Trade} className="w-full flex flex-col items-center py-1 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={Trade} className="w-full flex flex-col items-center py-0.5 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-0.5">
                             <GiTrade size={25} />
@@ -284,7 +284,7 @@ const handleLogout = async () => {
                         <span className="text-xs text-blue-700 font-semibold">Trade</span>
                     </button>
                     {/* Take Tab */}
-                    <button onClick={Take} className="w-full flex flex-col items-center py-1 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={Take} className="w-full flex flex-col items-center py-0.5 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-0.5">
                             <GiHand size={25} />
@@ -292,7 +292,7 @@ const handleLogout = async () => {
                         <span className="text-xs text-blue-700 font-semibold">Take</span>
                     </button>
                     {/* Give Tab */}
-                    <button onClick={Give} className="w-full flex flex-col items-center py-1 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={Give} className="w-full flex flex-col items-center py-0.5 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-0.5">
                             <FaHandHoldingHeart size={25} />
@@ -300,7 +300,7 @@ const handleLogout = async () => {
                         <span className="text-xs text-blue-700 font-semibold">Give</span>
                     </button>
                     {/* GDP Tab */}
-                    <button onClick={GDP} className="w-full flex flex-col items-center py-1 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={GDP} className="w-full flex flex-col items-center py-0.5 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-0.5">
                             <FaChartLine size={25} />
@@ -308,7 +308,7 @@ const handleLogout = async () => {
                         <span className="text-xs text-blue-700 font-semibold">GDP</span>
                     </button>
                     {/* Harvest Tab */}
-                    <button onClick={Harvest} className="w-full flex flex-col items-center py-1 px-2 group hover:bg-blue-50 transition relative">
+                    <button onClick={Harvest} className="w-full flex flex-col items-center py-0.5 px-2 group hover:bg-blue-50 transition relative">
                         <span className="absolute left-0 top-0 h-full w-1 bg-transparent group-hover:bg-blue-500 rounded-r transition"></span>
                         <div className="w-12 h-12 flex items-center justify-center text-blue-500 mb-0.5">
                             <GiCorn size={25} />
@@ -335,12 +335,12 @@ const handleLogout = async () => {
                                 <div className="absolute -inset-1 bg-gradient-to-r bg-gray-400 rounded-xl sm:rounded-2xl blur transition duration-300"></div>
                                 <div className="relative">
                                 <div className="bg-white inline-block px-3 sm:px-6 py-3 sm:py-4 rounded-lg sm:rounded-xl text-right border border-blue-100 shadow-sm w-full" dir="rtl" lang="ar">
-                                        <p className="text-sm sm:text-lg lg:text-2xl text-black mb-2 leading-relaxed">
-                                        غير عاملين يجد فقط حين تكون عُيُونُهُمْ عَلَيْكُمْ كَمَنْ يُحَاوِلُ إرضاء الناس، بل انطلاقاً مِنْ كَوْنِكُمْ عَبِيداً لِلْمَسِيحُ
-                                        </p>
-                                        <p className="text-xs sm:text-sm lg:text-lg text-gray-600">
-                                        افسس 6:6
-                                        </p>
+                                            <p className="text-sm sm:text-lg lg:text-2xl text-black mb-2 leading-relaxed">
+                                            غير عاملين بجد فقط حين تكون عُيُونُهُمْ عَلَيْكُمْ كَمَنْ يُحَاوِلُ إرضاء الناس، بل انطلاقاً مِنْ كَوْنِكُمْ عَبِيداً لِلْمَسِيحُ
+                                            </p>
+                                            <p className="text-xs sm:text-sm lg:text-lg text-gray-600">
+                                            افسس 6:6
+                                            </p>
                                     </div>
                                 </div>
                             </div>

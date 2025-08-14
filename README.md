@@ -1,6 +1,6 @@
-# Clash of Patrols: Gamified Tracking System.
+# Clash of Patrols: Gamified Tracking System Web App
 
-Welcome to the official documentation for the frontend of **Robin Game**, a gamified tracking system built with modern web technologies. This document is designed for developers and contributors who wish to understand, use, or extend the frontend of this repository.
+Welcome to the official documentation for the frontend of **Clash of Patrols**, a gamified tracking system designed to make goal tracking engaging and rewarding. This document serves as a comprehensive guide for developers and contributors to understand, use, and extend the frontend of this repository.
 
 ---
 
@@ -13,6 +13,7 @@ Welcome to the official documentation for the frontend of **Robin Game**, a gami
 - [Setup & Installation](#setup--installation)
 - [Usage Guide](#usage-guide)
 - [Design Principles](#design-principles)
+- [Folder Structure](#folder-structure)
 - [Contribution Guidelines](#contribution-guidelines)
 - [Planned Enhancements](#planned-enhancements)
 - [License & Acknowledgments](#license--acknowledgments)
@@ -21,7 +22,7 @@ Welcome to the official documentation for the frontend of **Robin Game**, a gami
 
 ## Overview
 
-Clash of Patrols is a Gamified tracking system.
+Clash of Patrols is a gamified tracking system that combines goal tracking with engaging game mechanics. It empowers users to monitor their progress, challenges and play with other patrols,  while enjoying a rewarding experience.
 
 ---
 
@@ -30,23 +31,20 @@ Clash of Patrols is a Gamified tracking system.
 ### Core Capabilities
 
 - **Goal Tracking:** Monitor daily, weekly, and monthly objectives.
-- **Habit Formation:** Build and reinforce positive habits with reminders.
-- **Progress Analytics:** Visualize improvement over time via charts and statistics.
-- **Custom Categories:** Organize tracking by various life or work areas.
+- **Progress Analytics:** Visualize improvement over time View Scores page.
 
 ### Gamification Elements
 
 - **Experience Points (XP):** Earn XP for completing tasks and challenges.
-- **Level System:** Progress through levels.
-- **Achievement Badges:** Unlock badges for milestones.
 - **Streak Tracking:** Maintain streaks for bonus rewards.
-- **Quest System:** Special challenges for additional XP.
+- **Quest System:** Complete special challenges for additional XP.
 - **Leaderboards:** Compete with friends or track personal bests.
 
 ---
 
 ## Architecture
 
+- **Component-Based Design:** Modular React components for reusability and scalability.
 - **Routing:** Managed via React Router DOM for seamless navigation between screens.
 - **State Management:** Utilizes React hooks (`useState`, `useEffect`) for local state and side effects.
 - **Styling:** Tailwind CSS provides utility-first, responsive design.
@@ -62,9 +60,8 @@ Clash of Patrols is a Gamified tracking system.
 - **Routing:** React Router DOM (v7.6.2)
 - **Code Quality:** ESLint (React-specific rules)
 - **Icons/UX:** React Icons, Toastify for notifications
-
----
-
+- **Axios:** API communication.
+- **FontAwesome:** For icons.
 ## Setup & Installation
 
 ### Prerequisites
@@ -88,7 +85,7 @@ Clash of Patrols is a Gamified tracking system.
    npm run dev
    ```
 4. **Access the app:**
-   - Visit [http://localhost:5173](http://localhost:5173) in your browser.
+   - Visit [Clash of Patrols](https://clash-of-patrols.vercel.app/) in your browser.
 
 ### Scripts
 
@@ -101,10 +98,9 @@ Clash of Patrols is a Gamified tracking system.
 
 ## Usage Guide
 
-- **Landing Page:** Visually appealing welcome screen with smooth animations.
+- **Landing Page:** A visually appealing welcome screen with smooth animations.
 - **Authentication:** Register or log in to access features.
-- **Dashboard:** View your level, XP, and achievements.
-- **Goal Setting:** Create and manage tracking categories/objectives.
+- **View Scores:** View your score and lands.
 - **Earning Points:** Complete tasks, maintain streaks, and achieve milestones for XP and rewards.
 
 ---
@@ -115,6 +111,24 @@ Clash of Patrols is a Gamified tracking system.
 - **Responsive Design:** Optimized for mobile, tablet, and desktop.
 - **Intuitive Navigation:** Clear user flows and navigation paths.
 - **Accessible Color Scheme:** Blue gradients, white/blue accents, high-contrast text.
+
+---
+
+## Folder Structure
+
+The project follows a well-organized folder structure for scalability and maintainability:
+
+```
+public/       # Static assets (images, icons, etc.)
+src/          # Source code
+  assets/     # Shared assets (e.g., images, icons)
+  CP/         # Components for Clash of Patrols features
+  Kadr/       # Components for Kadr-specific features
+  Process/    # Components for process-related features
+  Scout/      # Components for scouting features
+  utils/      # Utility functions and shared logic
+  Welcome-Login/ # Components for login and welcome 
+```
 
 ---
 
@@ -137,28 +151,17 @@ We welcome contributions to improve Clash of Patrols! To contribute:
 
 ---
 
-## Planned Enhancements
-
-- Social features (friend connections, achievement sharing)
-- Advanced analytics and reporting
-- Customizable themes
-- Native mobile apps (iOS/Android)
-- Data export and integration APIs
-- Seasonal events, team challenges, story mode
-
----
-
 ## License & Acknowledgments
 
 **License:**  
 MIT License (see [LICENSE](LICENSE) file)
 
-**Acknowledgments:**  
-- React Team  
-- Vite Team  
-- Tailwind CSS  
-- Robin Game Community
+**Acknowledgments:**
+
+- React Team
+- Vite Team
+- Tailwind CSS
 
 ---
 
-**Transform your goals into achievements with Clash of Patrols—where every step forward is a victory!**
+**Transform your goals into achievements with Clash of Patrols where every step forward is a victory!**

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import "./tailwind.css";
-import image from '../assets/image.PNG';
+import image from '../assets/clash_of_patrols.png';
 
 function Welcome() {
     const [isVisible, setIsVisible] = useState(false);
